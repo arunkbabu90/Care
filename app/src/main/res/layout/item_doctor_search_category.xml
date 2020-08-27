@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/default_margin"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/category_card_radius"
+    tools:cardBackgroundColor="@color/colorCatRed">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <arunkbabu.care.views.CircularImageView
+            android:id="@+id/category_image_view"
+            android:layout_width="@dimen/doc_category_image_view_size"
+            android:layout_height="@dimen/doc_category_image_view_size"
+            android:layout_margin="25dp"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:scaleType="center"
+            tools:iconTint="@color/colorCatRed"
+            tools:src="@drawable/ic_heart" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/category_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:fontFamily="@font/muli_bold"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="@id/category_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/category_image_view"
+            app:layout_constraintTop_toTopOf="@id/category_image_view"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="0.1"
+            tools:text="Cardiologist" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/category_description_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:ellipsize="end"
+            android:fontFamily="@font/muli_regular"
+            android:scrollHorizontally="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/category_title_text_view"
+            app:layout_constraintTop_toBottomOf="@id/category_title_text_view"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Doctors who specialize in diagnosing and treating diseases or conditions of
+             the heart and blood vessel" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
+

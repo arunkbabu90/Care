@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.PatientActivity">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_patient_err_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorDarkBackgroundGrey"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        tools:text="@string/err_account_not_verified" />
+
+    <FrameLayout
+        android:id="@+id/patient_activity_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bnv_patient"
+        android:layout_below="@id/tv_patient_err_msg"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bnv_patient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorDarkBackgroundGrey"
+        app:itemIconTint="@color/bnv_tab_item_color_state_list"
+        app:itemTextColor="@color/bnv_tab_item_color_state_list"
+        android:layout_alignParentBottom="true"
+        app:elevation="20dp"
+        app:menu="@menu/patient_activity_bottom_nav_menu"/>
+
+</RelativeLayout>

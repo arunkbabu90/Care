@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_marginStart="@dimen/default_margin"
+    android:layout_marginEnd="@dimen/default_margin"
+    android:layout_marginTop="@dimen/default_margin"
+    android:paddingStart="@dimen/default_margin"
+    android:paddingEnd="@dimen/default_margin"
+    android:background="@drawable/round_corner_dark_drawable_1"
+    android:layout_height="100dp">
+
+    <arunkbabu.care.views.CircularImageView
+        android:id="@+id/iv_patient_dp"
+        android:layout_width="@dimen/dp_image_view_size_medium"
+        android:layout_height="@dimen/dp_image_view_size_medium"
+        android:layout_margin="@dimen/default_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:src="@drawable/default_dp" />
+
+    <TextView
+        android:id="@+id/tv_patient_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:fontFamily="@font/muli_bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_patient_dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_accept"
+        app:layout_constraintStart_toEndOf="@id/iv_patient_dp"
+        app:layout_constraintTop_toTopOf="@id/iv_patient_dp"
+        app:layout_constraintVertical_bias="0.15"
+        tools:text="Akash" />
+
+    <TextView
+        android:id="@+id/tv_patient_report_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:ellipsize="end"
+        android:fontFamily="@font/muli_italic"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        app:layout_constraintEnd_toStartOf="@id/btn_accept"
+        app:layout_constraintStart_toEndOf="@id/iv_patient_dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_patient_name"
+        tools:text="Report on Pain" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_accept"
+        style="@style/AppTheme.AcceptRejectButtonStyle"
+        android:backgroundTint="@color/colorAcceptButton"
+        android:text="@string/view"
+        app:layout_constraintBottom_toBottomOf="@id/iv_patient_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintTop_toTopOf="@id/iv_patient_dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

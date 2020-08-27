@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    tools:context=".fragments.ReportProblemFragment">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_report_problem"
+        style="@style/AppTheme.MainActivityButtonStyle"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/colorOrange"
+        android:layout_gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:text="@string/report_problem" />
+
+</FrameLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/round_corner_dark_drawable_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/simpleInputDialog_textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/sign_up_item_margin"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:boxStrokeColor="@color/colorLightIndigoNormal"
+        app:hintTextColor="@color/colorLightIndigoNormal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_simple_input_dialog_input_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:importantForAutofill="no"
+            android:inputType="textCapWords"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_simple_input_dialog_negative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/sign_up_item_padding"
+        android:text="@string/cancel"
+        android:textColor="@color/colorLightIndigoNormal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintBottom_toBottomOf="@id/tv_simple_input_dialog_positive"
+        app:layout_constraintEnd_toStartOf="@id/tv_simple_input_dialog_positive"
+        app:layout_constraintStart_toStartOf="@id/simpleInputDialog_textInputLayout"
+        app:layout_constraintTop_toTopOf="@id/tv_simple_input_dialog_positive" />
+
+    <TextView
+        android:id="@+id/tv_simple_input_dialog_positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/sign_up_item_padding"
+        android:text="@string/commit"
+        android:textColor="@color/colorLightIndigoNormal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/simpleInputDialog_textInputLayout"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/simpleInputDialog_textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/simpleInputDialog_textInputLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

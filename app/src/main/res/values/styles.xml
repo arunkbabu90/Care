@@ -1,0 +1,62 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/colorDarkBackgroundGrey</item>
+        <item name="android:statusBarColor">@color/colorDarkBackgroundGrey</item>
+        <item name="android:navigationBarColor">@color/colorDarkBackgroundGrey</item>
+    </style>
+
+    <style name="AppTheme.MainActivityButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginTop">@dimen/stacked_button_margin_top</item>
+        <item name="android:layout_marginStart">@dimen/stacked_button_margin_horizontal</item>
+        <item name="android:layout_marginEnd">@dimen/stacked_button_margin_horizontal</item>
+        <item name="android:paddingTop">@dimen/stacked_button_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/stacked_button_padding_vertical</item>
+    </style>
+
+    <style name="AppTheme.LoginButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:paddingStart">@dimen/login_button_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/login_button_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/login_button_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/login_button_padding_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <style name="AppTheme.NormalButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:paddingStart">@dimen/button_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/button_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/button_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/button_padding_vertical</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <style name="AppTheme.AcceptRejectButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/small_margin</item>
+        <item name="paddingStart">@dimen/small_margin</item>
+        <item name="paddingEnd">@dimen/small_margin</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/muli_bold</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="android:elevation">5dp</item>
+        <item name="android:translationZ">5dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+</resources>

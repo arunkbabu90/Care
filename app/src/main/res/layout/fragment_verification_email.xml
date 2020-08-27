@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.signup.VerificationEmailFragment">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_verify_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/default_margin"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:text="A verification email has been sent to: " />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_verify_email_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_verify_email"
+        android:layout_margin="@dimen/default_margin"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:textColor="@color/colorTextGreen"
+        tools:text="Status: Unverified" />
+
+</RelativeLayout>

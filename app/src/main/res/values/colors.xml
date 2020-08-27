@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#FFFFFF</color>
+
+    <color name="colorPrimary">#2963C5</color>
+    <color name="colorPrimaryDark">#194691</color>
+    <color name="colorAccent">#6c7fe9</color>
+    <color name="colorNextButton">#4768E2</color>
+    <color name="colorViolet">#8151A4</color>
+    <color name="colorBlue">#0175EE</color>
+    <color name="colorAcceptButton">#00b363</color>
+    <color name="colorBackgroundGrey">#EDEDED</color>
+    <color name="colorDarkBackgroundGrey">#121212</color>
+    <color name="colorDarkBackgroundGrey1">#212121</color>
+    <color name="colorDarkBackgroundGrey2">#616161</color>
+    <color name="colorTextGrey">#757575</color>
+    <color name="colorTextLightGrey">#BDBDBD</color>
+    <color name="colorRed">#FF0000</color>
+    <color name="colorOrange">#FFC700</color>
+    <color name="colorFullBody">#ef9a9a</color>
+
+    <color name="colorLightIndigoNormal">#7175FF</color>
+    <color name="colorLightIndigoActivated">#8C9EFF</color>
+    <color name="colorHoloGreenActivated">#A2F400</color>
+    <color name="colorBlueActivated">#00BBFF</color>
+    <color name="colorHoloOrangeActivated">#FFC400</color>
+    <color name="colorStatusUnverified">#f4706e</color>
+    <color name="colorStatusVerified">#59cd5d</color>
+    <color name="colorDocProfileButton">#FFFFFF</color>
+
+    <!-- Dark Theme Special Colors -->
+    <color name="colorTabSelectedGreen">#00FF5D</color>
+    <color name="colorEditIcon">@color/colorAccent</color>
+    <color name="colorSignOutButton">#ec6a6a</color>
+    <color name="colorCatRed">#FF6666</color>
+    <color name="colorCatBlue">#426DE5</color>
+    <color name="colorCatGreen">#33CC66</color>
+    <color name="colorCatIndigo">#4d5ab0</color>
+    <color name="colorCatYellow">#E5B628</color>
+    <color name="colorTextRed">#ff9795</color>
+    <color name="colorTextGreen">#a5d6a7</color>
+
+</resources>

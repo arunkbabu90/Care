@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/muli_extra_bold"
+            android:gravity="center"
+            android:text="@string/login"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/tv_login_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorRed"
+            android:visibility="invisible"
+            tools:text="@string/err_login" />
+
+        <!-- Email -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Design.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="60dp"
+            android:textColorHint="@color/colorTextLightGrey"
+            android:background="@drawable/sign_up_et_state_list_drawable"
+            android:paddingTop="8dp"
+            android:paddingBottom="5dp"
+            app:errorEnabled="true">
+
+            <arunkbabu.care.views.CustomInputTextField
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="email"
+                android:focusable="true"
+                android:fontFamily="@font/muli_light"
+                android:hint="@string/prompt_email"
+                android:inputType="textEmailAddress"
+                android:paddingTop="5dp"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Design.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:textColorHint="@color/colorTextLightGrey"
+            android:background="@drawable/sign_up_et_state_list_drawable"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
+            app:errorEnabled="true">
+
+            <arunkbabu.care.views.CustomInputTextField
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autofillHints="password"
+                android:focusable="true"
+                android:fontFamily="@font/muli_light"
+                android:hint="@string/prompt_password"
+                android:imeActionLabel="@string/sign_in"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingTop="5dp"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login"
+            style="@style/AppTheme.LoginButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginBottom="@dimen/small_margin"
+            app:backgroundTint="@color/colorNextButton"
+            android:elevation="5dp"
+            android:onClick="onLoginClick"
+            android:stateListAnimator="@null"
+            android:text="@string/login"
+            android:textSize="26sp"
+            android:translationZ="5dp" />
+
+        <TextView
+            android:id="@+id/tv_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/muli_light"
+            android:onClick="onForgotPasswordClick"
+            android:padding="@dimen/default_padding"
+            android:text="@string/forgot_password"
+            android:textColor="@color/colorNextButton"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/tv_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/default_margin"
+            android:fontFamily="@font/muli_light"
+            android:onClick="onSignUpTextViewClick"
+            android:padding="@dimen/default_padding"
+            android:text="@string/sign_up_message"
+            android:textColor="@color/colorNextButton"
+            android:textSize="17sp" />
+
+        <ProgressBar
+            android:id="@+id/pb_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="64dp"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/custom_green_progress_circle_drawable"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</ScrollView>

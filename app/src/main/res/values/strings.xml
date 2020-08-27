@@ -1,0 +1,153 @@
+<resources>
+    <string name="app_name">Care</string>
+    <string name="err_default">Error! Something went wrong</string>
+    <string name="err_internet_default">Error! Please check your internet connection and try again</string>
+    <string name="profile">Profile</string>
+    <string name="not_set">Not Selected</string>
+
+    <!-- Patient Activity -->
+    <string name="signed_out">Signed out!</string>
+    <string name="report_problem">Report a Problem</string>
+    <string name="sign_out">Sign out</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="doctors_report">Doctor Reports</string>
+    <string name="next">Next</string>
+    <string name="creating_report">Creating a Report. Please Wait</string>
+    <string name="request_sent">Request sent to %1$s</string>
+    <string name="err_file_creation">Unable to create File. Please try again</string>
+    <string name="err_request_creation_fail">Error Creating Request. Please try again!</string>
+    <string name="err_user_not_logged_in">Error: User not logged in!</string>
+    <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
+    <string name="fetching_data">Fetching data. Please wait…</string>
+    <string name="reporting_doctor">Reporting Doctor</string>
+    <string name="pain_report_hint">Describe your problem</string>
+    <string name="err_get_download_image_url">Failed to get Image download URL</string>
+    <string name="uploading_files">Uploading Files… Please Wait!</string>
+    <string name="err_report_create_fail">Report Creation Failure!</string>
+
+    <!-- Login Activity -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="err_login">Email or Password doesn\'t match</string>
+    <string name="err_blank_email">Email must not be left blank</string>
+    <string name="err_invalid_email">Please enter a valid email</string>
+    <string name="err_password">Please enter your password</string>
+    <string name="err_no_internet">You are offline!</string>
+
+    <!-- ForgotPassword Activity -->
+    <string name="password_reset_info">Enter your email so that we can send a link to reset your password</string>
+    <string name="send_verification">Send Verification</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="err_send_verification_failed">Failed to send verification Email! Please make sure that you have entered the correct email of associated with your account and try again</string>
+    <string name="err_email_send">Failed to send verification Email! Please try again</string>
+
+    <!-- Request Activity -->
+    <string name="patient_requests">Patient Requests</string>
+    <string name="patient_profile_picture">Patient\'s Profile Picture</string>
+    <string name="err_unexpected">Unexpected Error while inflating views</string>
+    <string name="no_requests_available">No Requests Available</string>
+    <string name="view">View</string>
+
+    <!-- Doctor Activity -->
+    <string name="patients_report">Patient\'s Report</string>
+    <string name="type_a_message">Type a Message</string>
+    <string name="send">Send</string>
+    <string name="add_medicine">Add Medicine</string>
+    <string name="add_a_note">Add a note</string>
+    <string name="instructions_for_medication">Instructions for Medication</string>
+    <string name="loading_data">Loading Data…</string>
+    <string name="report_sent">Report sent to %1$s</string>
+    <string name="medicine_name">Medicine name</string>
+    <string name="add">Add</string>
+    <string name="err_request_deletion_fail">Failed to delete request! Make sure you are connected to internet. Retrying now…</string>
+    <string name="not_provided">Not Provided</string>
+
+    <!-- Upload Files Fragment-->
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_file">Choose File</string>
+    <string name="attach_photo">Attach Photos</string>
+    <string name="uploaded_files">Uploaded Files</string>
+    <string name="day">Day</string>
+    <string name="days">Days</string>
+    <string name="file_provider_authority">arunkbabu.care.fileprovider</string>
+    <string name="err_files_list_load">Failed to load files list. Please restart application and try again</string>
+
+    <!-- DoctorsReport Activity -->
+    <string name="doctor_reports">Doctor Reports</string>
+    <string name="no_reports_available">No Reports Available</string>
+    <string name="err_no_images_found">No Images Found</string>
+    <string name="undo">Undo</string>
+
+    <!-- Sign Up Activity -->
+    <string name="sign_up_message">Don\'t have an account? Sign up</string>
+    <string name="full_name">Full Name</string>
+    <string name="height_desc">Height in centimeters</string>
+    <string name="weight_desc">Weight in kilograms</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="sign_up_information">Sign Up</string>
+    <string name="sign_up_desc">Create your profile</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create">Create</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="age">Age</string>
+    <string name="err_password_no_match">Passwords doesn\'t match</string>
+    <string name="err_sign_up_password">Password should not be blank</string>
+    <string name="sex">Sex</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="disorder_desc">Can you please tell us your disease/ disorder that you are currently under treatment</string>
+    <string name="cancel">Cancel</string>
+    <string name="commit">Commit</string>
+    <string name="edit">Edit</string>
+    <string name="err_profile_add_details_failed">Adding details to profile failed. Please try again!</string>
+    <string name="retry">Retry</string>
+    <string name="content_desc_error_icon">Error Icon</string>
+    <string name="close">Close</string>
+    <string name="retrying_profile_update">Retrying Profile Update</string>
+    <string name="creating_profile">Setting up your profile. Please be patient…</string>
+    <string name="err_password_length">Password should be at-least 8 characters long</string>
+    <string name="err_empty_field">Please fill this field</string>
+    <string name="err_pls_fix_all_errors">Please fix all the errors before proceeding</string>
+    <string name="verify_account_heading">Verify Account</string>
+    <string name="unverified">Unverified</string>
+    <string name="verified">Verified</string>
+    <string name="sending_verification">Sending Verification email to %1$s. Please wait…</string>
+    <string name="wait_n_seconds_to_retry">Wait for %1$s seconds before retrying</string>
+    <string name="verification_success_desc">Your account has been successfully verified. Press Continue to login</string>
+    <string name="err_email_exists">Email Already exists</string>
+    <string name="_continue">Continue</string>
+    <string name="err_verification_email_already_sent">Error! Most probably the verification email is already sent. Please check your email</string>
+    <string name="err_account_not_verified">Account not verified! Click here to verify</string>
+    <string name="err_account_not_verified_desc">Account not verified!\nYou can\'t send reports to a doctor unless you verify your account\nClick here to Verify</string>
+    <string name="err_account_not_verified_desc2">Account not verified!\nYou can\'t send reports to a doctor unless you verify</string>
+    <string name="account_verified">Account Verified</string>
+    <string name="verification_email_sent">A verification email has been sent to %1$s</string>
+    <string name="patient">Patient</string>
+    <string name="doctor">Doctor</string>
+
+    <!-- Profile Activity -->
+    <string name="saved">Saved!</string>
+    <string name="err_upload_failed">Upload Failed</string>
+    <string name="bmi">BMI</string>
+    <string name="pick_image">Pick your Photo</string>
+
+    <!-- Doctor Profile Activity-->
+    <string name="doc_hi_text">Dr. %1$s</string>
+
+    <!-- Doctor Search -->
+    <string name="cardiologist">Cardiologist</string>
+    <string name="pediatrician">Pediatrician</string>
+    <string name="cardiologist_desc">Specialized in diagnosing and treating of the heart and blood vessel</string>
+    <string name="pediatrician_desc">Specialized in the health of your child, including physical, behavior, and mental health issues</string>
+    <string name="general">General</string>
+    <string name="general_desc">Specialized in diagnosing and nonsurgical treatment of diseases of the internal organs</string>
+    <string name="oncologist">Oncologist</string>
+    <string name="oncologist_desc">Doctor who treats cancer</string>
+    <string name="search_res_for">"Search Results for: %1$s"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="registered_id">Registered ID</string>
+</resources>

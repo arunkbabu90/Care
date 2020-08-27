@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircularImageView">
+        <attr name="src" format="reference|color" />
+        <attr name="iconTint" format="reference|color" />
+        <attr name="scaleType" format="enum">
+            <enum name="matrix" value="0" />
+            <enum name="fitXY" value="1" />
+            <enum name="fitStart" value="2" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitEnd" value="4" />
+            <enum name="center" value="5" />
+            <enum name="centerCrop" value="6" />
+            <enum name="centerInside" value="7" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="EditableRecyclerView">
+        <attr name="titleText" format="string" />
+        <attr name="backgroundColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleDetailCardView">
+        <attr name="topText" format="string" />
+        <attr name="bottomText" format="string" />
+        <attr name="editable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TitleRadioCardView">
+        <attr name="headingText" format="string" />
+        <attr name="radio1Text" format="string" />
+        <attr name="radio2Text" format="string" />
+        <attr name="radio1Checked" format="boolean" />
+        <attr name="radio2Checked" format="boolean" />
+    </declare-styleable>
+</resources>

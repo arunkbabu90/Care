@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/default_margin">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title_radio_heading_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            tools:text="Title"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:layout_marginTop="0dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/title_radio_radio_button_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:textColor="@color/colorTextLightGrey"
+                tools:text="Option 1" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/title_radio_radio_button_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_padding"
+                android:textColor="@color/colorTextLightGrey"
+                tools:text="Option 2" />
+        </RadioGroup>
+    </LinearLayout>
+</merge>
