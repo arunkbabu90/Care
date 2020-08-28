@@ -82,14 +82,11 @@ public class SignUpPatientFragment extends Fragment implements View.OnFocusChang
         super.onViewCreated(view, savedInstanceState);
         signUpPatientFragActive = true;
 
-        // TODO: Create a fallback fail safe for date of birth edit text if incase the user somehow enters a wrong date
-
         mAuth = FirebaseAuth.getInstance();
 
         mEmailField.setOnFocusChangeListener(this);
         mPasswordField.setOnFocusChangeListener(this);
         mConfirmPasswordField.setOnFocusChangeListener(this);
-
     }
 
     @Override

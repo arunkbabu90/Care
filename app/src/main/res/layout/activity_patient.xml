@@ -32,6 +32,7 @@
         android:background="@color/colorDarkBackgroundGrey"
         app:itemIconTint="@color/bnv_tab_item_color_state_list"
         app:itemTextColor="@color/bnv_tab_item_color_state_list"
+        app:labelVisibilityMode="selected"
         android:layout_alignParentBottom="true"
         app:elevation="20dp"
         app:menu="@menu/patient_activity_bottom_nav_menu"/>

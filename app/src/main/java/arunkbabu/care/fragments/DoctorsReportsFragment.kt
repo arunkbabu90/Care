@@ -17,12 +17,9 @@ import com.google.android.material.transition.MaterialFadeThrough
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.fragment_doctors_report.*
+import kotlinx.android.synthetic.main.fragment_doctors_reports.*
 
-/**
- * A simple [Fragment] subclass.
- */
-class DoctorsReportFragment : Fragment(), ReportListAdapter.ItemClickListener {
+class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     companion object {
         const val KEY_EXTRA_REPORT_ID = "report_id_key_extra"
     }
@@ -36,7 +33,7 @@ class DoctorsReportFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_doctors_report, container, false)
+        return inflater.inflate(R.layout.fragment_doctors_reports, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

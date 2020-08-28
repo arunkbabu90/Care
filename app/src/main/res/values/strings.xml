@@ -52,20 +52,6 @@
     <string name="no_requests_available">No Requests Available</string>
     <string name="view">View</string>
 
-    <!-- Doctor Activity -->
-    <string name="patients_report">Patient\'s Report</string>
-    <string name="type_a_message">Type a Message</string>
-    <string name="send">Send</string>
-    <string name="add_medicine">Add Medicine</string>
-    <string name="add_a_note">Add a note</string>
-    <string name="instructions_for_medication">Instructions for Medication</string>
-    <string name="loading_data">Loading Data…</string>
-    <string name="report_sent">Report sent to %1$s</string>
-    <string name="medicine_name">Medicine name</string>
-    <string name="add">Add</string>
-    <string name="err_request_deletion_fail">Failed to delete request! Make sure you are connected to internet. Retrying now…</string>
-    <string name="not_provided">Not Provided</string>
-
     <!-- Upload Files Fragment-->
     <string name="take_photo">Take Photo</string>
     <string name="choose_file">Choose File</string>
@@ -76,12 +62,6 @@
     <string name="file_provider_authority">arunkbabu.care.fileprovider</string>
     <string name="err_files_list_load">Failed to load files list. Please restart application and try again</string>
 
-    <!-- DoctorsReport Activity -->
-    <string name="doctor_reports">Doctor Reports</string>
-    <string name="no_reports_available">No Reports Available</string>
-    <string name="err_no_images_found">No Images Found</string>
-    <string name="undo">Undo</string>
-
     <!-- Sign Up Activity -->
     <string name="sign_up_message">Don\'t have an account? Sign up</string>
     <string name="full_name">Full Name</string>
@@ -89,7 +69,7 @@
     <string name="weight_desc">Weight in kilograms</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="sign_up_information">Sign Up</string>
-    <string name="sign_up_desc">Create your profile</string>
+    <string name="sign_up_desc">Create your Care account. It\'s free</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="create">Create</string>
     <string name="date_of_birth">Date of Birth</string>
@@ -111,6 +91,7 @@
     <string name="creating_profile">Setting up your profile. Please be patient…</string>
     <string name="err_password_length">Password should be at-least 8 characters long</string>
     <string name="err_empty_field">Please fill this field</string>
+    <string name="err_some_field_empty">Error! Some of the fields are empty</string>
     <string name="err_pls_fix_all_errors">Please fix all the errors before proceeding</string>
     <string name="verify_account_heading">Verify Account</string>
     <string name="unverified">Unverified</string>
@@ -121,9 +102,10 @@
     <string name="err_email_exists">Email Already exists</string>
     <string name="_continue">Continue</string>
     <string name="err_verification_email_already_sent">Error! Most probably the verification email is already sent. Please check your email</string>
-    <string name="err_account_not_verified">Account not verified! Click here to verify</string>
-    <string name="err_account_not_verified_desc">Account not verified!\nYou can\'t send reports to a doctor unless you verify your account\nClick here to Verify</string>
-    <string name="err_account_not_verified_desc2">Account not verified!\nYou can\'t send reports to a doctor unless you verify</string>
+    <string name="err_account_not_verified">Account Not Verified! Click here to verify</string>
+    <string name="err_account_not_verified_desc">Account Not Verified!\nYou can\'t send reports to a doctor unless you verify your account</string>
+    <string name="err_account_not_verified_desc_doc">Account Not Verified!\nPatients can\'t send reports to you and you won\'t appear in searches unless you verify</string>
+    <string name="err_account_not_verified_desc2">Account Not Verified!\nYou can\'t send reports to a doctor unless you verify</string>
     <string name="account_verified">Account Verified</string>
     <string name="verification_email_sent">A verification email has been sent to %1$s</string>
     <string name="patient">Patient</string>
@@ -135,10 +117,25 @@
     <string name="bmi">BMI</string>
     <string name="pick_image">Pick your Photo</string>
 
-    <!-- Doctor Profile Activity-->
+    <!-- Doctor Activity -->
+    <string name="patients_report">Patient\'s Report</string>
+    <string name="type_a_message">Type a Message</string>
+    <string name="send">Send</string>
+    <string name="add_medicine">Add Medicine</string>
+    <string name="messages">Messages</string>
+    <string name="add_a_note">Add a note</string>
+    <string name="instructions_for_medication">Instructions for Medication</string>
+    <string name="loading_data">Loading Data…</string>
+    <string name="report_sent">Report sent to %1$s</string>
+    <string name="medicine_name">Medicine name</string>
+    <string name="add">Add</string>
+    <string name="err_request_deletion_fail">Failed to delete request! Make sure you are connected to internet. Retrying now…</string>
+    <string name="not_provided">Not Provided</string>
+    <string name="doctor_reports">Doctor Reports</string>
+    <string name="no_reports_available">No Reports Available</string>
+    <string name="err_no_images_found">No Images Found</string>
+    <string name="undo">Undo</string>
     <string name="doc_hi_text">Dr. %1$s</string>
-
-    <!-- Doctor Search -->
     <string name="cardiologist">Cardiologist</string>
     <string name="pediatrician">Pediatrician</string>
     <string name="cardiologist_desc">Specialized in diagnosing and treating of the heart and blood vessel</string>
@@ -148,6 +145,6 @@
     <string name="oncologist">Oncologist</string>
     <string name="oncologist_desc">Doctor who treats cancer</string>
     <string name="search_res_for">"Search Results for: %1$s"</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="registered_id">Registered ID</string>
+    <string name="consultations">Consultations</string>
 </resources>

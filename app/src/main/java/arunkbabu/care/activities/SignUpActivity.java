@@ -46,6 +46,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     private String mEmail;
     private String mPassword;
     private String mContactNumber;
+    private String mDocRegId;
     private int mUserType;
 
     /**
@@ -66,9 +67,6 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
 
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
-
-        mDoctorFrag = new SignUpDoctorFragment();
-        mPatientFrag = new SignUpPatientFragment();
         mMainFrag = new SignUpMainFragment();
 
         getSupportFragmentManager().beginTransaction()
@@ -80,26 +78,38 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
      * Creates a user account and signs up the user
      */
     private void performSignUp() {
-        if ((mPatientFrag != null && !mPatientFrag.checkAllFields()) || (mDoctorFrag != null && !mDoctorFrag.checkAllFields())) {
-            Toast.makeText(this, R.string.err_pls_fix_all_errors, Toast.LENGTH_SHORT).show();
-            return;
+        if (mPatientFrag != null) {
+            if (!mPatientFrag.checkAllFields()) {
+                // Field(s) are empty
+                Toast.makeText(this, R.string.err_pls_fix_all_errors, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if (mDoctorFrag != null) {
+            if (!mDoctorFrag.checkAllFields()) {
+                // Field(s) are empty
+                Toast.makeText(this, R.string.err_pls_fix_all_errors, Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         mIsSigningUp = true;
         mProcessingDialog = showProcessingDialog(getString(R.string.creating_profile), "");
 
-        // Common Fields
-        mFullName = mPatientFrag.getFullName();
-        mEmail = mPatientFrag.getEmail();
-        mPassword = mPatientFrag.getPassword();
-        mContactNumber = mPatientFrag.getMobileNumber();
 
         if (mPatientFrag != null && SignUpPatientFragment.signUpPatientFragActive) {
             // Patient SignUp
+            mFullName = mPatientFrag.getFullName();
+            mEmail = mPatientFrag.getEmail();
+            mPassword = mPatientFrag.getPassword();
+            mContactNumber = mPatientFrag.getMobileNumber();
             mUserType = Constants.USER_TYPE_PATIENT;
-
         } else if (mDoctorFrag != null && SignUpDoctorFragment.signUpDoctorFragActive) {
             // Doctor SignUp
+            mFullName = mDoctorFrag.getFullName();
+            mEmail = mDoctorFrag.getEmail();
+            mPassword = mDoctorFrag.getPassword();
+            mContactNumber = mDoctorFrag.getMobileNumber();
+            mDocRegId = mDoctorFrag.getRegisterId();
             mUserType = Constants.USER_TYPE_DOCTOR;
         }
 
@@ -129,6 +139,11 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
         if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("") || mContactNumber.equals("")) {
             return;
         }
+        if (mUserType == Constants.USER_TYPE_DOCTOR) {
+            if (mDocRegId.equals("")) {
+                return;
+            }
+        }
         // Create database with the UID and fill up all the details to the user's
         // profile database document
         String uid = user.getUid();
@@ -138,6 +153,9 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
         ud.put(Constants.FIELD_CONTACT_NUMBER, mContactNumber);
         ud.put(Constants.FIELD_USER_TYPE, mUserType);
         ud.put(Constants.FIELD_ACCOUNT_VERIFIED, false); // Initialize Verification status to false always
+        // If the user is a doctor then upload his/her registered id too
+        if (mUserType == Constants.USER_TYPE_DOCTOR)
+            ud.put(Constants.FIELD_DOC_REG_ID, mDocRegId);
 
         mDb.collection(Constants.COLLECTION_USERS)
                 .document(uid).set(ud)
@@ -149,9 +167,15 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
 
                     // Initiate Account verification
                     Intent i = new Intent(this, AccountVerificationActivity.class);
-                    i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, mPatientFrag.getEmail());
-                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mPatientFrag.getMobileNumber());
-                    i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mPatientFrag.getPassword());
+                    if (mUserType == Constants.USER_TYPE_PATIENT) {
+                        i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, mPatientFrag.getEmail());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mPatientFrag.getMobileNumber());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mPatientFrag.getPassword());
+                    } else if (mUserType == Constants.USER_TYPE_DOCTOR){
+                        i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, mDoctorFrag.getEmail());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mDoctorFrag.getMobileNumber());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mDoctorFrag.getPassword());
+                    }
                     i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_LAUNCH_DASHBOARD);
                     startActivity(i);
                     finish();
@@ -166,7 +190,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
                     }
                     mIsSigningUp = false;
 
-                    Toast.makeText(this, getString(R.string.err_profile_add_details_failed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.err_profile_add_details_failed, Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -175,23 +199,33 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
      * @param user The FirebaseUser
      */
     private void updateProfile(FirebaseUser user) {
-        String fullName = mPatientFrag.getFullName();
+        String fullName = "";
+        if (mUserType == Constants.USER_TYPE_PATIENT) {
+            fullName = mPatientFrag.getFullName();
+        } else if (mUserType == Constants.USER_TYPE_DOCTOR){
+            fullName = mDoctorFrag.getFullName();
+        }
 
-        UserProfileChangeRequest profileUpdateRequest = new UserProfileChangeRequest.Builder()
-                .setDisplayName(fullName)
-                .build();
+        if (!fullName.equals("")) {
+            UserProfileChangeRequest profileUpdateRequest = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(fullName)
+                    .build();
 
-        user.updateProfile(profileUpdateRequest)
-                .addOnSuccessListener(aVoid -> {
-                    pushDetailsToDatabase(user);
-                })
-                .addOnFailureListener(e -> {
-                    // Show error with retry button
-                    showErrorDialog(getString(R.string.err_profile_add_details_failed),
-                            getString(R.string.retry));
-                    mErrorCase = CASE_UPDATE_PROFILE;
-                    mIsSigningUp = false;
-                });
+            user.updateProfile(profileUpdateRequest)
+                    .addOnSuccessListener(aVoid -> {
+                        pushDetailsToDatabase(user);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Show error with retry button
+                        showErrorDialog(getString(R.string.err_profile_add_details_failed),
+                                getString(R.string.retry));
+                        mErrorCase = CASE_UPDATE_PROFILE;
+                        mIsSigningUp = false;
+                    });
+        } else {
+            Toast.makeText(this, R.string.err_some_field_empty, Toast.LENGTH_SHORT).show();
+            mIsSigningUp = false;
+        }
     }
 
 
@@ -300,11 +334,13 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
             // Load the next page
             switch (mMainFrag.getSelectedUserType()) {
                 case Constants.USER_TYPE_PATIENT:
+                    mPatientFrag = new SignUpPatientFragment();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.sign_up_fragment_container, mPatientFrag)
                             .commit();
                     break;
                     case Constants.USER_TYPE_DOCTOR:
+                        mDoctorFrag = new SignUpDoctorFragment();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.sign_up_fragment_container, mDoctorFrag)
                                 .commit();
@@ -313,8 +349,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
             }
         } else {
             // Create Button Behaviour
-//            performSignUp();
-            Toast.makeText(this, "Create", Toast.LENGTH_SHORT).show();
+            performSignUp();
         }
     }
 }

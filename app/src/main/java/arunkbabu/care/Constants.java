@@ -32,11 +32,11 @@ public class Constants {
     public static final String FIELD_HEIGHT = "height";
     public static final String FIELD_WEIGHT = "weight";
     public static final String FIELD_PROFILE_PICTURE = "profilePicture";
+    public static final String FIELD_DOC_REG_ID = "doc_reg_id";
 
     public static final String FIELD_IS_REQUEST_ACCEPTED = "is_accepted";
     public static final String FIELD_PATIENT_ID = "patientId";
     public static final String FIELD_PATIENT_NAME = "patientName";
-    public static final String FIELD_DOCTOR_NAME = "docName";
     public static final String FIELD_REPORT_TYPE = "reportType";
     public static final String FIELD_REPORT_ID = "reportId";
     public static final String FIELD_REQUEST_TIMESTAMP = "requestTimestamp";
@@ -49,13 +49,9 @@ public class Constants {
     public static final String FIELD_DOCTOR_MEDICINES = "medicines";
     public static final String FIELD_DOCTOR_MEDICATION_INSTRUCTIONS = "medication_instructions";
     public static final String FIELD_DOCTOR_SPECIALITY = "doc_speciality";
-    public static final String FIELD_DOCTOR_OTHER_SPECIALITY = "doc_other_speciality";
     public static final String FIELD_DOCTOR_EXPERIENCE = "doc_experience";
     public static final String FIELD_DOCTOR_QUALIFICATIONS = "doc_qualifications";
-    public static final String FIELD_DOCTOR_FELLOWSHIPS = "doc_fellowships";
     public static final String FIELD_REGISTRATION_NO = "registration_no";
-    public static final String FIELD_HOSPITAL_NAME = "hospital_name";
-    public static final String FIELD_IS_PROFILE_COMPLETE = "is_profile_complete";
 
     // Cloud Firestore Related
     public static final String DIRECTORY_PROFILE_PICTURE = "/ProfilePictures/";

@@ -56,7 +56,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
     private var mHeightClick = false
     private var mWeightClick = false
     private var mFullName: String? = null
-    private var mEmail: String? = null
+    private var mEmail: String = ""
     private var mContactNumber: String? = null
     private var mHeight: String? = null
     private var mWeight: String? = null
@@ -157,7 +157,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                                 Utils.userType = mUserType
                             }
                             mFullName = d.getString(Constants.FIELD_FULL_NAME)
-                            mEmail = mUser?.email
+                            mEmail = mUser?.email ?: ""
                             mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER)
                             val dob = d.getLong(Constants.FIELD_DOB)
                             if (dob != null) {
@@ -190,14 +190,10 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                             if (isViewsLoaded)
                                 populateDataToViews()
                         } else {
-                            Toast.makeText(context, getString(R.string.err_unable_to_fetch),
-                                Toast.LENGTH_SHORT).show()
-                            activity?.finish()
+                            Toast.makeText(context, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(context, getString(R.string.err_unable_to_fetch),
-                            Toast.LENGTH_SHORT).show()
-                        activity?.finish()
+                        Toast.makeText(context, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
                     }
                 }
         }
@@ -214,7 +210,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         }
 
         pcv_profile_full_name.bottomText = mFullName ?: ""
-        pcv_profile_email.bottomText = mEmail ?: ""
+        pcv_profile_email.bottomText = mEmail
         pcv_profile_contact_no.bottomText = mContactNumber ?: ""
         pcv_profile_dob.bottomText = mDob ?: ""
         if (mAge != Constants.NULL_INT) pcv_profile_age.bottomText = mAge.toString()

@@ -4,20 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.RequestActivity">
-
-    <TextView
-        android:id="@+id/tv_request"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorDarkBackgroundGrey2"
-        android:gravity="center"
-        android:paddingStart="@dimen/default_padding"
-        android:paddingTop="@dimen/default_padding"
-        android:paddingEnd="@dimen/default_padding"
-        android:paddingBottom="30dp"
-        android:text="@string/patient_requests"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+    tools:context=".fragments.PatientRequestsFragment">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,4 +28,5 @@
             android:scrollbars="vertical"
             android:visibility="visible" />
     </FrameLayout>
+
 </LinearLayout>

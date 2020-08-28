@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class DoctorProfileActivity extends AppCompatActivity implements View.OnC
     private boolean mIsDataJustLoadedFromDatabase, mIsDataLoading, mIsDataLoadFailed, mIsUpdatesAvailable;
     private int mSpeciality = Constants.SPECIALITY_GENERAL;
     private int mUserType;
-    private String mFirstName, mDob;
+    private String mFirstName;
     private long mEpochDob = Constants.NULL_INT;
 
     @Override
@@ -97,20 +96,6 @@ public class DoctorProfileActivity extends AppCompatActivity implements View.OnC
                                     // Other Speciality: So fetch the Other Speciality also
 //                                    mOtherSpecialityField.setText(d.getString(Constants.FIELD_DOCTOR_OTHER_SPECIALITY));
                                 }
-                            }
-
-                            // Set Date of Birth
-                            Long dob = d.getLong(Constants.FIELD_DOB);
-                            if (dob != null) {
-                                mEpochDob = dob;
-                                mDob = Utils.convertEpochToDateString(dob);
-
-                                Calendar c = Calendar.getInstance();
-                                c.setTimeInMillis(dob);
-
-//                                mDobTextView.setText(mDob);
-                            } else {
-                                mEpochDob = Constants.NULL_INT;
                             }
 
                             // Set Experience

@@ -12,39 +12,47 @@ import androidx.core.content.ContextCompat
 import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
-import arunkbabu.care.fragments.DoctorSearchCategoryFragment
-import arunkbabu.care.fragments.DoctorsReportsFragment
-import arunkbabu.care.fragments.PatientProfileFragment
-import arunkbabu.care.fragments.ReportProblemFragment
+import arunkbabu.care.fragments.DoctorProfileFragment
+import arunkbabu.care.fragments.MessageFragment
+import arunkbabu.care.fragments.PatientRequestsFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_patient.*
+import kotlinx.android.synthetic.main.activity_doctor.*
 
-class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, BottomNavigationView.OnNavigationItemSelectedListener {
-    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var mDb: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private var mAccountAlreadyVerified: Boolean? = null
-    private var mContactNumber: String? = null
-    private var mIsLaunched = false
-    private var mFragId: Int = -1
+class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
+    BottomNavigationView.OnNavigationItemSelectedListener {
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDb: FirebaseFirestore
+    private var mAccountAlreadyVerified: Boolean = false
+    private var mContactNumber: String = ""
+    private var mIsLaunched: Boolean = false
+    private var mFragId: Int = Constants.NULL_INT
+
+    var mFullName: String = ""
+    var mEmail: String = ""
+    var mRegisterId: String = ""
+    var mSpeciality: String = ""
+    var mQualifications: String = ""
+    var mSex: Int = Constants.NULL_INT
 
     companion object {
-        private const val REPORT_PROBLEM_FRAGMENT_ID = 9000
-        private const val DOC_SEARCH_FRAGMENT_ID = 9001
-        private const val DOCTORS_REPORT_FRAGMENT_ID = 9002
-        private const val PATIENT_PROFILE_FRAGMENT_ID = 9003
+        private const val PATIENT_REQUESTS_FRAGMENT_ID = 8001
+        private const val DOC_PRIVATE_MESSAGE_FRAGMENT_ID = 8002
+        private const val DOCTOR_PROFILE_FRAGMENT_ID = 8003
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_patient)
+        setContentView(R.layout.activity_doctor)
 
         // Set flag as Patient
-        Utils.userType = Constants.USER_TYPE_PATIENT
+        Utils.userType = Constants.USER_TYPE_DOCTOR
 
+        mAuth = FirebaseAuth.getInstance()
+        mDb = FirebaseFirestore.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
         mAuth.addAuthStateListener(this)
 
@@ -56,9 +64,9 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                     if (task.isSuccessful) {
                         val d = task.result
                         if (d != null) {
-                            mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED)
-                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER)
-                            if (mAccountAlreadyVerified != null && !mAccountAlreadyVerified!!) {
+                            mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED) ?: false
+                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
+                            if (!mAccountAlreadyVerified) {
                                 // If email NOT Already Verified; check the status again
                                 checkAccountVerificationStatus()
                             } else {
@@ -70,56 +78,74 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                 }
         }
 
+        fetchDoctorProfile()
+
         // Load the ReportProblemFragment as default "home"
         supportFragmentManager.beginTransaction()
-            .add(R.id.patient_activity_fragment_container, ReportProblemFragment())
+            .add(R.id.doctor_activity_fragment_container, PatientRequestsFragment())
             .commit()
 
-        bnv_patient.setOnNavigationItemSelectedListener(this)
+        bnv_doctor.setOnNavigationItemSelectedListener(this)
     }
 
-    /**
-     * Bottom navigation item selected listener
-     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.mnu_home -> {
-                if (mFragId != REPORT_PROBLEM_FRAGMENT_ID) {
+            R.id.mnu_requests_doc -> {
+                if (mFragId != PATIENT_REQUESTS_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, ReportProblemFragment())
+                        .replace(R.id.doctor_activity_fragment_container, PatientRequestsFragment())
                         .commit()
-                    mFragId = REPORT_PROBLEM_FRAGMENT_ID
+                    mFragId = PATIENT_REQUESTS_FRAGMENT_ID
                 }
                 true
             }
-            R.id.mnu_search -> {
-                if (mFragId != DOC_SEARCH_FRAGMENT_ID) {
+            R.id.mnu_messages_doc -> {
+                if (mFragId != DOC_PRIVATE_MESSAGE_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, DoctorSearchCategoryFragment())
+                        .replace(R.id.doctor_activity_fragment_container, MessageFragment())
                         .commit()
-                    mFragId = DOC_SEARCH_FRAGMENT_ID
+                    mFragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
                 }
                 true
             }
-            R.id.mnu_doctors_report -> {
-                if (mFragId != DOCTORS_REPORT_FRAGMENT_ID) {
+            R.id.mnu_profile_doc -> {
+                if (mFragId != DOCTOR_PROFILE_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, DoctorsReportsFragment())
+                        .replace(R.id.doctor_activity_fragment_container, DoctorProfileFragment())
                         .commit()
-                    mFragId = DOCTORS_REPORT_FRAGMENT_ID
-                }
-                true
-            }
-            R.id.mnu_profile -> {
-                if (mFragId != PATIENT_PROFILE_FRAGMENT_ID) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, PatientProfileFragment())
-                        .commit()
-                    mFragId = PATIENT_PROFILE_FRAGMENT_ID
+                    mFragId = DOCTOR_PROFILE_FRAGMENT_ID
                 }
                 true
             }
             else -> false
+        }
+    }
+
+    /**
+     * Retrieves all the profile data of the doctor
+     */
+    private fun fetchDoctorProfile() {
+        val user = mAuth.currentUser
+        if (user != null) {
+            mDb.collection(Constants.COLLECTION_USERS).document(user.uid).get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val document = it.result
+                        if (document != null) {
+                            mFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
+                            mEmail = user.email ?: ""
+                            mContactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
+                            mSex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT
+                            mRegisterId = document.getString(Constants.FIELD_REGISTRATION_NO) ?: ""
+                            mQualifications = document.getString(Constants.FIELD_DOCTOR_QUALIFICATIONS) ?: ""
+                            mSpeciality = document.getString(Constants.FIELD_DOCTOR_SPECIALITY) ?: ""
+                        } else {
+                            Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
@@ -142,18 +168,30 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                 // Email NOT verified
                 mAccountAlreadyVerified = false
                 pushVerificationStatusFlag(false)
-                tv_patient_err_msg.visibility = View.VISIBLE
-                tv_patient_err_msg.setText(R.string.err_account_not_verified_desc)
-                tv_patient_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusUnverified))
-                window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusUnverified)
-                tv_patient_err_msg.isClickable = true
-                tv_patient_err_msg.isFocusable = true
-                tv_patient_err_msg.setOnClickListener {
+                tv_doctor_err_msg.visibility = View.VISIBLE
+                tv_doctor_err_msg.setText(R.string.err_account_not_verified_desc_doc)
+                tv_doctor_err_msg.setBackgroundColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.colorStatusUnverified
+                    )
+                )
+                window.statusBarColor =
+                    ContextCompat.getColor(this, R.color.colorStatusUnverified)
+                tv_doctor_err_msg.isClickable = true
+                tv_doctor_err_msg.isFocusable = true
+                tv_doctor_err_msg.setOnClickListener {
                     // Launch the Verification Activity
                     val i = Intent(this, AccountVerificationActivity::class.java)
                     i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, user.email)
-                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mContactNumber)
-                    i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_CLOSE)
+                    i.putExtra(
+                        AccountVerificationActivity.KEY_USER_PHONE_NUMBER,
+                        mContactNumber
+                    )
+                    i.putExtra(
+                        AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR,
+                        AccountVerificationActivity.BEHAVIOUR_CLOSE
+                    )
                     startActivity(i)
                 }
             }
@@ -172,25 +210,25 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                 mAccountAlreadyVerified = true
                 window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusVerified)
                 pushVerificationStatusFlag(true)
-                tv_patient_err_msg.visibility = View.VISIBLE
-                tv_patient_err_msg.setText(R.string.account_verified)
-                tv_patient_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusVerified))
-                tv_patient_err_msg.isClickable = false
-                tv_patient_err_msg.isFocusable = false
+                tv_doctor_err_msg.visibility = View.VISIBLE
+                tv_doctor_err_msg.setText(R.string.account_verified)
+                tv_doctor_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusVerified))
+                tv_doctor_err_msg.isClickable = false
+                tv_doctor_err_msg.isFocusable = false
                 Handler(Looper.getMainLooper()).postDelayed({
-                    tv_patient_err_msg.visibility = View.GONE
-                    window.statusBarColor = ContextCompat.getColor(this@PatientActivity, R.color.colorDarkBackgroundGrey)
+                    tv_doctor_err_msg.visibility = View.GONE
+                    window.statusBarColor = ContextCompat.getColor(this@DoctorActivity, R.color.colorDarkBackgroundGrey)
                 }, 3000)
             } else {
                 // Email NOT verified
                 mAccountAlreadyVerified = false
                 window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusUnverified)
-                tv_patient_err_msg.visibility = View.VISIBLE
-                tv_patient_err_msg.setText(R.string.err_account_not_verified_desc)
-                tv_patient_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusUnverified))
-                tv_patient_err_msg.isClickable = true
-                tv_patient_err_msg.isFocusable = true
-                tv_patient_err_msg.setOnClickListener {
+                tv_doctor_err_msg.visibility = View.VISIBLE
+                tv_doctor_err_msg.setText(R.string.err_account_not_verified_desc_doc)
+                tv_doctor_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusUnverified))
+                tv_doctor_err_msg.isClickable = true
+                tv_doctor_err_msg.isFocusable = true
+                tv_doctor_err_msg.setOnClickListener {
                     // Launch the Verification Activity
                     val i = Intent(this, AccountVerificationActivity::class.java)
                     i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, user.email)
@@ -236,7 +274,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
 
     override fun onResume() {
         super.onResume()
-        if (mAccountAlreadyVerified != null && !mAccountAlreadyVerified!!) {
+        if (!mAccountAlreadyVerified) {
             // If email NOT Already Verified; check the status again
             checkAccountVerificationStatus()
         }

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import arunkbabu.care.Constants;
 import arunkbabu.care.R;
 import arunkbabu.care.Utils;
-import arunkbabu.care.fragments.DoctorsReportFragment;
+import arunkbabu.care.fragments.DoctorsReportsFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,7 +45,7 @@ public class ViewDoctorReportActivity extends AppCompatActivity {
 
         mMedicines = new ArrayList<>();
 
-        String reportId = getIntent().getStringExtra(DoctorsReportFragment.KEY_EXTRA_REPORT_ID);
+        String reportId = getIntent().getStringExtra(DoctorsReportsFragment.KEY_EXTRA_REPORT_ID);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null && reportId != null) {
@@ -59,7 +59,7 @@ public class ViewDoctorReportActivity extends AppCompatActivity {
                             DocumentSnapshot d = task.getResult();
                             if (d != null && d.exists()) {
                                 // Fetch success so populate the report
-                                mDocName = d.getString(Constants.FIELD_DOCTOR_NAME);
+                                mDocName = d.getString(Constants.FIELD_FULL_NAME);
                                 mReportType = Utils.toReportTypeString(d.getLong(Constants.FIELD_REPORT_TYPE).intValue());
                                 mDescription = d.getString(Constants.FIELD_DOCTOR_MEDICATION_INSTRUCTIONS);
 

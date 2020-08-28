@@ -99,7 +99,6 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="@dimen/small_margin"
-            app:backgroundTint="@color/colorNextButton"
             android:elevation="5dp"
             android:onClick="onLoginClick"
             android:stateListAnimator="@null"
@@ -116,8 +115,7 @@
             android:onClick="onForgotPasswordClick"
             android:padding="@dimen/default_padding"
             android:text="@string/forgot_password"
-            android:textColor="@color/colorNextButton"
-            android:textSize="17sp" />
+            android:textColor="@color/colorNextButton" />
 
         <TextView
             android:id="@+id/tv_sign_up"
@@ -129,8 +127,7 @@
             android:onClick="onSignUpTextViewClick"
             android:padding="@dimen/default_padding"
             android:text="@string/sign_up_message"
-            android:textColor="@color/colorNextButton"
-            android:textSize="17sp" />
+            android:textColor="@color/colorNextButton" />
 
         <ProgressBar
             android:id="@+id/pb_login"

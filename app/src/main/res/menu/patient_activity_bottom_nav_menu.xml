@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_home"
+    <item android:id="@+id/mnu_home"
         android:enabled="true"
         android:icon="@drawable/ic_action_home"
         android:title="@string/home" />
 
-    <item android:id="@+id/menu_search"
+    <item android:id="@+id/mnu_search"
         android:enabled="true"
         android:icon="@drawable/ic_action_search"
         android:title="@string/search" />
 
-    <item android:id="@+id/menu_doctors_report"
+    <item android:id="@+id/mnu_doctors_report"
         android:enabled="true"
         android:icon="@drawable/ic_action_doc_reports"
         android:title="@string/doctors_report" />
 
-    <item android:id="@+id/menu_profile"
+    <item android:id="@+id/mnu_profile"
         android:enabled="true"
         android:icon="@drawable/ic_action_profile"
         android:title="@string/profile" />

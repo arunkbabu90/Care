@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import arunkbabu.care.Constants;
 import arunkbabu.care.R;
 import arunkbabu.care.Utils;
-import arunkbabu.care.activities.DoctorActivity;
 import arunkbabu.care.adapters.SelectedFilesAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,31 +114,31 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         // If the user is a DOCTOR disable the upload buttons to prevent doctor from uploading files
         // Also set the title to uploaded files
         if (Utils.userType == Constants.USER_TYPE_DOCTOR) {
-            DoctorActivity da = (DoctorActivity) getActivity();
-
-            if (da != null) {
-                mTakePhotoButton.setEnabled(false);
-                mChooseFileButton.setEnabled(false);
-                mChooseFileButton.setVisibility(View.GONE);
-                mTakePhotoButton.setVisibility(View.GONE);
-                mBottomGuideline.setGuidelinePercent(100);
-                mTitleTextView.setText(getString(R.string.uploaded_files));
-
-                // Get all the uploaded image paths and convert it to uri. Also get its file name
-                ArrayList<String> paths = da.getUploadedImagePaths();
-                for (int i = 0; i < paths.size(); i++) {
-                    sPathList.add(Uri.parse(paths.get(i)));
-                    sFileNameList.add(getFileName(paths.get(i)));
-                }
-
-                if (sPathList != null && !sPathList.isEmpty()) {
-                    // Load the images only if there is images uploaded. Otherwise don't even think
-                    // about it
-                    loadImageToView(0);
-                } else {
-                    mErrorTextView.setVisibility(View.VISIBLE);
-                }
-            }
+//            DoctorActivity da = (DoctorActivity) getActivity();
+//
+//            if (da != null) {
+//                mTakePhotoButton.setEnabled(false);
+//                mChooseFileButton.setEnabled(false);
+//                mChooseFileButton.setVisibility(View.GONE);
+//                mTakePhotoButton.setVisibility(View.GONE);
+//                mBottomGuideline.setGuidelinePercent(100);
+//                mTitleTextView.setText(getString(R.string.uploaded_files));
+//
+//                // Get all the uploaded image paths and convert it to uri. Also get its file name
+//                ArrayList<String> paths = da.getUploadedImagePaths();
+//                for (int i = 0; i < paths.size(); i++) {
+//                    sPathList.add(Uri.parse(paths.get(i)));
+//                    sFileNameList.add(getFileName(paths.get(i)));
+//                }
+//
+//                if (sPathList != null && !sPathList.isEmpty()) {
+//                    // Load the images only if there is images uploaded. Otherwise don't even think
+//                    // about it
+//                    loadImageToView(0);
+//                } else {
+//                    mErrorTextView.setVisibility(View.VISIBLE);
+//                }
+//            }
         } else {
             mTitleTextView.setText(getString(R.string.attach_photo));
             mChooseFileButton.setOnClickListener(this);
