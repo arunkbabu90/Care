@@ -336,7 +336,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
     private fun loadImageToView(@NonNull imageUri: Uri) {
         mTarget = object : Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                iv_profile_photo.setImageBitmap(bitmap)
+                if (iv_profile_photo != null) iv_profile_photo.setImageBitmap(bitmap)
                 pb_profile_loading.visibility = View.GONE
                 if (mIsUpdatesAvailable && bitmap != null) {
                     uploadImageFile(bitmap)

@@ -36,6 +36,7 @@ public class ReportListAdapter extends FirestoreRecyclerAdapter<DoctorReport, Re
         super(options);
         mNoReportTextView = noReportTextView;
         mReportRecyclerView = reportRecyclerView;
+        onDataChanged();
     }
 
     @Override

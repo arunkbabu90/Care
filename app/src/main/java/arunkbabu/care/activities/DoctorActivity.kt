@@ -26,7 +26,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
-    private var mAccountAlreadyVerified: Boolean = false
+    private var mAccountAlreadyVerified: Boolean = true
     private var mContactNumber: String = ""
     private var mIsLaunched: Boolean = false
     private var mFragId: Int = Constants.NULL_INT

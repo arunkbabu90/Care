@@ -3,7 +3,7 @@
     <string name="err_default">Error! Something went wrong</string>
     <string name="err_internet_default">Error! Please check your internet connection and try again</string>
     <string name="profile">Profile</string>
-    <string name="not_set">Not Selected</string>
+    <string name="not_set">Not Available</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -14,7 +14,7 @@
     <string name="doctors_report">Doctor Reports</string>
     <string name="next">Next</string>
     <string name="creating_report">Creating a Report. Please Wait</string>
-    <string name="request_sent">Request sent to %1$s</string>
+    <string name="request_sent">Report sent to Dr. %1$s</string>
     <string name="err_file_creation">Unable to create File. Please try again</string>
     <string name="err_request_creation_fail">Error Creating Request. Please try again!</string>
     <string name="err_user_not_logged_in">Error: User not logged in!</string>

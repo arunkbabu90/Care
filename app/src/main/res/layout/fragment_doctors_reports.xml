@@ -30,7 +30,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/no_reports_available"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorTextLightGrey"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView

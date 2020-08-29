@@ -9,6 +9,15 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
+    buildTypes {
+        debug {
+            ext.enableCrashlytics = false
+            FirebasePerformance {
+                instrumentationEnabled false
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "arunkbabu.care"
         minSdkVersion 21

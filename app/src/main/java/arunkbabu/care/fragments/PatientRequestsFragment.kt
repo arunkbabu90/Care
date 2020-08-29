@@ -15,22 +15,17 @@ import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.LoginActivity
 import arunkbabu.care.adapters.RequestListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.firebase.ui.firestore.SnapshotParser
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.fragment_patient_requests.*
 
-class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener,
-    FirebaseAuth.AuthStateListener, EventListener<QuerySnapshot> {
+class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener, FirebaseAuth.AuthStateListener {
     private lateinit var mAdapter: RequestListAdapter
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
+    private lateinit var mGetRequestsQuery: Query
     private var mRequestsCollectionPath: String = ""
-    private var mGetRequestsQuery: Query? = null
     private var mIsLaunched = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,16 +33,12 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         return inflater.inflate(R.layout.fragment_patient_requests, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         mDb = FirebaseFirestore.getInstance()
         mAuth = FirebaseAuth.getInstance()
         mAuth.addAuthStateListener(this)
-
-        rv_request_view.setHasFixedSize(false)
-        rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         // Get Request details from database
         val user = mAuth.currentUser
@@ -57,19 +48,13 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
                 .whereEqualTo(Constants.FIELD_IS_A_VALID_REQUEST, true)
                 .orderBy(Constants.FIELD_REQUEST_TIMESTAMP, Query.Direction.ASCENDING)
 
-            val options = FirestoreRecyclerOptions.Builder<Patient?>()
+            val options = FirestoreRecyclerOptions.Builder<Patient>()
                 .setLifecycleOwner(this)
-                .setQuery(mGetRequestsQuery, SnapshotParser { snapshot ->
-                    // Get the id of the document and put it in the Patient POJO
-                    val p = snapshot.toObject(Patient::class.java)
-                    if (p != null) {
-                        p.documentId = snapshot.id
-                    }
-                    return@SnapshotParser
-                })
+                .setQuery(mGetRequestsQuery, Patient::class.java)
                 .build()
             mAdapter = RequestListAdapter(options, tv_no_requests, rv_request_view)
             mAdapter.setClickListener(this)
+            rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_request_view.adapter = mAdapter
         }
     }
@@ -90,7 +75,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         // Get the basic patient request details
         val patientId = patient.patientId
         val reportId = patient.reportId
-        val requestId = patient.documentId
+        val requestId = mAdapter.snapshots.getSnapshot(position).id
         val reportType = patient.reportType
         val docIntent = Intent(context, DoctorActivity::class.java)
         docIntent.putExtra(Constants.PATIENT_ID_KEY, patientId)
@@ -98,15 +83,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         docIntent.putExtra(Constants.PATIENT_REPORT_TYPE_KEY, reportType)
         docIntent.putExtra(Constants.PATIENT_REQUEST_ID_KEY, requestId)
         startActivity(docIntent)
-    }
-
-    /**
-     * Database query result will be available here
-     * @param task Contains the database query result
-     */
-    fun onComplete(task: Task<QuerySnapshot?>) {
-        if (task.isSuccessful) {
-        }
     }
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
@@ -122,6 +98,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
 
     override fun onStart() {
         super.onStart()
-        mGetRequestsQuery?.addSnapshotListener { _, _ -> mAdapter.notifyDataSetChanged() }
+        mGetRequestsQuery.addSnapshotListener { _, _ -> mAdapter.notifyDataSetChanged() }
     }
 }

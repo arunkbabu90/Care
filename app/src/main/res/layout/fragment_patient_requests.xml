@@ -17,8 +17,8 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:text="@string/no_requests_available"
-            android:visibility="gone"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textColor="@color/colorTextLightGrey"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_request_view"

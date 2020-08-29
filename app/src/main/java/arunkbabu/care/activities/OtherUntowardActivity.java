@@ -99,7 +99,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         }
 
         // TODO: Set reporting doctor id here
-        sReportingDoctorId = getString(R.string.saved);
+        sReportingDoctorId = "67mSInWNAbZkw8oDpBS98OOeeEK2";
         // Fetch the name, dp of the doctor from database
         fetchDoctorDetails();
     }
@@ -257,7 +257,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             data.put(Constants.FIELD_PATIENT_ID, userId);
             data.put(Constants.FIELD_IS_A_VALID_REQUEST, true);
             data.put(Constants.FIELD_PATIENT_NAME, sPatientName);
-            data.put(Constants.FIELD_PROFILE_PICTURE, Constants.NULL_DP_PATH);
+            data.put(Constants.FIELD_PROFILE_PICTURE, sPatientDpPath);
             data.put(Constants.FIELD_REPORT_TYPE, Constants.REPORT_TYPE_OTHER);
             data.put(Constants.FIELD_REPORT_ID, reportId);
             data.put(Constants.FIELD_REQUEST_TIMESTAMP, Timestamp.now());

@@ -26,14 +26,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RequestListAdapter extends FirestoreRecyclerAdapter<Patient, RequestListAdapter.RequestViewHolder> {
-
     private ItemClickListener mItemClickListener;
     private TextView mNoRequestTextView;
     private RecyclerView mRequestRecyclerView;
 
     /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.
+     * See {@link FirestoreRecyclerOptions} for configuration options.
      * @param options The FirestoreRecyclerOptions
      * @param noRequestTextView The TextView containing the text "No Requests Available"
      */
@@ -41,6 +40,7 @@ public class RequestListAdapter extends FirestoreRecyclerAdapter<Patient, Reques
         super(options);
         mNoRequestTextView = noRequestTextView;
         mRequestRecyclerView = requestRecyclerView;
+        onDataChanged();
     }
 
     // Create new views (invoked by the layout manager)
