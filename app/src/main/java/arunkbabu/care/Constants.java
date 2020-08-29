@@ -13,6 +13,7 @@ public class Constants {
     public static final String PATIENT_ID_KEY = "key_patient_id";
     public static final String PATIENT_REPORT_ID_KEY = "key_patient_report_id";
     public static final String PATIENT_REQUEST_ID_KEY = "key_patient_request_id";
+    public static final String DOCTOR_NAME_ID_KEY = "key_doctor_name_id";
 
     public static final int REPORT_TYPE_OTHER = 1004;
 

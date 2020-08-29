@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 import arunkbabu.care.R;
+import arunkbabu.care.activities.ViewPatientReportActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,17 +43,15 @@ public class DocPatientsReportFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        DoctorActivity da  = (DoctorActivity) getActivity();
-//        if (da != null) {
-            //TODO: Fill this up
-//            ArrayList<String> arrayList = new ArrayList<>();
-//            arrayList.add("Name: " + DoctorActivity.getPatientName());
-//            arrayList.add("Age: " + DoctorActivity.getPatientAge());
-//            arrayList.add("Past Medications:\n" + DoctorActivity.getPastMedications());
-//            arrayList.add("Description:\n" + DoctorActivity.getReportDescription());
-//
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.item_doc_patients_report, arrayList);
-//            mPatientReportListView.setAdapter(adapter);
-//        }
+        ViewPatientReportActivity vp  = (ViewPatientReportActivity) getActivity();
+        if (vp != null) {
+            ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.add("Name: " + vp.getPatientName());
+            arrayList.add("Age: " + vp.getPatientAge());
+            arrayList.add("Description:\n\n" + vp.getReportDescription());
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.item_doc_patients_report, arrayList);
+            mPatientReportListView.setAdapter(adapter);
+        }
     }
 }

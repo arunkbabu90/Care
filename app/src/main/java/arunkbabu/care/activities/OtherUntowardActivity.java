@@ -271,7 +271,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this,
-                                getString(R.string.err_request_creation_fail), Toast.LENGTH_SHORT).show();
+                                getString(R.string.err_report_creation_fail), Toast.LENGTH_SHORT).show();
                         mNextButton.setEnabled(true);
                         mProgressBar.setVisibility(View.GONE);
                     });

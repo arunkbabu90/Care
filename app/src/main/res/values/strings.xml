@@ -16,7 +16,7 @@
     <string name="creating_report">Creating a Report. Please Wait</string>
     <string name="request_sent">Report sent to Dr. %1$s</string>
     <string name="err_file_creation">Unable to create File. Please try again</string>
-    <string name="err_request_creation_fail">Error Creating Request. Please try again!</string>
+    <string name="err_report_creation_fail">Error Creating Report. Please try again!</string>
     <string name="err_user_not_logged_in">Error: User not logged in!</string>
     <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
     <string name="fetching_data">Fetching data. Please wait…</string>

@@ -53,7 +53,8 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
             val options = FirestoreRecyclerOptions.Builder<DoctorReport>()
                 .setLifecycleOwner(this)
-                .setQuery(mDocReportQuery, DoctorReport::class.java).build()
+                .setQuery(mDocReportQuery, DoctorReport::class.java)
+                .build()
 
             mAdapter = ReportListAdapter(options, rv_doctor_reports, tv_doctor_reports_no_requests)
             mAdapter.setClickListener(this)
@@ -71,6 +72,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
     override fun onStart() {
         super.onStart()
+        mAdapter.startListening()
         mDocReportQuery.addSnapshotListener { _, _ -> mAdapter.notifyDataSetChanged() }
     }
 }

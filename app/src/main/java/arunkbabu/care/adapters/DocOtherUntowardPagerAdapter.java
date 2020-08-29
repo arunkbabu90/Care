@@ -11,13 +11,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import arunkbabu.care.fragments.DocAddMedicineFragment;
 import arunkbabu.care.fragments.DocInstructionFragment;
 import arunkbabu.care.fragments.DocPatientsReportFragment;
-import arunkbabu.care.fragments.PrivateMessagingFragment;
 import arunkbabu.care.fragments.UploadFileFragment;
 
 public class DocOtherUntowardPagerAdapter extends FragmentStatePagerAdapter {
     private Context mContext;
     private Activity mActivity;
-    public static final int NUM_PAGES = 5;
+    public static final int NUM_PAGES = 4;
 
     public DocOtherUntowardPagerAdapter(@NonNull FragmentManager fm, Context context, Activity activity) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -34,10 +33,8 @@ public class DocOtherUntowardPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new UploadFileFragment();
             case 2:
-                return new PrivateMessagingFragment(mActivity);
-            case 3:
                 return new DocAddMedicineFragment();
-            case 4:
+            case 3:
                 return new DocInstructionFragment();
         }
         return null;

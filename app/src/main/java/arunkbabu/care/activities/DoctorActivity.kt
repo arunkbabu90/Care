@@ -31,7 +31,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private var mIsLaunched: Boolean = false
     private var mFragId: Int = Constants.NULL_INT
 
-    var mFullName: String = ""
+    var mDoctorFullName: String = ""
     var mEmail: String = ""
     var mRegisterId: String = ""
     var mSpeciality: String = ""
@@ -132,7 +132,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     if (it.isSuccessful) {
                         val document = it.result
                         if (document != null) {
-                            mFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
+                            mDoctorFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
                             mEmail = user.email ?: ""
                             mContactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
                             mSex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT

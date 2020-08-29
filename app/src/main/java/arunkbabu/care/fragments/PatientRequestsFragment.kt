@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
 import arunkbabu.care.Patient
 import arunkbabu.care.R
 import arunkbabu.care.activities.DoctorActivity
-import arunkbabu.care.activities.LoginActivity
+import arunkbabu.care.activities.ViewPatientReportActivity
 import arunkbabu.care.adapters.RequestListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -20,13 +19,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_patient_requests.*
 
-class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener, FirebaseAuth.AuthStateListener {
+class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener {
     private lateinit var mAdapter: RequestListAdapter
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
     private lateinit var mGetRequestsQuery: Query
-    private var mRequestsCollectionPath: String = ""
     private var mIsLaunched = false
+    private var requestsCollectionPath: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -38,13 +37,12 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
 
         mDb = FirebaseFirestore.getInstance()
         mAuth = FirebaseAuth.getInstance()
-        mAuth.addAuthStateListener(this)
 
         // Get Request details from database
         val user = mAuth.currentUser
         if (user != null) {
-            mRequestsCollectionPath = Constants.COLLECTION_USERS + "/" + user.uid + "/" + Constants.COLLECTION_PATIENT_REQUEST
-            mGetRequestsQuery = mDb.collection(mRequestsCollectionPath)
+            requestsCollectionPath = Constants.COLLECTION_USERS + "/" + user.uid + "/" + Constants.COLLECTION_PATIENT_REQUEST
+            mGetRequestsQuery = mDb.collection(requestsCollectionPath)
                 .whereEqualTo(Constants.FIELD_IS_A_VALID_REQUEST, true)
                 .orderBy(Constants.FIELD_REQUEST_TIMESTAMP, Query.Direction.ASCENDING)
 
@@ -73,27 +71,19 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
      */
     private fun onAcceptButtonClick(patient: Patient, position: Int) {
         // Get the basic patient request details
-        val patientId = patient.patientId
-        val reportId = patient.reportId
-        val requestId = mAdapter.snapshots.getSnapshot(position).id
-        val reportType = patient.reportType
-        val docIntent = Intent(context, DoctorActivity::class.java)
+        val docName: String = (activity as DoctorActivity).mDoctorFullName
+        val patientId: String = patient.patientId
+        val reportId: String = patient.reportId
+        val requestId: String = mAdapter.snapshots.getSnapshot(position).id
+        val reportType: Int = patient.reportType
+
+        val docIntent = Intent(context, ViewPatientReportActivity::class.java)
         docIntent.putExtra(Constants.PATIENT_ID_KEY, patientId)
         docIntent.putExtra(Constants.PATIENT_REPORT_ID_KEY, reportId)
         docIntent.putExtra(Constants.PATIENT_REPORT_TYPE_KEY, reportType)
         docIntent.putExtra(Constants.PATIENT_REQUEST_ID_KEY, requestId)
+        docIntent.putExtra(Constants.DOCTOR_NAME_ID_KEY, docName)
         startActivity(docIntent)
-    }
-
-    override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
-        // User is either signed out or the login credentials no longer exists. So launch the login
-        // activity again for the user to sign-in
-        if (firebaseAuth.currentUser == null && !mIsLaunched) {
-            mIsLaunched = true
-            startActivity(Intent(context, LoginActivity::class.java))
-            Toast.makeText(context, getString(R.string.signed_out), Toast.LENGTH_SHORT).show()
-            activity?.finish()
-        }
     }
 
     override fun onStart() {

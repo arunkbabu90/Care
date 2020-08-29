@@ -86,7 +86,7 @@ public class ReportListAdapter extends FirestoreRecyclerAdapter<DoctorReport, Re
             String properDate = dateFormat.format(timeStamp);
             String properTime = timeFormat.format(timeStamp);
 
-            mDoctorNameTextView.setText(report.getDocName());
+            mDoctorNameTextView.setText(report.getFull_name());
             mReportTypeTextView.setText(String.format("Report on %s you sent on %s %S", reportType, properDate, properTime));
 
             mDocReportLayout.setOnClickListener(v -> {
