@@ -1,6 +1,8 @@
 package arunkbabu.care.activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,23 +22,33 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_doctor.*
+import kotlinx.android.synthetic.main.fragment_patient_profile.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     BottomNavigationView.OnNavigationItemSelectedListener {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
-    private var mAccountAlreadyVerified: Boolean = true
-    private var mContactNumber: String = ""
-    private var mIsLaunched: Boolean = false
-    private var mFragId: Int = Constants.NULL_INT
+    private lateinit var mCloudStore: FirebaseStorage
+    private var mAccountAlreadyVerified = true
+    private var mIsLaunched = false
+    private var mFragId = Constants.NULL_INT
 
-    var mDoctorFullName: String = ""
-    var mEmail: String = ""
-    var mRegisterId: String = ""
-    var mSpeciality: String = ""
-    var mQualifications: String = ""
-    var mSex: Int = Constants.NULL_INT
+    var mDoctorDpPath = ""
+    var mDoctorFullName = ""
+    var mContactNumber = ""
+    var mEmail = ""
+    var mRegisterId = ""
+    var mSpeciality = ""
+    var mQualifications = ""
+    var mSex = Constants.NULL_INT
+    var mFellowships = ""
+    var mExperience = ""
+    var mWorkingHospitalName = ""
 
     companion object {
         private const val PATIENT_REQUESTS_FRAGMENT_ID = 8001
@@ -53,6 +65,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         mAuth = FirebaseAuth.getInstance()
         mDb = FirebaseFirestore.getInstance()
+        mCloudStore = FirebaseStorage.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
         mAuth.addAuthStateListener(this)
 
@@ -133,12 +146,16 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         val document = it.result
                         if (document != null) {
                             mDoctorFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
+                            mDoctorDpPath= document.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
                             mEmail = user.email ?: ""
                             mContactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
                             mSex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT
                             mRegisterId = document.getString(Constants.FIELD_REGISTRATION_NO) ?: ""
                             mQualifications = document.getString(Constants.FIELD_DOCTOR_QUALIFICATIONS) ?: ""
                             mSpeciality = document.getString(Constants.FIELD_DOCTOR_SPECIALITY) ?: ""
+                            mFellowships = document.getString(Constants.FIELD_DOCTOR_FELLOWSHIPS) ?: ""
+                            mExperience = document.getString(Constants.FIELD_DOCTOR_EXPERIENCE) ?: ""
+                            mWorkingHospitalName = document.getString(Constants.FIELD_WORKING_HOSPITAL_NAME) ?: ""
                         } else {
                             Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
                         }
@@ -147,6 +164,53 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     }
                 }
         }
+    }
+
+    /**
+     * Upload the image files selected
+     * @param bitmap The image to upload
+     */
+    fun uploadImageFile(bitmap: Bitmap) {
+        pb_profile_dp_loading.visibility = View.VISIBLE
+
+        // Convert the image bitmap to InputStream
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
+        val bs = ByteArrayInputStream(bos.toByteArray())
+        val user = mAuth.currentUser
+        if (user != null) {
+            // Upload the image file
+            val uploadPath = user.uid + "/" + Constants.DIRECTORY_PROFILE_PICTURE + "/" + Constants.PROFILE_PICTURE_FILE_NAME
+            val storageReference = mCloudStore.getReference(uploadPath)
+            storageReference.putStream(bs)
+                .continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+                    if (!task.isSuccessful) {
+                        // Upload failed
+                        Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
+                        return@continueWithTask null
+                    }
+                    storageReference.downloadUrl
+                }
+                .addOnCompleteListener { task: Task<Uri?> ->
+                    if (task.isSuccessful && task.result != null) {
+                        // Upload success; push the download URL to the database, also update the mDoctorDpPath
+                        val imagePath = task.result.toString()
+                        mDoctorDpPath = imagePath
+                        mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+                            .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
+                    }
+                    pb_profile_dp_loading?.visibility = View.GONE
+                }
+        }
+        DoctorProfileFragment.mIsUpdatesAvailable = false
     }
 
     /**
@@ -254,6 +318,14 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     pushVerificationStatusFlag(isVerified)
                 }
         }
+    }
+
+    /**
+     * SignOut of your account
+     */
+    fun signOut() {
+        mAuth.signOut()
+        finish()
     }
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {

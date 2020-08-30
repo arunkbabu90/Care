@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string-array name="specialities">
+        <item>General Medicine</item>
+        <item>Oncologist</item>
+        <item>Pediatrician</item>
+        <item>Endocrinologist</item>
+        <item>Hepatologist</item>
+        <item>ENT</item>
+        <item>Urologist</item>
+        <item>Nephrologist</item>
+        <item>Neurologist</item>
+        <item>Cardiologist</item>
+        <item>Pulmonologist</item>
+        <item>Psychologist</item>
+        <item>Ophthalmologist</item>
+        <item>Dentist</item>
+        <item>Rheumatologist</item>
+    </string-array>
 </resources>

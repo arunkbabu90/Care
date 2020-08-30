@@ -1,7 +1,6 @@
 package arunkbabu.care.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -58,16 +57,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: In login activity even if there is internet but with slow connectivity, and the
-        //  and the login fails, it shows Incorrect username and password instead of connection
-        //  problems
-
         // Get instances
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
 
         mUser = mAuth.getCurrentUser();
-        if (mUser != null && isNetworkConnected()) {
+        if (mUser != null && Utils.isNetworkConnected(this)) {
             // Login the user, if already logged in
             mUser.reload()
                     .addOnSuccessListener(aVoid -> {
@@ -81,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                                     .get().addOnCompleteListener(LoginActivity.this);
                         }
                     });
-        } else if (mUser != null && !isNetworkConnected()) {
+        } else if (mUser != null && !Utils.isNetworkConnected(this)) {
             // If the user is already logged in even though there is no network, load the profile
             // from cache
             mDb.collection(Constants.COLLECTION_USERS).document(mUser.getUid()).get()
@@ -99,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
 
             // Register a callback to track internet connectivity changes
             registerNetworkChangeCallback();
-            if (!isNetworkConnected()) {
+            if (!Utils.isNetworkConnected(this)) {
                 // Network NOT Connected
                 mErrorTextView.setText(getString(R.string.err_no_internet));
                 mErrorTextView.setVisibility(View.VISIBLE);
@@ -251,19 +246,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
         }
         // Password is correct
         return true;
-    }
-
-    /**
-     * Check for internet availability
-     * @return True: if internet is available; False otherwise
-     */
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (cm != null)
-            return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-        else
-            return false;
     }
 
     /**

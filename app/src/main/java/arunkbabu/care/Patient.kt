@@ -6,5 +6,5 @@ package arunkbabu.care
 data class Patient(val patientId: String = "null",
                    val reportId: String = "null",
                    val patientName: String = "null",
-                   val profilePicture: String = Constants.NULL_DP_PATH,
+                   val profilePicture: String = "",
                    val reportType: Int = Constants.NULL_INT)

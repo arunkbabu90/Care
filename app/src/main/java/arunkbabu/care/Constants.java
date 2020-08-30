@@ -5,8 +5,6 @@ package arunkbabu.care;
  */
 public class Constants {
     public static final int NULL_INT = -1;
-    public static final float NULL_FLOAT = -1f;
-    public static final String NULL_DP_PATH = "/dp";
 
     // Request Activity
     public static final String PATIENT_REPORT_TYPE_KEY = "key_patient_report_type";
@@ -49,10 +47,12 @@ public class Constants {
 
     public static final String FIELD_DOCTOR_MEDICINES = "medicines";
     public static final String FIELD_DOCTOR_MEDICATION_INSTRUCTIONS = "medication_instructions";
-    public static final String FIELD_DOCTOR_SPECIALITY = "doc_speciality";
-    public static final String FIELD_DOCTOR_EXPERIENCE = "doc_experience";
-    public static final String FIELD_DOCTOR_QUALIFICATIONS = "doc_qualifications";
+    public static final String FIELD_DOCTOR_SPECIALITY = "speciality";
+    public static final String FIELD_DOCTOR_EXPERIENCE = "experience";
+    public static final String FIELD_DOCTOR_QUALIFICATIONS = "qualification";
     public static final String FIELD_REGISTRATION_NO = "registration_no";
+    public static final String FIELD_DOCTOR_FELLOWSHIPS = "fellowships";
+    public static final String FIELD_WORKING_HOSPITAL_NAME = "hospital";
 
     // Cloud Firestore Related
     public static final String DIRECTORY_PROFILE_PICTURE = "/ProfilePictures/";

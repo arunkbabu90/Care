@@ -25,6 +25,7 @@ import arunkbabu.care.Utils;
 import arunkbabu.care.dialogs.ErrorDialog;
 import arunkbabu.care.dialogs.ProcessingDialog;
 import arunkbabu.care.fragments.signup.SignUpDoctorFragment;
+import arunkbabu.care.fragments.signup.SignUpDoctorSpecialityFragment;
 import arunkbabu.care.fragments.signup.SignUpMainFragment;
 import arunkbabu.care.fragments.signup.SignUpPatientFragment;
 import butterknife.BindView;
@@ -37,7 +38,8 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDb;
     private SignUpPatientFragment mPatientFrag;
-    private SignUpDoctorFragment mDoctorFrag;
+    private SignUpDoctorFragment mDoctorDetailsFrag;
+    private SignUpDoctorSpecialityFragment mDoctorSpecialityFrag;
     private SignUpMainFragment mMainFrag;
     private ProcessingDialog mProcessingDialog;
 
@@ -47,6 +49,8 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     private String mPassword;
     private String mContactNumber;
     private String mDocRegId;
+    private String mQualifications;
+    private String mSpeciality;
     private int mUserType;
 
     /**
@@ -67,7 +71,11 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
 
         mAuth = FirebaseAuth.getInstance();
         mDb = FirebaseFirestore.getInstance();
+
         mMainFrag = new SignUpMainFragment();
+        mPatientFrag = new SignUpPatientFragment();
+        mDoctorDetailsFrag = new SignUpDoctorFragment();
+        mDoctorSpecialityFrag = new SignUpDoctorSpecialityFragment();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.sign_up_fragment_container, mMainFrag)
@@ -84,17 +92,21 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
                 Toast.makeText(this, R.string.err_pls_fix_all_errors, Toast.LENGTH_SHORT).show();
                 return;
             }
-        } else if (mDoctorFrag != null) {
-            if (!mDoctorFrag.checkAllFields()) {
+        } else if (mDoctorDetailsFrag != null) {
+            if (!mDoctorDetailsFrag.checkAllFields()) {
                 // Field(s) are empty
                 Toast.makeText(this, R.string.err_pls_fix_all_errors, Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
+        if ((mDoctorSpecialityFrag != null && mSpeciality.isEmpty()) || (mDoctorSpecialityFrag != null && mQualifications.isEmpty())) {
+            Toast.makeText(this, R.string.err_some_field_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mIsSigningUp = true;
         mProcessingDialog = showProcessingDialog(getString(R.string.creating_profile), "");
-
 
         if (mPatientFrag != null && SignUpPatientFragment.signUpPatientFragActive) {
             // Patient SignUp
@@ -103,16 +115,15 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
             mPassword = mPatientFrag.getPassword();
             mContactNumber = mPatientFrag.getMobileNumber();
             mUserType = Constants.USER_TYPE_PATIENT;
-        } else if (mDoctorFrag != null && SignUpDoctorFragment.signUpDoctorFragActive) {
+        } else if (mDoctorDetailsFrag != null && SignUpDoctorFragment.signUpDoctorFragActive) {
             // Doctor SignUp
-            mFullName = mDoctorFrag.getFullName();
-            mEmail = mDoctorFrag.getEmail();
-            mPassword = mDoctorFrag.getPassword();
-            mContactNumber = mDoctorFrag.getMobileNumber();
-            mDocRegId = mDoctorFrag.getRegisterId();
+            mFullName = mDoctorDetailsFrag.getFullName();
+            mEmail = mDoctorDetailsFrag.getEmail();
+            mPassword = mDoctorDetailsFrag.getPassword();
+            mContactNumber = mDoctorDetailsFrag.getMobileNumber();
+            mDocRegId = mDoctorDetailsFrag.getRegisterId();
             mUserType = Constants.USER_TYPE_DOCTOR;
         }
-
 
         mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
                 .addOnSuccessListener(authResult -> {
@@ -154,8 +165,11 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
         ud.put(Constants.FIELD_USER_TYPE, mUserType);
         ud.put(Constants.FIELD_ACCOUNT_VERIFIED, false); // Initialize Verification status to false always
         // If the user is a doctor then upload his/her registered id too
-        if (mUserType == Constants.USER_TYPE_DOCTOR)
+        if (mUserType == Constants.USER_TYPE_DOCTOR) {
             ud.put(Constants.FIELD_DOC_REG_ID, mDocRegId);
+            ud.put(Constants.FIELD_DOCTOR_SPECIALITY, mSpeciality);
+            ud.put(Constants.FIELD_DOCTOR_QUALIFICATIONS, mQualifications);
+        }
 
         mDb.collection(Constants.COLLECTION_USERS)
                 .document(uid).set(ud)
@@ -172,9 +186,9 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
                         i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mPatientFrag.getMobileNumber());
                         i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mPatientFrag.getPassword());
                     } else if (mUserType == Constants.USER_TYPE_DOCTOR){
-                        i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, mDoctorFrag.getEmail());
-                        i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mDoctorFrag.getMobileNumber());
-                        i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mDoctorFrag.getPassword());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, mDoctorDetailsFrag.getEmail());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mDoctorDetailsFrag.getMobileNumber());
+                        i.putExtra(AccountVerificationActivity.KEY_USER_PASSWORD, mDoctorDetailsFrag.getPassword());
                     }
                     i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_LAUNCH_DASHBOARD);
                     startActivity(i);
@@ -203,7 +217,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
         if (mUserType == Constants.USER_TYPE_PATIENT) {
             fullName = mPatientFrag.getFullName();
         } else if (mUserType == Constants.USER_TYPE_DOCTOR){
-            fullName = mDoctorFrag.getFullName();
+            fullName = mDoctorDetailsFrag.getFullName();
         }
 
         if (!fullName.equals("")) {
@@ -328,28 +342,44 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
      * @param view The view that is clicked
      */
     public void onNextClick(View view) {
-        if (SignUpMainFragment.signUpMainFragActive) {
-            // Next Button Behaviour
-            mNextButton.setText(getString(R.string.create));
-            // Load the next page
-            switch (mMainFrag.getSelectedUserType()) {
-                case Constants.USER_TYPE_PATIENT:
-                    mPatientFrag = new SignUpPatientFragment();
+        // Load the next page
+        switch (mMainFrag.getSelectedUserType()) {
+            case Constants.USER_TYPE_PATIENT:
+                mDoctorSpecialityFrag = null;
+                mDoctorDetailsFrag = null;
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.sign_up_fragment_container, mPatientFrag)
+                        .commit();
+                // Next Button Behaviour
+                mNextButton.setText(getString(R.string.create));
+                break;
+            case Constants.USER_TYPE_DOCTOR:
+                // Navigate to the Appropriate page when Next is pressed or Create account if on last page
+                mPatientFrag = null;
+                Fragment frag = null;
+                if (SignUpMainFragment.signUpMainFragActive) {
+                    // Goto Next page: DoctorSpecialitySelection
+                    frag = mDoctorSpecialityFrag;
+                } else if (SignUpDoctorSpecialityFragment.signUpSpecialityFragActive) {
+                    // Goto Next page: DoctorDetailsEntry
+                    if (mDoctorSpecialityFrag.checkAllFields()) {
+                        // All fields filled so cache it in here & Go to Next Page
+                        mSpeciality = mDoctorSpecialityFrag.getSpeciality();
+                        mQualifications = mDoctorSpecialityFrag.getQualifications();
+                        frag = mDoctorDetailsFrag;
+                        // Next Button Behaviour
+                        mNextButton.setText(getString(R.string.create));
+                    }
+                } else {
+                    // On Last page so, Create Account
+                    performSignUp();
+                }
+                if (frag != null) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.sign_up_fragment_container, mPatientFrag)
+                            .replace(R.id.sign_up_fragment_container, frag)
                             .commit();
-                    break;
-                    case Constants.USER_TYPE_DOCTOR:
-                        mDoctorFrag = new SignUpDoctorFragment();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.sign_up_fragment_container, mDoctorFrag)
-                                .commit();
-                        break;
-
-            }
-        } else {
-            // Create Button Behaviour
-            performSignUp();
+                }
+                break;
         }
     }
 }

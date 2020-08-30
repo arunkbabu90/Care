@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -36,21 +37,10 @@ public class Utils {
      */
     public static int userType;
 
-
-    /**
-     * App lvl variable used to indicate that the User is currently in VerificationModeSelectionFragment
-     */
-    public static boolean inVerificationModeSelectionFragment;
-
     /**
      * App lvl variable used to indicate that the User is currently in VerificationEmailFragment
      */
     public static boolean inVerificationEmailFragment;
-
-    /**
-     * App lvl variable used to indicate that the User is currently in VerificationPhoneFragment
-     */
-    public static boolean inVerificationPhoneFragment;
 
     /**
      * Checks whether the provided email is valid
@@ -125,6 +115,24 @@ public class Utils {
         return isDeletionSuccess;
     }
 
+    /**
+     * Converts the sex value to corresponding human readable String (Ex. Male, Female)
+     * @param sexValue The sex value
+     * @return String  Sex string like Male, Female...
+     */
+    public static String toSexString(int sexValue) {
+        String sex;
+        switch (sexValue) {
+            case Constants.SEX_MALE:
+                sex = "Male";
+                break;
+            case Constants.SEX_FEMALE:
+                sex = "Female";
+            default:
+                sex = "null";
+        }
+        return sex;
+    }
 
     /**
      * Converts the report type integer to corresponding human readable String
@@ -242,29 +250,6 @@ public class Utils {
 
         if (inputMethodManager != null)
             inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-    }
-
-    /**
-     * Converts the given temperature to fahrenheit or celsius
-     * @param temperature The temperature to be converted
-     * @param toCelsius Whether the temperature is to be converted to Celsius scale; will be
-     *                  converted to Fahrenheit otherwise
-     * @return The temperature in designated scale
-     */
-    public static int convertTemperature(float temperature, boolean toCelsius) {
-        return toCelsius ? Math.round(((temperature - 32)*5/9)) : Math.round(((temperature * 9/5) + 32));
-    }
-
-    /**
-     * Returns the appropriate day string based on day count in a grammatically correct
-     * syntax (Ex: 1 day, 2 days,...)
-     * @param dayCount The count of the day; used to determine which day will be used
-     * @param c The application context
-     * @return The appropriate day string
-     */
-    public static String getAppropriateDayString(long dayCount, Context c) {
-        // If the day count is less-than 2 then change the text "Days" to "Day"
-        return (dayCount < 2) ? c.getString(R.string.day) : c.getString(R.string.days);
     }
 
     /**
@@ -493,5 +478,18 @@ public class Utils {
         ErrorDialog dialog = new ErrorDialog(activity, message, positiveButtonLabel, negativeButtonLabel);
         dialog.show(ft, "dialog");
         return dialog;
+    }
+
+    /**
+     * Check for internet availability
+     * @return True: if internet is available; False otherwise
+     */
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm != null)
+            return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        else
+            return false;
     }
 }

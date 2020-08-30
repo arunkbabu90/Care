@@ -68,7 +68,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
     private var isViewsLoaded: Boolean = false
 
     companion object {
-        const val REQUEST_CODE_PICK_IMAGE = 10000
+        private const val REQUEST_CODE_PICK_IMAGE = 10000
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -204,7 +204,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
      * Call this method only after [.fetchData] has finished fetching data from database
      */
     private fun populateDataToViews() {
-        if (mFullName.isNullOrEmpty() || mEmail.isNullOrEmpty() || mContactNumber.isNullOrEmpty()) {
+        if (mFullName.isNullOrEmpty() || mEmail.isEmpty() || mContactNumber.isNullOrEmpty()) {
             fetchData()
             return
         }
@@ -337,18 +337,18 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         mTarget = object : Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
                 if (iv_profile_photo != null) iv_profile_photo.setImageBitmap(bitmap)
-                pb_profile_loading.visibility = View.GONE
+                pb_profile_dp_loading.visibility = View.GONE
                 if (mIsUpdatesAvailable && bitmap != null) {
                     uploadImageFile(bitmap)
                 }
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                pb_profile_loading.visibility = View.GONE
+                pb_profile_dp_loading.visibility = View.GONE
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                pb_profile_loading.visibility = View.VISIBLE
+                pb_profile_dp_loading.visibility = View.VISIBLE
             }
         }
         Picasso.get().load(imageUri).resize(960,0).into(mTarget as Target)
@@ -359,7 +359,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
      * @param bitmap The image to upload
      */
     private fun uploadImageFile(bitmap: Bitmap) {
-        pb_profile_loading.visibility = View.VISIBLE
+        pb_profile_dp_loading.visibility = View.VISIBLE
 
         // Convert the image bitmap to InputStream
         val bos = ByteArrayOutputStream()
@@ -390,7 +390,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                         Toast.makeText(context,
                             getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
                     }
-                    pb_profile_loading?.visibility = View.GONE
+                    pb_profile_dp_loading?.visibility = View.GONE
                 }
         }
         mIsUpdatesAvailable = false
@@ -467,7 +467,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             val uri = data?.data
             if (uri != null && isViewsLoaded) {
-                loadImageToView(uri)
+                loadImageToView(imageUri = uri)
                 mIsUpdatesAvailable = true
             }
         }

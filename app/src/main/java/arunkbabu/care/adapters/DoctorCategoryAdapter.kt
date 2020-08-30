@@ -33,11 +33,13 @@ class DoctorCategoryAdapter(private val specialities: ArrayList<Speciality>) : R
 
         fun bind(speciality: Speciality) {
             mSpeciality = speciality
-            (itemView as MaterialCardView).setCardBackgroundColor(ContextCompat.getColor(itemView.context, speciality.backgroundColor))
-            itemView.category_image_view.setImageFromResource(speciality.imageResource)
-            itemView.category_title_text_view.text = speciality.title
-            itemView.category_description_text_view.text = speciality.description
-            itemView.category_image_view.setIconTint(speciality.backgroundColor)
+            if (mSpeciality != null) {
+                (itemView as MaterialCardView).setCardBackgroundColor(ContextCompat.getColor(itemView.context, speciality.backgroundColor))
+                itemView.category_image_view.setImageFromResource(speciality.imageResource)
+                itemView.category_title_text_view.text = speciality.title
+                itemView.category_description_text_view.text = speciality.description
+                itemView.category_image_view.setIconTint(speciality.backgroundColor)
+            }
         }
 
         /**

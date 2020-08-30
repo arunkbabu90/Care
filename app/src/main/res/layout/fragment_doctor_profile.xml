@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.DoctorProfileFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Doctor Profile" />
+    <arunkbabu.care.views.CircularImageView
+        android:id="@+id/iv_doc_profile_photo"
+        android:layout_width="@dimen/dp_image_view_size_large"
+        android:layout_height="@dimen/dp_image_view_size_large"
+        android:layout_margin="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:src="@drawable/default_dp" />
 
-</FrameLayout>
+    <ProgressBar
+        android:id="@+id/pb_doc_profile_dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_doc_profile_photo"
+        app:layout_constraintEnd_toEndOf="@id/iv_doc_profile_photo"
+        app:layout_constraintStart_toStartOf="@id/iv_doc_profile_photo"
+        app:layout_constraintTop_toTopOf="@id/iv_doc_profile_photo" />
+
+    <TextView
+        android:id="@+id/tv_doc_profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        tools:text="Dr. Aaron George"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_doc_profile_photo" />
+
+    <TextView
+        android:id="@+id/tv_doc_profile_speciality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        tools:text="Cardiologist"
+        android:textColor="@color/colorTextLightGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_doc_profile_name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_doc_profile_err"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/err_load_failed_default"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/colorTextRed"
+        app:layout_constraintBottom_toBottomOf="@id/tv_doc_profile_speciality"
+        app:layout_constraintEnd_toEndOf="@id/rv_doc_profile"
+        app:layout_constraintStart_toStartOf="@id/rv_doc_profile"
+        app:layout_constraintTop_toBottomOf="@id/rv_doc_profile" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_doc_profile"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/default_margin"
+        app:layout_constraintBottom_toTopOf="@id/btn_doc_sign_out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_doc_profile_speciality" />
+
+    <ProgressBar
+        android:id="@+id/pb_doc_profile_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rv_doc_profile"
+        app:layout_constraintEnd_toEndOf="@id/rv_doc_profile"
+        app:layout_constraintStart_toStartOf="@id/rv_doc_profile"
+        app:layout_constraintTop_toTopOf="@id/rv_doc_profile" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_doc_sign_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
+        android:backgroundTint="@color/colorSignOutButton"
+        android:text="@string/sign_out"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

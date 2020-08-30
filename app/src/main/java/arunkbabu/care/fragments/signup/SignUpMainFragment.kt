@@ -41,8 +41,18 @@ class SignUpMainFragment : Fragment() {
         super.onDestroyView()
         signUpMainFragActive = false
     }
+
     /**
      * Returns the user type currently selected by user
      */
-    fun getSelectedUserType(): Int = if (rb_patient.isChecked) Constants.USER_TYPE_PATIENT else Constants.USER_TYPE_DOCTOR
+    fun getSelectedUserType(): Int {
+        val userType = Constants.NULL_INT
+        if (rb_patient != null) {
+            if (rb_patient.isChecked)
+                Constants.USER_TYPE_PATIENT
+            else
+                Constants.USER_TYPE_DOCTOR
+        }
+        return userType
+    }
 }
