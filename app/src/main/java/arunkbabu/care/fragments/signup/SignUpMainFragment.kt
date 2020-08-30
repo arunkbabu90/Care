@@ -18,6 +18,7 @@ class SignUpMainFragment : Fragment() {
         @JvmField
         var signUpMainFragActive = false
     }
+    private var mUserType = Constants.NULL_INT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,10 @@ class SignUpMainFragment : Fragment() {
         signUpMainFragActive = true
 
         rb_patient.isChecked = true
+        mUserType = Constants.USER_TYPE_PATIENT
+        rb_patient.setOnCheckedChangeListener { _, isChecked ->
+            mUserType = if (isChecked) Constants.USER_TYPE_PATIENT else Constants.USER_TYPE_DOCTOR
+        }
     }
 
     override fun onDestroyView() {
@@ -45,14 +50,5 @@ class SignUpMainFragment : Fragment() {
     /**
      * Returns the user type currently selected by user
      */
-    fun getSelectedUserType(): Int {
-        val userType = Constants.NULL_INT
-        if (rb_patient != null) {
-            if (rb_patient.isChecked)
-                Constants.USER_TYPE_PATIENT
-            else
-                Constants.USER_TYPE_DOCTOR
-        }
-        return userType
-    }
+    fun getSelectedUserType(): Int = mUserType
 }

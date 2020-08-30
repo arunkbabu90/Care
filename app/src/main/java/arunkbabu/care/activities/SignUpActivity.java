@@ -343,8 +343,15 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
      */
     public void onNextClick(View view) {
         // Load the next page
-        switch (mMainFrag.getSelectedUserType()) {
+        if (SignUpMainFragment.signUpMainFragActive) {
+            mUserType = mMainFrag.getSelectedUserType();
+        }
+        switch (mUserType) {
             case Constants.USER_TYPE_PATIENT:
+                if (mNextButton.getText().equals("Create")) {
+                    // Create button behaviour
+                    performSignUp();
+                }
                 mDoctorSpecialityFrag = null;
                 mDoctorDetailsFrag = null;
                 getSupportFragmentManager().beginTransaction()
@@ -371,7 +378,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
                         mNextButton.setText(getString(R.string.create));
                     }
                 } else {
-                    // On Last page so, Create Account
+                    // Create button behaviour
                     performSignUp();
                 }
                 if (frag != null) {
