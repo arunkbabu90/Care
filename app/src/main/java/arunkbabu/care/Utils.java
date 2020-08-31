@@ -129,7 +129,7 @@ public class Utils {
             case Constants.SEX_FEMALE:
                 sex = "Female";
             default:
-                sex = "null";
+                sex = "Not Provided";
         }
         return sex;
     }

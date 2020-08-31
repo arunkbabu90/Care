@@ -13,7 +13,7 @@ import arunkbabu.care.R
 import arunkbabu.care.Speciality
 import arunkbabu.care.activities.SearchResultsActivity
 import arunkbabu.care.adapters.DoctorCategoryAdapter
-import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_doctor_search_category.*
 
 /**
@@ -26,8 +26,8 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialFadeThrough()
-        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,8 +40,8 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
 
         mSpecialities.add(Speciality(Constants.SPECIALITY_CARDIOLOGIST, R.drawable.ic_heart, getString(R.string.cardiologist), getString(R.string.cardiologist_desc), R.color.colorCatRed))
         mSpecialities.add(Speciality(Constants.SPECIALITY_PEDIATRICIAN, R.drawable.ic_pediatrician, getString(R.string.pediatrician), getString(R.string.pediatrician_desc), R.color.colorCatBlue))
-        mSpecialities.add(Speciality(Constants.SPECIALITY_GENERAL, R.drawable.ic_heart, getString(R.string.general), getString(R.string.general_desc), R.color.colorCatGreen))
-        mSpecialities.add(Speciality(Constants.SPECIALITY_ONCOLOGIST, R.drawable.ic_heart, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
+        mSpecialities.add(Speciality(Constants.SPECIALITY_GENERAL, R.drawable.ic_general_medicine, getString(R.string.general), getString(R.string.general_desc), R.color.colorGreen))
+        mSpecialities.add(Speciality(Constants.SPECIALITY_ONCOLOGIST, R.drawable.ic_cancer, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
 
         mAdapter = DoctorCategoryAdapter(mSpecialities)
         mAdapter.setOnClickListener(this)

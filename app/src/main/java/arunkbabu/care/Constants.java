@@ -50,7 +50,6 @@ public class Constants {
     public static final String FIELD_DOCTOR_SPECIALITY = "speciality";
     public static final String FIELD_DOCTOR_EXPERIENCE = "experience";
     public static final String FIELD_DOCTOR_QUALIFICATIONS = "qualification";
-    public static final String FIELD_REGISTRATION_NO = "registration_no";
     public static final String FIELD_DOCTOR_FELLOWSHIPS = "fellowships";
     public static final String FIELD_WORKING_HOSPITAL_NAME = "hospital";
 

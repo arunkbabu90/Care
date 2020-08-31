@@ -4,12 +4,9 @@
     android:id="@+id/tv_item_doc_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:textColor="@color/colorTextGrey"
+    android:textColor="@color/colorTextLightGrey"
     tools:text="This is the text"
-    android:textSize="16sp"
-    android:paddingStart="34dp"
+    android:paddingStart="@dimen/default_padding"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingBottom="@dimen/default_padding"
-    android:paddingTop="@dimen/default_padding"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall" />
+    android:paddingBottom="@dimen/small_padding"
+    android:paddingTop="@dimen/small_padding"/>

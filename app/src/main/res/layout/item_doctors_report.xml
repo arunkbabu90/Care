@@ -36,6 +36,6 @@
         android:layout_height="@dimen/list_item_line_separator_height"
         android:background="@color/colorTextGrey"
         android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginEnd="@dimen/default_margin"/>
+        android:layout_marginEnd="@dimen/medium_margin"/>
 
 </LinearLayout>

@@ -5,57 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.PatientProfileFragment">
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <arunkbabu.care.views.CircularImageView
+                android:id="@+id/iv_profile_photo"
+                android:layout_width="@dimen/dp_image_view_size_large"
+                android:layout_height="@dimen/dp_image_view_size_large"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/large_margin"
+                app:src="@drawable/default_dp" />
+
+            <ProgressBar
+                android:id="@+id/pb_profile_dp_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:translationZ="2dp" />
+        </FrameLayout>
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_profile_heading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/default_padding"
-            android:text="@string/profile"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <arunkbabu.care.views.CircularImageView
-            android:id="@+id/iv_profile_photo"
-            android:layout_width="@dimen/dp_image_view_size_large"
-            android:layout_height="@dimen/dp_image_view_size_large"
-            android:layout_margin="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_profile_heading"
-            app:src="@drawable/default_dp" />
-
-        <ProgressBar
-            android:id="@+id/pb_profile_dp_loading"
+            android:id="@+id/tv_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationZ="2dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_profile_photo"
-            app:layout_constraintEnd_toEndOf="@id/iv_profile_photo"
-            app:layout_constraintStart_toStartOf="@id/iv_profile_photo"
-            app:layout_constraintTop_toTopOf="@id/iv_profile_photo" />
-
-        <!-- Full Name -->
-        <arunkbabu.care.views.TitleDetailCardView
-            android:id="@+id/pcv_profile_full_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:layout_marginBottom="@dimen/default_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_profile_photo"
-            app:topText="@string/full_name"
-            tools:bottomText="Arun" />
+            android:fontFamily="@font/muli_bold"
+            android:layout_marginBottom="@dimen/large_margin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_gravity="center"
+            tools:text="Arun K Babu"/>
 
         <!-- Email -->
         <arunkbabu.care.views.TitleDetailCardView
@@ -67,9 +51,6 @@
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
             app:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_full_name"
             app:topText="@string/prompt_email"
             tools:bottomText="arunkbabu90@gmail.com" />
 
@@ -82,12 +63,8 @@
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_email"
             app:topText="@string/mobile_number"
             tools:bottomText="+919539439554" />
-
 
         <!-- Date of Birth-->
         <arunkbabu.care.views.TitleDetailCardView
@@ -98,9 +75,6 @@
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_contact_no"
             app:topText="@string/date_of_birth"
             tools:bottomText="19/06/1997" />
 
@@ -111,9 +85,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             app:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_dob"
             app:topText="@string/age"
             tools:bottomText="23" />
 
@@ -124,9 +95,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             app:headingText="@string/sex"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_age"
             app:radio1Text="@string/male"
             app:radio2Text="@string/female" />
 
@@ -136,9 +104,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rcv_profile_sex"
             app:topText="@string/height_desc"
             tools:bottomText="160" />
 
@@ -148,9 +113,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_height"
             app:topText="@string/weight_desc"
             tools:bottomText="65" />
 
@@ -161,24 +123,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             app:editable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_weight"
             app:topText="@string/bmi"
             tools:bottomText="65" />
 
+        <!-- Sign Out -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_profile_sign_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="30dp"
+            android:layout_gravity="center"
             android:text="@string/sign_out"
-            android:backgroundTint="@color/colorSignOutButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pcv_profile_bmi" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:backgroundTint="@color/colorSignOutButton" />
+    </LinearLayout>
 </ScrollView>

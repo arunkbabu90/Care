@@ -4,6 +4,7 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="medium_margin">26dp</dimen>
     <dimen name="large_margin">30dp</dimen>
+    <dimen name="huge_margin">50dp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="default_padding">16dp</dimen>
     <dimen name="medium_padding">26dp</dimen>
@@ -18,7 +19,7 @@
     <dimen name="button_padding_vertical">4dp</dimen>
     <dimen name="button_padding_horizontal">40dp</dimen>
 
-    <dimen name="pain_progress_circle_size">30dp</dimen>
+    <dimen name="small_progress_circle_size">30dp</dimen>
 
     <dimen name="list_item_line_separator_height">1dp</dimen>
 
@@ -29,6 +30,7 @@
     <dimen name="title_padding">36dp</dimen>
 
     <dimen name="dp_image_view_size_medium">60dp</dimen>
+    <dimen name="dp_image_view_size_big">120dp</dimen>
     <dimen name="dp_image_view_size_large">170dp</dimen>
     <dimen name="doc_category_image_view_size">70dp</dimen>
 

@@ -22,12 +22,22 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="@dimen/default_margin"
-        android:layout_marginEnd="15dp"
         android:visibility="gone"
-        app:src="@drawable/default_dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_otheruntoward_doctor_name"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_otheruntoward_doctor_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/otheruntoward_reporting_doctor" />
+        app:layout_constraintTop_toTopOf="@id/otheruntoward_reporting_doctor"
+        app:src="@drawable/default_dp" />
+
+    <ProgressBar
+        android:id="@+id/pb_otheruntoward_dp"
+        android:layout_width="@dimen/small_progress_circle_size"
+        android:layout_height="@dimen/small_progress_circle_size"
+        android:translationZ="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_otheruntoward_doctor_dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_otheruntoward_doctor_dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_otheruntoward_doctor_dp"
+        app:layout_constraintTop_toTopOf="@+id/iv_otheruntoward_doctor_dp" />
 
     <TextView
         android:id="@+id/otheruntoward_reporting_doctor"
@@ -89,8 +99,8 @@
 
     <ProgressBar
         android:id="@+id/pb_otheruntoward"
-        android:layout_width="@dimen/pain_progress_circle_size"
-        android:layout_height="@dimen/pain_progress_circle_size"
+        android:layout_width="@dimen/small_progress_circle_size"
+        android:layout_height="@dimen/small_progress_circle_size"
         app:layout_constraintBottom_toBottomOf="@id/btn_otheruntoward_next"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"

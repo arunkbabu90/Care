@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,66 +18,56 @@ import androidx.fragment.app.FragmentTransaction
 import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
+import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.dialogs.DatePickerDialog
 import arunkbabu.care.dialogs.SimpleInputDialog
-import arunkbabu.care.views.EditableRecyclerView
 import arunkbabu.care.views.TitleRadioCardView
-import com.google.android.gms.tasks.Task
-import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.fragment_patient_profile.*
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.HashMap
 
 /**
  * A simple [Fragment] subclass.
  */
-class PatientProfileFragment : Fragment(), View.OnClickListener,
-    TitleRadioCardView.OnCheckedStateChangeListener, EditableRecyclerView.ItemSwipeListener,
+class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardView.OnCheckedStateChangeListener,
     DatePickerDialog.DateChangeListener, SimpleInputDialog.ButtonClickListener {
-    private var mUser: FirebaseUser? = null
-    private var mAuth: FirebaseAuth? = null
-    private var mDb: FirebaseFirestore? = null
-    private var mCloudStore: FirebaseStorage? = null
-    private var mEpochDob: Long = 0
-    private var mUserType: Int = 0
-    private var mAge: Int = 0
-    private var mSex: Int = Constants.NULL_INT
-    private var mIsUpdatesAvailable = false
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDb: FirebaseFirestore
     private var mFullNameClick = false
     private var mContactClick = false
     private var mHeightClick = false
     private var mWeightClick = false
-    private var mFullName: String? = null
+
+    private var mFullName: String = ""
+    private var mSex: Int = Constants.NULL_INT
     private var mEmail: String = ""
-    private var mContactNumber: String? = null
-    private var mHeight: String? = null
-    private var mWeight: String? = null
-    private var mDob: String? = null
-    private var mBmi: String? = null
-    private var mImagePath: String? = null
+    private var mEpochDob: Long = 0
+    private var mUserType: Int = 0
+    private var mAge: Int = 0
+    private var mContactNumber: String = ""
+    private var mHeight: String = ""
+    private var mWeight: String = ""
+    private var mDob: String = ""
+    private var mBmi: String = ""
+    private var mDpPath: String = ""
     private var mTarget: Target? = null
 
-    private var isViewsLoaded: Boolean = false
-
     companion object {
+        var mIsUpdatesAvailable = false
         private const val REQUEST_CODE_PICK_IMAGE = 10000
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialFadeThrough()
-        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,24 +81,27 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         // Get instances
         mAuth = FirebaseAuth.getInstance()
         mDb = FirebaseFirestore.getInstance()
-        mCloudStore = FirebaseStorage.getInstance()
 
-        mUser = mAuth?.currentUser
-
-        // Fetch the user's profile data from database
-
-        // Fetch the user's profile data from database
-        fetchData()
+        var hasData: Boolean = getProfileData()
+        if (!hasData) {
+            // No data available. So retry in a few seconds
+            Handler(Looper.getMainLooper()).postDelayed({
+                hasData = getProfileData()
+                if (hasData)
+                    populateDataToViews()
+            }, 5000)
+        } else {
+            // Data loaded & available
+            populateDataToViews()
+        }
 
         iv_profile_photo.setOnClickListener(this)
-        pcv_profile_full_name.setOnClickListener(this)
+        tv_profile_name.setOnClickListener(this)
         pcv_profile_contact_no.setOnClickListener(this)
         pcv_profile_dob.setOnClickListener(this)
         pcv_profile_height.setOnClickListener(this)
         pcv_profile_weight.setOnClickListener(this)
         btn_profile_sign_out.setOnClickListener(this)
-
-        isViewsLoaded = true
     }
 
     override fun onClick(v: View) {
@@ -116,86 +111,27 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                 pickPhotoIntent.type = "image/*"
                 startActivityForResult(Intent.createChooser(pickPhotoIntent, getString(R.string.pick_image)), REQUEST_CODE_PICK_IMAGE)
             }
-            R.id.pcv_profile_full_name -> {
+            R.id.tv_profile_name -> {
                 mFullNameClick = true
-                showEditInputDialog(getString(R.string.full_name), mFullName ?: "")
+                showEditInputDialog(getString(R.string.full_name), mFullName)
             }
             R.id.pcv_profile_contact_no -> {
                 mContactClick = true
-                showEditInputDialog(getString(R.string.mobile_number), mContactNumber ?: "")
+                showEditInputDialog(getString(R.string.mobile_number), mContactNumber)
             }
             R.id.pcv_profile_dob -> showDatePicker()
             R.id.pcv_profile_height -> {
                 mHeightClick = true
-                showEditInputDialog(getString(R.string.height_desc), mHeight ?: "")
+                showEditInputDialog(getString(R.string.height_desc), mHeight)
             }
             R.id.pcv_profile_weight -> {
                 mWeightClick = true
-                showEditInputDialog(getString(R.string.weight_desc), mWeight ?: "")
+                showEditInputDialog(getString(R.string.weight_desc), mWeight)
             }
-            R.id.btn_profile_sign_out -> if (mAuth?.currentUser != null) {
-                mAuth?.signOut()
+            R.id.btn_profile_sign_out -> if (mAuth.currentUser != null) {
+                mAuth.signOut()
                 activity?.finish()
             }
-        }
-    }
-
-    /**
-     * Retrieves the user's profile data from database
-     */
-    private fun fetchData() {
-        if (mUser != null) {
-            mDb!!.collection(Constants.COLLECTION_USERS).document(mUser!!.uid).get()
-                .addOnCompleteListener { task: Task<DocumentSnapshot?> ->
-                    if (task.isSuccessful) {
-                        val d = task.result
-                        if (d != null) {
-                            // Fetch success
-                            val userType = d.getLong(Constants.FIELD_USER_TYPE)
-                            if (userType != null) {
-                                mUserType = userType.toInt()
-                                Utils.userType = mUserType
-                            }
-                            mFullName = d.getString(Constants.FIELD_FULL_NAME)
-                            mEmail = mUser?.email ?: ""
-                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER)
-                            val dob = d.getLong(Constants.FIELD_DOB)
-                            if (dob != null) {
-                                mEpochDob = dob
-                                mDob = Utils.convertEpochToDateString(dob)
-                                val c = Calendar.getInstance()
-                                c.timeInMillis = dob
-                                mAge = Utils.calculateAge(c[Calendar.DAY_OF_MONTH], c[Calendar.MONTH], c[Calendar.YEAR])
-                            } else {
-                                mAge = Constants.NULL_INT
-                                mEpochDob = Constants.NULL_INT.toLong()
-                            }
-                            mHeight = d.getString(Constants.FIELD_HEIGHT)
-                            mWeight = d.getString(Constants.FIELD_WEIGHT)
-
-                            // Calc BMI
-                            mBmi = if (mWeight != null && mWeight != "" && mHeight != null && mHeight != "") {
-                                // Calculate the bmi only if both weight and height are available
-                                Utils.calculateBMI(mWeight, mHeight)
-                            } else {
-                                ""
-                            }
-                            mImagePath = d.getString(Constants.FIELD_PROFILE_PICTURE)
-                            val sex = d.getLong(Constants.FIELD_SEX)
-                            if (sex != null) {
-                                mSex = sex.toInt()
-                            }
-
-                            // Fill the views with data
-                            if (isViewsLoaded)
-                                populateDataToViews()
-                        } else {
-                            Toast.makeText(context, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(context, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
-                    }
-                }
         }
     }
 
@@ -204,19 +140,13 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
      * Call this method only after [.fetchData] has finished fetching data from database
      */
     private fun populateDataToViews() {
-        if (mFullName.isNullOrEmpty() || mEmail.isEmpty() || mContactNumber.isNullOrEmpty()) {
-            fetchData()
-            return
-        }
+        loadImageToView(Uri.parse(mDpPath))
 
-        pcv_profile_full_name.bottomText = mFullName ?: ""
+        tv_profile_name.text = mFullName
         pcv_profile_email.bottomText = mEmail
-        pcv_profile_contact_no.bottomText = mContactNumber ?: ""
-        pcv_profile_dob.bottomText = mDob ?: ""
+        pcv_profile_contact_no.bottomText = mContactNumber
+        pcv_profile_dob.bottomText = mDob
         if (mAge != Constants.NULL_INT) pcv_profile_age.bottomText = mAge.toString()
-        if (mImagePath != null && isViewsLoaded) {
-            loadImageToView(Uri.parse(mImagePath))
-        }
 
         // Check this Radio Button only if the user has opted to provide data (ie, the database has this data)
         if (mSex == Constants.SEX_MALE) {
@@ -224,12 +154,36 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         } else if (mSex == Constants.SEX_FEMALE) {
             rcv_profile_sex.isRadio2Checked = true
         }
-        pcv_profile_height.bottomText = mHeight ?: ""
-        pcv_profile_weight.bottomText = mWeight ?: ""
-        pcv_profile_bmi.bottomText = mBmi ?: ""
-
+        pcv_profile_height.bottomText = mHeight
+        pcv_profile_weight.bottomText = mWeight
+        pcv_profile_bmi.bottomText = mBmi
 
         rcv_profile_sex.setCheckChangeListener(this)
+    }
+
+    /**
+     * Helper method to get the profile data from the DoctorActivity
+     * @return True if all fields has data
+     */
+    private fun getProfileData(): Boolean {
+        if (activity != null) {
+            val pa = activity as PatientActivity
+            mFullName = pa.mFullName
+            mEmail = pa.mEmail
+            mSex = pa.mSex
+            mEpochDob = pa.mEpochDob
+            mAge = pa.mAge
+            mUserType = pa.mUserType
+            mContactNumber = pa.mContactNumber
+            mHeight = pa.mHeight
+            mWeight = pa.mWeight
+            mDob = pa.mDob
+            mBmi = pa.mBmi
+            mDpPath = pa.mPatientDpPath
+
+            return mFullName.isNotBlank() && mEmail.isNotBlank() && mContactNumber.isNotBlank()
+        }
+        return false
     }
 
     /**
@@ -292,31 +246,46 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         val profileData: MutableMap<String, Any> = HashMap()
         profileData[Constants.FIELD_USER_TYPE] = mUserType
 
-        if (mFullName != null && mFullName != "")
-            profileData[Constants.FIELD_FULL_NAME] = mFullName ?: ""
+        val pa = (activity as PatientActivity)
+        val user: FirebaseUser? = mAuth.currentUser
 
-        if (mContactNumber != null && mContactNumber != "")
-            profileData[Constants.FIELD_CONTACT_NUMBER] = mContactNumber ?: ""
+        if (mFullName != "") {
+            profileData[Constants.FIELD_FULL_NAME] = mFullName
+            pa.mFullName = mFullName
+        }
 
-        if (mEpochDob != Constants.NULL_INT.toLong())
+        if (mContactNumber != "") {
+            profileData[Constants.FIELD_CONTACT_NUMBER] = mContactNumber
+            pa.mContactNumber = mContactNumber
+        }
+
+        if (mEpochDob != Constants.NULL_INT.toLong()) {
             profileData[Constants.FIELD_DOB] = mEpochDob
+            pa.mEpochDob = mEpochDob
+        }
 
         if (rcv_profile_sex.isRadio1Checked)
             mSex = Constants.SEX_MALE
         else if (rcv_profile_sex.isRadio2Checked)
             mSex = Constants.SEX_FEMALE
 
-        if (mSex != Constants.NULL_INT)
+        if (mSex != Constants.NULL_INT) {
             profileData[Constants.FIELD_SEX] = mSex
+            pa.mSex = mSex
+        }
 
-        if (mHeight != null && mHeight != "")
-            profileData[Constants.FIELD_HEIGHT] = mHeight ?: ""
+        if (mHeight != "") {
+            profileData[Constants.FIELD_HEIGHT] = mHeight
+            pa.mHeight = mHeight
+        }
 
-        if (mWeight != null && mWeight != "")
-            profileData[Constants.FIELD_WEIGHT] = mWeight ?: ""
+        if (mWeight != "") {
+            profileData[Constants.FIELD_WEIGHT] = mWeight
+            pa.mWeight = mWeight
+        }
 
-        if (mUser != null) {
-            mDb!!.collection(Constants.COLLECTION_USERS).document(mUser!!.uid)
+        if (user != null) {
+            mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .update(profileData)
                 .addOnSuccessListener {
 //                        if (context != null) {
@@ -336,64 +305,22 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
     private fun loadImageToView(@NonNull imageUri: Uri) {
         mTarget = object : Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                if (iv_profile_photo != null) iv_profile_photo.setImageBitmap(bitmap)
-                pb_profile_dp_loading.visibility = View.GONE
+                iv_profile_photo?.setImageBitmap(bitmap)
+                pb_profile_dp_loading?.visibility = View.GONE
                 if (mIsUpdatesAvailable && bitmap != null) {
-                    uploadImageFile(bitmap)
+                    (activity as PatientActivity).uploadImageFile(bitmap)
                 }
             }
 
             override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                pb_profile_dp_loading.visibility = View.GONE
+                pb_profile_dp_loading?.visibility = View.GONE
             }
 
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                pb_profile_dp_loading.visibility = View.VISIBLE
+                pb_profile_dp_loading?.visibility = View.VISIBLE
             }
         }
         Picasso.get().load(imageUri).resize(960,0).into(mTarget as Target)
-    }
-
-    /**
-     * Upload the image files selected
-     * @param bitmap The image to upload
-     */
-    private fun uploadImageFile(bitmap: Bitmap) {
-        pb_profile_dp_loading.visibility = View.VISIBLE
-
-        // Convert the image bitmap to InputStream
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos)
-        val bs = ByteArrayInputStream(bos.toByteArray())
-        if (mUser != null) {
-            // Upload the image file
-            val uploadPath = mUser?.uid + "/" + Constants.DIRECTORY_PROFILE_PICTURE + "/" + Constants.PROFILE_PICTURE_FILE_NAME
-            val storageReference = mCloudStore!!.getReference(uploadPath)
-            storageReference.putStream(bs)
-                .continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
-                    if (!task.isSuccessful) {
-                        // Upload failed
-                        Toast.makeText(context, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
-                        return@continueWithTask null
-                    }
-                    storageReference.downloadUrl
-                }
-                .addOnCompleteListener { task: Task<Uri?> ->
-                    if (task.isSuccessful && task.result != null) {
-                        // Upload success; push the download URL to the database
-                        val imagePath = task.result.toString()
-                        mDb!!.collection(Constants.COLLECTION_USERS).document(mUser!!.uid)
-                            .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
-                            .addOnSuccessListener { Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show() }
-                            .addOnFailureListener { Toast.makeText(context, R.string.err_upload_failed, Toast.LENGTH_SHORT).show() }
-                    } else {
-                        Toast.makeText(context,
-                            getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
-                    }
-                    pb_profile_dp_loading?.visibility = View.GONE
-                }
-        }
-        mIsUpdatesAvailable = false
     }
 
     /**
@@ -402,13 +329,11 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
      */
     override fun onPositiveButtonClick(inputText: String) {
         if (inputText != "") mIsUpdatesAvailable = true
-
-        // Handle adding data to EditableRecyclerView
         // Handle for other views
         when {
             mFullNameClick -> {
                 // First Name Click
-                pcv_profile_full_name.bottomText = inputText
+                tv_profile_name.text = inputText
                 mFullName = inputText
                 mFullNameClick = false
             }
@@ -422,8 +347,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                 // Height Click
                 if (pcv_profile_weight.bottomText != "" && inputText != "") {
                     // Calculate BMI if height and weight are present
-                    pcv_profile_bmi.bottomText =
-                        Utils.calculateBMI(pcv_profile_weight.bottomText, inputText)
+                    pcv_profile_bmi.bottomText = Utils.calculateBMI(pcv_profile_weight.bottomText, inputText)
                 }
                 pcv_profile_height.bottomText = inputText
                 mHeight = inputText
@@ -433,8 +357,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
                 // Weight Click
                 if (pcv_profile_height.bottomText != "" && inputText != "") {
                     // Calculate BMI if height and weight are present
-                    pcv_profile_bmi.bottomText =
-                        Utils.calculateBMI(inputText, pcv_profile_height.bottomText)
+                    pcv_profile_bmi.bottomText = Utils.calculateBMI(inputText, pcv_profile_height.bottomText)
                 }
                 pcv_profile_weight.bottomText = inputText
                 mWeight = inputText
@@ -444,14 +367,6 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onNegativeButtonClick() {}
-
-    /**
-     * Invoked when an item in any of the EditableRecycleView is swiped off
-     * @param item The item that is swiped off
-     */
-    override fun onItemSwiped(item: String?) {
-        mIsUpdatesAvailable = true
-    }
 
     /**
      * Invoked when an item in any of the TitleRadioCardView check state changes
@@ -466,9 +381,9 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             val uri = data?.data
-            if (uri != null && isViewsLoaded) {
-                loadImageToView(imageUri = uri)
+            if (uri != null) {
                 mIsUpdatesAvailable = true
+                loadImageToView(imageUri = uri)
             }
         }
     }
@@ -480,10 +395,5 @@ class PatientProfileFragment : Fragment(), View.OnClickListener,
             pushToDatabase()
             mIsUpdatesAvailable = false
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        isViewsLoaded = false
     }
 }

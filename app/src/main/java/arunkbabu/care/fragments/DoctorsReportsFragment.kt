@@ -13,7 +13,7 @@ import arunkbabu.care.R
 import arunkbabu.care.activities.ViewDoctorReportActivity
 import arunkbabu.care.adapters.ReportListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -29,8 +29,8 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialFadeThrough()
-        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,7 +72,6 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
     override fun onStart() {
         super.onStart()
-        mAdapter.startListening()
         mDocReportQuery.addSnapshotListener { _, _ -> mAdapter.notifyDataSetChanged() }
     }
 }

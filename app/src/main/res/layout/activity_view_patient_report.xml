@@ -48,8 +48,8 @@
 
     <ProgressBar
         android:id="@+id/pb_doc_next"
-        android:layout_width="@dimen/pain_progress_circle_size"
-        android:layout_height="@dimen/pain_progress_circle_size"
+        android:layout_width="@dimen/small_progress_circle_size"
+        android:layout_height="@dimen/small_progress_circle_size"
         app:layout_constraintBottom_toBottomOf="@+id/btn_doc_next"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"

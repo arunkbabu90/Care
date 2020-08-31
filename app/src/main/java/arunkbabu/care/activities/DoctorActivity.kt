@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_doctor.*
-import kotlinx.android.synthetic.main.fragment_patient_profile.*
+import kotlinx.android.synthetic.main.fragment_doctor_profile.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
@@ -150,7 +150,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                             mEmail = user.email ?: ""
                             mContactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
                             mSex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT
-                            mRegisterId = document.getString(Constants.FIELD_REGISTRATION_NO) ?: ""
+                            mRegisterId = document.getString(Constants.FIELD_DOC_REG_ID) ?: ""
                             mQualifications = document.getString(Constants.FIELD_DOCTOR_QUALIFICATIONS) ?: ""
                             mSpeciality = document.getString(Constants.FIELD_DOCTOR_SPECIALITY) ?: ""
                             mFellowships = document.getString(Constants.FIELD_DOCTOR_FELLOWSHIPS) ?: ""
@@ -171,19 +171,18 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * @param bitmap The image to upload
      */
     fun uploadImageFile(bitmap: Bitmap) {
-        pb_profile_dp_loading.visibility = View.VISIBLE
+        pb_doc_profile_dp?.visibility = View.VISIBLE
 
         // Convert the image bitmap to InputStream
         val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos)
         val bs = ByteArrayInputStream(bos.toByteArray())
         val user = mAuth.currentUser
         if (user != null) {
             // Upload the image file
             val uploadPath = user.uid + "/" + Constants.DIRECTORY_PROFILE_PICTURE + "/" + Constants.PROFILE_PICTURE_FILE_NAME
             val storageReference = mCloudStore.getReference(uploadPath)
-            storageReference.putStream(bs)
-                .continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+            storageReference.putStream(bs).continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
                     if (!task.isSuccessful) {
                         // Upload failed
                         Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
@@ -198,16 +197,12 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         mDoctorDpPath = imagePath
                         mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                             .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show()
-                            }
+                            .addOnSuccessListener { Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show() }
+                            .addOnFailureListener { Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show() }
                     } else {
                         Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
                     }
-                    pb_profile_dp_loading?.visibility = View.GONE
+                    pb_doc_profile_dp?.visibility = View.GONE
                 }
         }
         DoctorProfileFragment.mIsUpdatesAvailable = false
@@ -234,28 +229,16 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 pushVerificationStatusFlag(false)
                 tv_doctor_err_msg.visibility = View.VISIBLE
                 tv_doctor_err_msg.setText(R.string.err_account_not_verified_desc_doc)
-                tv_doctor_err_msg.setBackgroundColor(
-                    ContextCompat.getColor(
-                        this,
-                        R.color.colorStatusUnverified
-                    )
-                )
-                window.statusBarColor =
-                    ContextCompat.getColor(this, R.color.colorStatusUnverified)
+                tv_doctor_err_msg.setBackgroundColor(ContextCompat.getColor(this, R.color.colorStatusUnverified))
+                window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusUnverified)
                 tv_doctor_err_msg.isClickable = true
                 tv_doctor_err_msg.isFocusable = true
                 tv_doctor_err_msg.setOnClickListener {
                     // Launch the Verification Activity
                     val i = Intent(this, AccountVerificationActivity::class.java)
                     i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, user.email)
-                    i.putExtra(
-                        AccountVerificationActivity.KEY_USER_PHONE_NUMBER,
-                        mContactNumber
-                    )
-                    i.putExtra(
-                        AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR,
-                        AccountVerificationActivity.BEHAVIOUR_CLOSE
-                    )
+                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mContactNumber)
+                    i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_CLOSE)
                     startActivity(i)
                 }
             }

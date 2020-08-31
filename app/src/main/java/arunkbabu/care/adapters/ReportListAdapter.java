@@ -89,9 +89,7 @@ public class ReportListAdapter extends FirestoreRecyclerAdapter<DoctorReport, Re
             mDoctorNameTextView.setText(report.getFull_name());
             mReportTypeTextView.setText(String.format("Report on %s you sent on %s %S", reportType, properDate, properTime));
 
-            mDocReportLayout.setOnClickListener(v -> {
-                mItemClickListener.onItemClick(v, report, getAdapterPosition());
-            });
+            mDocReportLayout.setOnClickListener(v -> mItemClickListener.onItemClick(v, report, getAdapterPosition()));
         }
     }
 

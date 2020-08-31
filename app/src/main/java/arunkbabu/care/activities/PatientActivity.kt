@@ -1,6 +1,8 @@
 package arunkbabu.care.activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,17 +21,37 @@ import arunkbabu.care.fragments.ReportProblemFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_patient.*
+import kotlinx.android.synthetic.main.fragment_patient_profile.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.util.*
 
 class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, BottomNavigationView.OnNavigationItemSelectedListener {
-    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var mDb: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mDb: FirebaseFirestore
+    private lateinit var mCloudStore: FirebaseStorage
     private var mAccountAlreadyVerified: Boolean? = null
-    private var mContactNumber: String? = null
     private var mIsLaunched = false
-    private var mFragId: Int = -1
+    private var mFragId = Constants.NULL_INT
+
+    var mFullName: String = ""
+    var mSex: Int = Constants.NULL_INT
+    var mEmail: String = ""
+    var mEpochDob: Long = 0
+    var mUserType: Int = 0
+    var mAge: Int = 0
+    var mContactNumber: String = ""
+    var mHeight: String = ""
+    var mWeight: String = ""
+    var mDob: String = ""
+    var mBmi: String = ""
+    var mPatientDpPath: String = ""
 
     companion object {
         private const val REPORT_PROBLEM_FRAGMENT_ID = 9000
@@ -41,10 +63,12 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_patient)
-
         // Set flag as Patient
         Utils.userType = Constants.USER_TYPE_PATIENT
 
+        mAuth = FirebaseAuth.getInstance()
+        mCloudStore = FirebaseStorage.getInstance()
+        mDb = FirebaseFirestore.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
         mAuth.addAuthStateListener(this)
 
@@ -56,8 +80,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                     if (task.isSuccessful) {
                         val d = task.result
                         if (d != null) {
-                            mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED)
-                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER)
+                            mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED) ?: false
+                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
                             if (mAccountAlreadyVerified != null && !mAccountAlreadyVerified!!) {
                                 // If email NOT Already Verified; check the status again
                                 checkAccountVerificationStatus()
@@ -69,6 +93,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                     }
                 }
         }
+        fetchPatientData()
 
         // Load the ReportProblemFragment as default "home"
         supportFragmentManager.beginTransaction()
@@ -121,6 +146,108 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
             }
             else -> false
         }
+    }
+
+    /**
+     * Retrieves the user's profile data from database
+     */
+    private fun fetchPatientData() {
+        val user: FirebaseUser? = mAuth.currentUser
+        if (user != null) {
+            mDb.collection(Constants.COLLECTION_USERS).document(user.uid).get()
+                .addOnCompleteListener { task: Task<DocumentSnapshot?> ->
+                    if (task.isSuccessful) {
+                        val d = task.result
+                        if (d != null) {
+                            // Fetch success
+                            val userType = d.getLong(Constants.FIELD_USER_TYPE)
+                            if (userType != null) {
+                                mUserType = userType.toInt()
+                                Utils.userType = mUserType
+                            }
+                            mFullName = d.getString(Constants.FIELD_FULL_NAME) ?: ""
+                            mEmail = user.email ?: ""
+                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
+                            val dob = d.getLong(Constants.FIELD_DOB)
+                            if (dob != null) {
+                                mEpochDob = dob
+                                mDob = Utils.convertEpochToDateString(dob)
+                                val c = Calendar.getInstance()
+                                c.timeInMillis = dob
+                                mAge = Utils.calculateAge(c[Calendar.DAY_OF_MONTH], c[Calendar.MONTH], c[Calendar.YEAR])
+                            } else {
+                                mAge = Constants.NULL_INT
+                                mEpochDob = Constants.NULL_INT.toLong()
+                            }
+                            mHeight = d.getString(Constants.FIELD_HEIGHT) ?: ""
+                            mWeight = d.getString(Constants.FIELD_WEIGHT) ?: ""
+
+                            // Calc BMI
+                            mBmi = if (mWeight.isNotBlank() && mHeight.isNotBlank()) {
+                                // Calculate the bmi only if both weight and height are available
+                                Utils.calculateBMI(mWeight, mHeight)
+                            } else {
+                                ""
+                            }
+                            mPatientDpPath = d.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
+
+                            val sex = d.getLong(Constants.FIELD_SEX)
+                            if (sex != null) {
+                                mSex = sex.toInt()
+                            }
+                        } else {
+                            Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+
+    /**
+     * Upload the image files selected
+     * @param bitmap The image to upload
+     */
+    fun uploadImageFile(bitmap: Bitmap) {
+        pb_profile_dp_loading?.visibility = View.VISIBLE
+
+        val user: FirebaseUser? = mAuth.currentUser
+        // Convert the image bitmap to InputStream
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos)
+        val bs = ByteArrayInputStream(bos.toByteArray())
+        if (user != null) {
+            // Upload the image file
+            val uploadPath = user.uid + "/" + Constants.DIRECTORY_PROFILE_PICTURE + "/" + Constants.PROFILE_PICTURE_FILE_NAME
+            val storageReference = mCloudStore.getReference(uploadPath)
+            storageReference.putStream(bs)
+                .continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+                    if (!task.isSuccessful) {
+                        // Upload failed
+                        Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
+                        return@continueWithTask null
+                    }
+                    storageReference.downloadUrl
+                }
+                .addOnCompleteListener { task: Task<Uri?> ->
+                    if (task.isSuccessful && task.result != null) {
+                        // Upload success; push the download URL to the database
+                        val imagePath = task.result.toString()
+                        mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+                            .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
+                                mPatientDpPath = imagePath
+                            }
+                            .addOnFailureListener { Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show() }
+                    } else {
+                        Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
+                    }
+                    pb_profile_dp_loading?.visibility = View.GONE
+                }
+        }
+        PatientProfileFragment.mIsUpdatesAvailable = false
     }
 
     /**

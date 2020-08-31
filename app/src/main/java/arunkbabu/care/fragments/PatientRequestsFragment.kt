@@ -14,6 +14,7 @@ import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.ViewPatientReportActivity
 import arunkbabu.care.adapters.RequestListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -26,6 +27,13 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
     private lateinit var mGetRequestsQuery: Query
     private var mIsLaunched = false
     private var requestsCollectionPath: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment

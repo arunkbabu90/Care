@@ -1,5 +1,7 @@
 package arunkbabu.care.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -24,6 +26,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,13 +44,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class OtherUntowardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
-
     @BindView(R.id.tv_otheruntoward_error) TextView mErrorTextView;
     @BindView(R.id.tv_otheruntoward_doctor_name) TextView mDocNameTextView;
     @BindView(R.id.iv_otheruntoward_doctor_dp) CircularImageView mDocDpImageView;
     @BindView(R.id.vp_otheruntoward) ViewPager mPager;
     @BindView(R.id.btn_otheruntoward_next) MaterialButton mNextButton;
     @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
+    @BindView(R.id.pb_otheruntoward_dp) ProgressBar mDpProgressBar;
     @BindView(R.id.otheruntoward_reporting_doctor) TextView mReportingDoctorTextView;
 
     private OtherUntowardPagerAdapter mAdapter;
@@ -54,6 +58,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private FirebaseAuth mAuth;
     private FirebaseStorage mCloudStore;
     private FirebaseUser mUser;
+    private Target mTarget;
 
     private static String sReportingDoctorId;
     private static String sDocName;
@@ -99,7 +104,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         }
 
         // TODO: Set reporting doctor id here
-        sReportingDoctorId = "67mSInWNAbZkw8oDpBS98OOeeEK2";
+        sReportingDoctorId = "2ptB3p4QNMcbfWMwePSeu7Gh0A32";
         // Fetch the name, dp of the doctor from database
         fetchDoctorDetails();
     }
@@ -167,6 +172,32 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                 }
             });
         }
+    }
+
+    /**
+     * Loads an image from the specified URI to the ImageView
+     * @param imageUri The URI of the image to be loaded
+     */
+    private void loadImageToView(@NonNull Uri imageUri) {
+        mTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mDpProgressBar.setVisibility(View.GONE);
+                mDocDpImageView.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                mDpProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                mDpProgressBar.setVisibility(View.VISIBLE);
+            }
+        };
+
+        Picasso.get().load(imageUri).resize(300,0).into(mTarget);
     }
 
     /**
@@ -247,8 +278,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * @param reportId The String id of the report
      */
     private void sendRequestToDoctor(String reportId) {
-        String docRequestListPath = Constants.COLLECTION_USERS + "/"
-                + sReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
+        String docRequestListPath = Constants.COLLECTION_USERS + "/" + sReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
         if (mUser != null) {
             // Get the user's id
             String userId = mUser.getUid();
@@ -275,18 +305,18 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                         mNextButton.setEnabled(true);
                         mProgressBar.setVisibility(View.GONE);
                     });
-
-            finish();
         } else {
             Toast.makeText(this, getString(R.string.err_user_not_logged_in), Toast.LENGTH_SHORT).show();
-            finish();
         }
+        finish();
     }
 
     /**
      * Make the views visible & hide the ErrorTextView
      */
     private void loadViews() {
+        loadImageToView(Uri.parse(sDocDpPath));
+
         mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
         mPager.addOnPageChangeListener(this);
