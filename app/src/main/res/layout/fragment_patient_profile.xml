@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionGroup="true"
     tools:context=".fragments.PatientProfileFragment">
 
     <LinearLayout
@@ -54,7 +55,7 @@
             android:layout_marginEnd="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
             app:editable="false"
-            app:topText="@string/prompt_email"
+            app:topText="@string/email"
             tools:bottomText="arunkbabu90@gmail.com" />
 
         <!-- Contact Number -->
@@ -134,9 +135,13 @@
             android:id="@+id/btn_profile_sign_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/medium_margin"
             android:text="@string/sign_out"
-            android:backgroundTint="@color/colorSignOutButton" />
+            android:textColor="@color/colorSignOutButton"
+            android:backgroundTint="@android:color/transparent"
+            app:strokeColor="@color/colorSignOutButton"
+            app:strokeWidth="2dp"
+            app:cornerRadius="@dimen/small_corner_radius" />
     </LinearLayout>
 </ScrollView>

@@ -15,7 +15,8 @@
     <color name="colorTextLightGrey">#BDBDBD</color>
     <color name="colorTextDefault">#E8E8E8</color>
     <color name="colorRed">#FF0000</color>
-    <color name="colorOrange">#FFC700</color>
+    <color name="colorOrange">#FFCC17</color>
+    <color name="colorOrangeTransparent">#18FFCC17</color>
     <color name="colorFullBody">#ef9a9a</color>
     <color name="colorGreen">#4CAF50</color>
 
@@ -39,5 +40,4 @@
     <color name="colorCatYellow">#E5B628</color>
     <color name="colorTextRed">#ff9795</color>
     <color name="colorTextGreen">#81C784</color>
-
 </resources>

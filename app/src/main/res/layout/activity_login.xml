@@ -52,7 +52,7 @@
                 android:autofillHints="email"
                 android:focusable="true"
                 android:fontFamily="@font/muli_light"
-                android:hint="@string/prompt_email"
+                android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:paddingTop="5dp"
                 android:selectAllOnFocus="true" />

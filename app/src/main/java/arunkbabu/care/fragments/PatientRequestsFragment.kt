@@ -34,6 +34,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         super.onCreate(savedInstanceState)
 
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,7 +65,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
             mAdapter.setClickListener(this)
             rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_request_view.adapter = mAdapter
-            runLayoutAnimation(rv_request_view)
+//            runLayoutAnimation(rv_request_view)
         }
     }
 

@@ -15,6 +15,7 @@ import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.fragments.DoctorProfileFragment
+import arunkbabu.care.fragments.EditProfileFragment
 import arunkbabu.care.fragments.MessageFragment
 import arunkbabu.care.fragments.PatientRequestsFragment
 import com.google.android.gms.tasks.Task
@@ -304,6 +305,18 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     /**
+     * Launches the EditProfileFragment
+     */
+    fun launchEditProfileFragment() {
+        val editProfFrag = EditProfileFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.doctor_activity_fragment_container, editProfFrag, editProfFrag.tag)
+            .addToBackStack(editProfFrag.tag)
+            .commit()
+    }
+
+
+    /**
      * SignOut of your account
      */
     fun signOut() {
@@ -332,6 +345,22 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         if (!mAccountAlreadyVerified) {
             // If email NOT Already Verified; check the status again
             checkAccountVerificationStatus()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (EditProfileFragment.editProfileFragmentActive) {
+            // If EditProfileFragment is active go back to the previous fragment rather than exiting the activity
+            when (Utils.userType) {
+                Constants.USER_TYPE_DOCTOR -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.doctor_activity_fragment_container, DoctorProfileFragment())
+                        .commit()
+                }
+                Constants.USER_TYPE_PATIENT -> {  }
+            }
+        } else {
+            super.onBackPressed()
         }
     }
 }

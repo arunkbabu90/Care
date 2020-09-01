@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/colorCatIndigo"
-    app:cardCornerRadius="@dimen/card_min_corner_radius"
+    app:cardCornerRadius="@dimen/small_corner_radius"
     android:layout_marginBottom="24dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

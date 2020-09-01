@@ -6,6 +6,9 @@
     <string name="profile">Profile</string>
     <string name="not_set">Not Available</string>
     <string name="contact_no_privacy">Your mobile number won\'t be shared with anyone</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="save_profile_data">Save Profile Data</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -29,7 +32,7 @@
     <string name="err_report_create_fail">Report Creation Failure!</string>
 
     <!-- Login Activity -->
-    <string name="prompt_email">Email</string>
+    <string name="email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="login">Login</string>
     <string name="sign_in">Sign in</string>
@@ -149,8 +152,9 @@
     <string name="search_res_for">"Search Results for: %1$s"</string>
     <string name="registered_id">Registered ID</string>
     <string name="consultations">Consultations</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="speciality">Speciality</string>
     <string name="qualifications">Qualifications</string>
+    <string name="experience">Experience</string>
+    <string name="fellowships">Fellowships</string>
+    <string name="practicing_hospital">Practicing Hospital</string>
 </resources>

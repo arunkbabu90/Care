@@ -34,8 +34,8 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,7 +65,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
             mAdapter.setClickListener(this)
             rv_doctor_reports.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_doctor_reports.adapter = mAdapter
-            runLayoutAnimation(rv_doctor_reports)
+//            runLayoutAnimation(rv_doctor_reports)
         }
     }
 

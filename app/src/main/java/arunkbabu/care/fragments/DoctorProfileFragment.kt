@@ -59,6 +59,8 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
 
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,6 +96,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
 
         iv_doc_profile_photo.setOnClickListener(this)
         btn_doc_sign_out.setOnClickListener(this)
+        fab_doc_profile_edit.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -105,6 +108,10 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             }
             R.id.btn_doc_sign_out -> {
                 (activity as DoctorActivity).signOut()
+            }
+            R.id.fab_doc_profile_edit -> {
+                // Launch EditProfileFragment
+                (activity as DoctorActivity).launchEditProfileFragment()
             }
         }
     }
@@ -123,7 +130,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
 
         val profData = arrayListOf(
             "Email: $mEmail",
-            "Contact No: $mContactNo",
+            "Phone: $mContactNo",
             "Sex: ${Utils.toSexString(mSex)}",
             "Qualifications: $mQualifications",
             "Experience: $mExperience",
@@ -182,7 +189,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
                 pb_doc_profile_dp?.visibility = View.VISIBLE
             }
         }
-        Picasso.get().load(imageUri).resize(960,0).into(mTarget)
+        Picasso.get().load(imageUri).noFade().resize(960,0).into(mTarget)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

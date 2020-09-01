@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionGroup="true"
+    tools:context=".fragments.EditProfileFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:fontFamily="@font/muli_bold"
+                android:gravity="center"
+                android:padding="@dimen/default_padding"
+                android:text="@string/edit_profile"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/colorTextLightGrey" />
+
+            <!-- Full Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/full_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_fullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Speciality -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.ExposedDropDown.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/speciality">
+
+                <AutoCompleteTextView
+                    android:id="@+id/atv_profileEdit_speciality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/default_padding"
+                    android:textColor="@color/colorTextLightGrey"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Contact No -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/mobile_number">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Sex -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.ExposedDropDown.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/sex">
+
+                <AutoCompleteTextView
+                    android:id="@+id/atv_profileEdit_sex"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/default_padding"
+                    android:textColor="@color/colorTextLightGrey"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Qualifications -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/qualifications">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_qualifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Experience -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/experience">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_experience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Fellowships -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/fellowships">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_fellowships"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Practicing Hospital -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/practicing_hospital">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_hospital"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Registered Id -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputLayout.TextInputEditText.Dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:hint="@string/registered_id">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tv_profileEdit_regId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLightGrey"
+                    android:textColorHint="@color/colorAccent" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Save Button -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_profileEdit_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:transitionName="doc_profile_edit_transition_container"
+        android:layout_margin="@dimen/default_margin"
+        android:layout_gravity="bottom|center"
+        android:contentDescription="@string/save_profile_data"
+        android:text="@string/save"
+        android:textColor="@android:color/white"
+        app:icon="@drawable/ic_save"
+        app:backgroundTint="@color/colorAccent"
+        app:iconTint="@android:color/white" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
