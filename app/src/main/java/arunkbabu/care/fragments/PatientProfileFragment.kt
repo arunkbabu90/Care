@@ -66,7 +66,6 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 
@@ -366,7 +365,12 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         }
     }
 
-    override fun onNegativeButtonClick() {}
+    override fun onNegativeButtonClick() {
+        mFullNameClick = false
+        mContactClick = false
+        mHeightClick = false
+        mWeightClick = false
+    }
 
     /**
      * Invoked when an item in any of the TitleRadioCardView check state changes

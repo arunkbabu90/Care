@@ -58,7 +58,6 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 

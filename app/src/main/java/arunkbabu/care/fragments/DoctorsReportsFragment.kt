@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.DoctorReport
 import arunkbabu.care.R
@@ -19,18 +22,20 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_doctors_reports.*
 
+
 class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     companion object {
         const val KEY_EXTRA_REPORT_ID = "report_id_key_extra"
     }
     private lateinit var mAdapter: ReportListAdapter
     private lateinit var mDocReportQuery: Query
+    private var showLayoutAnimation = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,6 +65,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
             mAdapter.setClickListener(this)
             rv_doctor_reports.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_doctor_reports.adapter = mAdapter
+            runLayoutAnimation(rv_doctor_reports)
         }
     }
 
@@ -68,6 +74,15 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
         val viewReportIntent = Intent(context, ViewDoctorReportActivity::class.java)
         viewReportIntent.putExtra(KEY_EXTRA_REPORT_ID, report.reportId)
         startActivity(viewReportIntent)
+    }
+
+    /**
+     * Starts the layout animation
+     */
+    private fun runLayoutAnimation(recyclerView: RecyclerView) {
+        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report)
+        recyclerView.layoutAnimation = controller
+        recyclerView.scheduleLayoutAnimation()
     }
 
     override fun onStart() {

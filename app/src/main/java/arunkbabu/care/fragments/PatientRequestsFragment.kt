@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.Patient
 import arunkbabu.care.R
@@ -25,13 +28,11 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
     private lateinit var mGetRequestsQuery: Query
-    private var mIsLaunched = false
     private var requestsCollectionPath: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 
@@ -58,10 +59,12 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
                 .setLifecycleOwner(this)
                 .setQuery(mGetRequestsQuery, Patient::class.java)
                 .build()
+
             mAdapter = RequestListAdapter(options, tv_no_requests, rv_request_view)
             mAdapter.setClickListener(this)
             rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_request_view.adapter = mAdapter
+            runLayoutAnimation(rv_request_view)
         }
     }
 
@@ -70,6 +73,15 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         when (v.id) {
             R.id.btn_accept -> onAcceptButtonClick(patient, position)
         }
+    }
+
+    /**
+     * Starts the layout animation
+     */
+    private fun runLayoutAnimation(recyclerView: RecyclerView) {
+        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report)
+        recyclerView.layoutAnimation = controller
+        recyclerView.scheduleLayoutAnimation()
     }
 
     /**

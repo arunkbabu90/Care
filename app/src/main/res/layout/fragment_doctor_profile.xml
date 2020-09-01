@@ -8,8 +8,8 @@
 
     <arunkbabu.care.views.CircularImageView
         android:id="@+id/iv_doc_profile_photo"
-        android:layout_width="@dimen/dp_image_view_size_big"
-        android:layout_height="@dimen/dp_image_view_size_big"
+        android:layout_width="@dimen/dp_image_view_size_large"
+        android:layout_height="@dimen/dp_image_view_size_large"
         android:layout_margin="@dimen/large_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

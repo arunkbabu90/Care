@@ -10,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.material.card.MaterialCardView;
 
 import arunkbabu.care.R;
 
-public class CircularImageView extends CardView {
-
+public class CircularImageView extends MaterialCardView {
     public static final int SCALE_TYPE_MATRIX = 0;
     public static final int SCALE_TYPE_FITXY = 1;
     public static final int SCALE_TYPE_FITSTART = 2;
@@ -66,21 +66,6 @@ public class CircularImageView extends CardView {
         } else {
             Toast.makeText(context, getResources().getString(R.string.err_unexpected), Toast.LENGTH_LONG).show();
             mIsInflationSuccess = false;
-        }
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        // Load the image only if the view is inflated; to prevent app crash
-        mImageView = findViewById(R.id.iv_display_picture);
-        if (mIsInflationSuccess) {
-            if (mDpResourceId != -1) {
-                setImageFromResource(mDpResourceId);
-            }
-
-            mImageView.setColorFilter(mIconTint); // Icon Tint
-            setScaleType(mScaleType);
         }
     }
 
@@ -144,5 +129,20 @@ public class CircularImageView extends CardView {
     public void setIconTint(@ColorRes int color) {
         if (mImageView != null)
             mImageView.setColorFilter(ContextCompat.getColor(getContext(), color));
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        // Load the image only if the view is inflated; to prevent app crash
+        mImageView = findViewById(R.id.iv_display_picture);
+        if (mIsInflationSuccess) {
+            if (mDpResourceId != -1) {
+                setImageFromResource(mDpResourceId);
+            }
+
+            mImageView.setColorFilter(mIconTint); // Icon Tint
+            setScaleType(mScaleType);
+        }
     }
 }
