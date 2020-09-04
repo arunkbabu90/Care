@@ -22,6 +22,7 @@ public class Constants {
     public static final String COLLECTION_DOCTOR_REPORT = "DoctorReports";
     public static final String COLLECTION_PROBLEM_REPORT = "ProblemReports";
     public static final String COLLECTION_REPORT_DETAILS = "ReportDetails";
+    public static final String COLLECTION_DOCTORS_LIST = "DoctorsList";
 
     public static final String FIELD_USER_TYPE = "user_type";
 
@@ -34,7 +35,6 @@ public class Constants {
     public static final String FIELD_PROFILE_PICTURE = "profilePicture";
     public static final String FIELD_DOC_REG_ID = "doc_reg_id";
 
-    public static final String FIELD_IS_REQUEST_ACCEPTED = "is_accepted";
     public static final String FIELD_PATIENT_ID = "patientId";
     public static final String FIELD_PATIENT_NAME = "patientName";
     public static final String FIELD_REPORT_TYPE = "reportType";
@@ -66,9 +66,6 @@ public class Constants {
 
     public static final int USER_TYPE_PATIENT = 50;
     public static final int USER_TYPE_DOCTOR = 51;
-
-    public static final int VERIFICATION_MODE_EMAIL = 60;
-    public static final int VERIFICATION_MODE_SMS = 61;
 
     // Doctor Speciality codes
     public static final int SPECIALITY_GENERAL = 0;

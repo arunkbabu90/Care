@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -52,6 +53,8 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     var mFellowships = ""
     var mExperience = ""
     var mWorkingHospitalName = ""
+
+    val TAG = DoctorActivity::class.java.simpleName
 
     companion object {
         private const val PATIENT_REQUESTS_FRAGMENT_ID = 8001
@@ -175,12 +178,15 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     private fun pushToDatabase(pressBackOnSave: Boolean) {
         val pd: HashMap<String, Any> = HashMap()
+        val dl: HashMap<String, Any> = HashMap()
 
         val user: FirebaseUser? = mAuth.currentUser
 
         if (user != null) {
-            if (mDoctorFullName.isNotBlank())
+            if (mDoctorFullName.isNotBlank()) {
                 pd[Constants.FIELD_FULL_NAME] = mDoctorFullName
+                dl[Constants.FIELD_FULL_NAME] = mDoctorFullName
+            }
 
             if (mContactNumber.isNotBlank())
                 pd[Constants.FIELD_CONTACT_NUMBER] = mContactNumber
@@ -191,11 +197,15 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             if (mRegisterId.isNotBlank())
                 pd[Constants.FIELD_DOC_REG_ID] = mRegisterId
 
-            if (mQualifications.isNotBlank())
+            if (mQualifications.isNotBlank()) {
                 pd[Constants.FIELD_DOCTOR_QUALIFICATIONS] = mQualifications
+                dl[Constants.FIELD_DOCTOR_QUALIFICATIONS] = mQualifications
+            }
 
-            if (mSpeciality.isNotBlank())
+            if (mSpeciality.isNotBlank()) {
                 pd[Constants.FIELD_DOCTOR_SPECIALITY] = mSpeciality
+                dl[Constants.FIELD_DOCTOR_SPECIALITY] = mSpeciality
+            }
 
             if (mFellowships.isNotBlank())
                 pd[Constants.FIELD_DOCTOR_FELLOWSHIPS] = mFellowships
@@ -203,8 +213,10 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             if (mExperience.isNotBlank())
                 pd[Constants.FIELD_DOCTOR_EXPERIENCE] = mExperience
 
-            if (mWorkingHospitalName.isNotBlank())
+            if (mWorkingHospitalName.isNotBlank()) {
                 pd[Constants.FIELD_WORKING_HOSPITAL_NAME] = mWorkingHospitalName
+                dl[Constants.FIELD_WORKING_HOSPITAL_NAME] = mWorkingHospitalName
+            }
 
             mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .update(pd)
@@ -218,6 +230,13 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 .addOnFailureListener {
                     Toast.makeText(this, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
                 }
+
+            if (dl.isNotEmpty()) {
+                mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+                    .set(dl)
+                    .addOnSuccessListener { Log.d(TAG, "Save to Doctor List Success") }
+                    .addOnFailureListener { Log.d(TAG, "Save to Doctor List Failure") }
+            }
         } else {
             Toast.makeText(this, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
         }
