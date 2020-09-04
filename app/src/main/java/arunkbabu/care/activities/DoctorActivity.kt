@@ -12,15 +12,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import arunkbabu.care.Constants
+import arunkbabu.care.ProfileData
 import arunkbabu.care.R
 import arunkbabu.care.Utils
+import arunkbabu.care.fragments.DoctorEditProfileFragment
 import arunkbabu.care.fragments.DoctorProfileFragment
-import arunkbabu.care.fragments.EditProfileFragment
 import arunkbabu.care.fragments.MessageFragment
 import arunkbabu.care.fragments.PatientRequestsFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -168,6 +170,60 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     /**
+     * Pushes all the profile data to database
+     * @param pressBackOnSave Whether to automatically press the back button after saving
+     */
+    private fun pushToDatabase(pressBackOnSave: Boolean) {
+        val pd: HashMap<String, Any> = HashMap()
+
+        val user: FirebaseUser? = mAuth.currentUser
+
+        if (user != null) {
+            if (mDoctorFullName.isNotBlank())
+                pd[Constants.FIELD_FULL_NAME] = mDoctorFullName
+
+            if (mContactNumber.isNotBlank())
+                pd[Constants.FIELD_CONTACT_NUMBER] = mContactNumber
+
+            if (mSex != Constants.NULL_INT)
+                pd[Constants.FIELD_SEX] = mSex
+
+            if (mRegisterId.isNotBlank())
+                pd[Constants.FIELD_DOC_REG_ID] = mRegisterId
+
+            if (mQualifications.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_QUALIFICATIONS] = mQualifications
+
+            if (mSpeciality.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_SPECIALITY] = mSpeciality
+
+            if (mFellowships.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_FELLOWSHIPS] = mFellowships
+
+            if (mExperience.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_EXPERIENCE] = mExperience
+
+            if (mWorkingHospitalName.isNotBlank())
+                pd[Constants.FIELD_WORKING_HOSPITAL_NAME] = mWorkingHospitalName
+
+            mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+                .update(pd)
+                .addOnSuccessListener {
+                    Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
+                    if (pressBackOnSave) {
+                        // Press back button
+                        onBackPressed()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(this, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
      * Upload the image files selected
      * @param bitmap The image to upload
      */
@@ -305,10 +361,10 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     /**
-     * Launches the EditProfileFragment
+     * Launches the DoctorEditProfileFragment
      */
     fun launchEditProfileFragment() {
-        val editProfFrag = EditProfileFragment()
+        val editProfFrag = DoctorEditProfileFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.doctor_activity_fragment_container, editProfFrag, editProfFrag.tag)
             .addToBackStack(editProfFrag.tag)
@@ -322,6 +378,38 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     fun signOut() {
         mAuth.signOut()
         finish()
+    }
+
+    /**
+     * Called when the Save Button in the DoctorEditProfileFragment is clicked
+     */
+    fun onEditProfileSaveClick(data: ProfileData) {
+        // Save the data values if not empty; to this activity and push them to database
+        if (data.name.isNotBlank() && data.name != "null")
+            mDoctorFullName = data.name
+
+        if (data.phone.isNotBlank() && data.phone != "null")
+            mContactNumber = data.phone
+
+        if (data.speciality.isNotBlank() && data.speciality != "null")
+            mSpeciality = data.speciality
+
+        if (data.qualifications.isNotBlank() && data.qualifications != "null")
+            mQualifications = data.qualifications
+
+        if (data.sex != Constants.NULL_INT)
+            mSex = data.sex
+
+        if (data.fellowships.isNotBlank() && data.fellowships != "null")
+            mFellowships = data.fellowships
+
+        if (data.experience.isNotBlank() && data.experience != "null")
+            mExperience = data.experience
+
+        if (data.practicingHospital.isNotBlank() && data.practicingHospital != "null")
+            mWorkingHospitalName = data.practicingHospital
+
+        pushToDatabase(pressBackOnSave = true)
     }
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
@@ -349,8 +437,8 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     override fun onBackPressed() {
-        if (EditProfileFragment.editProfileFragmentActive) {
-            // If EditProfileFragment is active go back to the previous fragment rather than exiting the activity
+        if (DoctorEditProfileFragment.editProfileFragmentActive) {
+            // If DoctorEditProfileFragment is active go back to the previous fragment rather than exiting the activity
             when (Utils.userType) {
                 Constants.USER_TYPE_DOCTOR -> {
                     supportFragmentManager.beginTransaction()

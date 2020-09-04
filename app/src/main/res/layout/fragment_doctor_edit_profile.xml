@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionGroup="true"
-    tools:context=".fragments.EditProfileFragment">
+    tools:context=".fragments.DoctorEditProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,6 +40,9 @@
                     android:id="@+id/tv_profileEdit_fullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -56,24 +60,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/default_padding"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     tools:ignore="LabelFor" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Email -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/TextInputLayout.TextInputEditText.Dark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/default_margin"
-                android:hint="@string/email">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tv_profileEdit_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorTextLightGrey"
-                    android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Contact No -->
@@ -88,6 +79,9 @@
                     android:id="@+id/tv_profileEdit_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -105,6 +99,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/default_padding"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -121,6 +118,9 @@
                     android:id="@+id/tv_profileEdit_qualifications"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapCharacters"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -137,6 +137,9 @@
                     android:id="@+id/tv_profileEdit_experience"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -153,6 +156,9 @@
                     android:id="@+id/tv_profileEdit_fellowships"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -169,26 +175,12 @@
                     android:id="@+id/tv_profileEdit_hospital"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:textColor="@color/colorTextLightGrey"
                     android:textColorHint="@color/colorAccent" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Registered Id -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/TextInputLayout.TextInputEditText.Dark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/default_margin"
-                android:hint="@string/registered_id">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tv_profileEdit_regId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorTextLightGrey"
-                    android:textColorHint="@color/colorAccent" />
-            </com.google.android.material.textfield.TextInputLayout>
-
         </LinearLayout>
     </ScrollView>
 
@@ -206,4 +198,12 @@
         app:icon="@drawable/ic_save"
         app:backgroundTint="@color/colorAccent"
         app:iconTint="@android:color/white" />
+
+    <ProgressBar
+        android:id="@+id/pb_profileEdit_saving"
+        android:layout_width="@dimen/small_progress_circle_size"
+        android:layout_height="@dimen/small_progress_circle_size"
+        android:visibility="gone"
+        android:layout_margin="@dimen/medium_margin"
+        android:layout_gravity="bottom|end"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

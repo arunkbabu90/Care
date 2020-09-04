@@ -5,6 +5,7 @@ package arunkbabu.care;
  */
 public class Constants {
     public static final int NULL_INT = -1;
+    public static final int INVALID = -2;
 
     // Request Activity
     public static final String PATIENT_REPORT_TYPE_KEY = "key_patient_report_type";

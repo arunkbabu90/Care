@@ -128,8 +128,29 @@ public class Utils {
                 break;
             case Constants.SEX_FEMALE:
                 sex = "Female";
+                break;
             default:
-                sex = "Not Provided";
+                sex = "";
+        }
+        return sex;
+    }
+
+    /**
+     * Converts the given sex value to corresponding human readable String (Ex. Male, Female)
+     * @param sexString The sex String
+     * @return int  One of {@link Constants#SEX_MALE}, {@link Constants#SEX_MALE}, {@link Constants#NULL_INT}
+     */
+    public static int toSexInt(String sexString) {
+        int sex;
+        switch (sexString.toLowerCase()) {
+            case "male":
+                sex = Constants.SEX_MALE;
+                break;
+            case "female":
+                sex = Constants.SEX_FEMALE;
+                break;
+            default:
+                sex = Constants.NULL_INT;
         }
         return sex;
     }

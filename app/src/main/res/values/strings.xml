@@ -9,6 +9,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="save">Save</string>
     <string name="save_profile_data">Save Profile Data</string>
+    <string name="err_invalid_value">Please choose or enter a valid value from the dropdown</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -95,7 +96,7 @@
     <string name="retrying_profile_update">Retrying Profile Update</string>
     <string name="creating_profile">Setting up your profile. Please be patient…</string>
     <string name="err_password_length">Password should be at-least 8 characters long</string>
-    <string name="err_empty_field">Please fill this field</string>
+    <string name="err_empty_field">This field can\'t be empty</string>
     <string name="err_some_field_empty">Error! Some of the fields are empty</string>
     <string name="err_pls_fix_all_errors">Please fix all the errors before proceeding</string>
     <string name="verify_account_heading">Verify Account</string>

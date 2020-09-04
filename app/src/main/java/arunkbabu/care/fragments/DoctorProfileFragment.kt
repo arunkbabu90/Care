@@ -110,7 +110,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
                 (activity as DoctorActivity).signOut()
             }
             R.id.fab_doc_profile_edit -> {
-                // Launch EditProfileFragment
+                // Launch DoctorEditProfileFragment
                 (activity as DoctorActivity).launchEditProfileFragment()
             }
         }
@@ -128,10 +128,14 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         tv_doc_profile_name?.text = getString(R.string.doc_name, mName)
         tv_doc_profile_speciality?.text = mSpeciality
 
+        var sex: String = Utils.toSexString(mSex)
+        if (sex.isBlank())
+            sex = "Not Provided"
+
         val profData = arrayListOf(
             "Email: $mEmail",
             "Phone: $mContactNo",
-            "Sex: ${Utils.toSexString(mSex)}",
+            "Sex: $sex",
             "Qualifications: $mQualifications",
             "Experience: $mExperience",
             "Fellowships $mFellowships",
@@ -156,6 +160,9 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             mEmail = da.mEmail
             mRegisteredId = da.mRegisterId
             mQualifications = da.mQualifications
+            mExperience = da.mExperience
+            mFellowships = da.mFellowships
+            mHospitalName = da.mWorkingHospitalName
             mSpeciality = da.mSpeciality
             mSex = da.mSex
             mContactNo = da.mContactNumber
