@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import arunkbabu.care.R
 import arunkbabu.care.activities.OtherUntowardActivity
+import arunkbabu.care.activities.PatientActivity
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_report_problem.*
 
@@ -16,6 +17,12 @@ import kotlinx.android.synthetic.main.fragment_report_problem.*
  */
 class ReportProblemFragment : Fragment(), View.OnClickListener {
 
+    companion object {
+        const val REPORTING_DOCTOR_ID_EXTRAS_KEY = "key_extras_reporting_doctor_id"
+        const val PATIENT_NAME_EXTRAS_KEY = "key_extras_patient_name"
+        const val PATIENT_SEX_EXTRAS_KEY = "key_extras_patient_sex"
+        const val PATIENT_DP_EXTRAS_KEY = "key_extras_patient_dp"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,7 +43,15 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btn_report_problem -> startActivity(Intent(context, OtherUntowardActivity::class.java))
+            R.id.btn_report_problem -> {
+                val pa = (activity as PatientActivity)
+                val reportProblemIntent = Intent(context, OtherUntowardActivity::class.java)
+                reportProblemIntent.putExtra(REPORTING_DOCTOR_ID_EXTRAS_KEY, pa.mReportingDoctorId)
+                reportProblemIntent.putExtra(PATIENT_NAME_EXTRAS_KEY, pa.mFullName)
+                reportProblemIntent.putExtra(PATIENT_SEX_EXTRAS_KEY, pa.mSex)
+                reportProblemIntent.putExtra(PATIENT_DP_EXTRAS_KEY, pa.mPatientDpPath)
+                startActivity(reportProblemIntent)
+            }
         }
     }
 }

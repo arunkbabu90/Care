@@ -1,6 +1,5 @@
 package arunkbabu.care.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Speciality
-import arunkbabu.care.activities.SearchResultsActivity
+import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.adapters.DoctorCategoryAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_doctor_search_category.*
@@ -26,8 +25,8 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,9 +50,7 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
 
     override fun onItemClick(v: View, position: Int) {
         if (mSpecialities.isNotEmpty()) {
-            val showResultsIntent = Intent(activity, SearchResultsActivity::class.java)
-            showResultsIntent.putExtra(SearchResultsActivity.KEY_EXTRA_SPECIALITY_ID, mSpecialities[position].id)
-            startActivity(showResultsIntent)
+            (activity as PatientActivity).onDocCategoryClick(mSpecialities[position])
         } else {
             Toast.makeText(context, R.string.err_default, Toast.LENGTH_LONG).show()
         }

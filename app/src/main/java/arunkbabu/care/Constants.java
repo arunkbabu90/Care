@@ -34,6 +34,7 @@ public class Constants {
     public static final String FIELD_WEIGHT = "weight";
     public static final String FIELD_PROFILE_PICTURE = "profilePicture";
     public static final String FIELD_DOC_REG_ID = "doc_reg_id";
+    public static final String FIELD_PREFERRED_DOCTOR = "preferredDoctorId";
 
     public static final String FIELD_PATIENT_ID = "patientId";
     public static final String FIELD_PATIENT_NAME = "patientName";

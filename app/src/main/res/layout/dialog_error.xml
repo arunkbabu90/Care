@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/default_margin"
-    android:background="@drawable/round_corner_dark_drawable_2">
+    android:background="@drawable/round_corner_dark_drawable_1">
 
     <ImageView
         android:id="@+id/iv_error_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintBottom_toTopOf="@id/tv_error_dialog_negative"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/sign_up_item_margin"
-        android:textColor="@color/colorTextGrey"
+        android:textColor="@color/colorTextLightGrey"
         tools:text="This is an error text"
         app:layout_constraintBottom_toBottomOf="@id/iv_error_icon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,10 +43,9 @@
         android:text="@string/cancel"
         android:textColor="@color/colorBlue"
         app:layout_constraintBottom_toBottomOf="@id/tv_error_dialog_positive"
-        app:layout_constraintEnd_toStartOf="@id/tv_error_dialog_positive"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@id/tv_error_dialog_message"
-        app:layout_constraintTop_toTopOf="@id/tv_error_dialog_positive" />
+        app:layout_constraintStart_toStartOf="@id/tv_error_dialog_message" />
 
     <TextView
         android:id="@+id/tv_error_dialog_positive"
@@ -56,7 +58,7 @@
         android:textColor="@android:color/holo_green_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.552"
         app:layout_constraintStart_toStartOf="@id/tv_error_dialog_message" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

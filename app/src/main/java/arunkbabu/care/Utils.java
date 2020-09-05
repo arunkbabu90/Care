@@ -11,6 +11,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -495,5 +498,16 @@ public class Utils {
             return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
         else
             return false;
+    }
+
+    /**
+     * Starts the recycler view layout animation
+     * @param context The context
+     * @param recyclerView The recyclerview to run the animation on
+     */
+    public static void runLayoutAnimation(Context context, RecyclerView recyclerView) {
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report);
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.scheduleLayoutAnimation();
     }
 }

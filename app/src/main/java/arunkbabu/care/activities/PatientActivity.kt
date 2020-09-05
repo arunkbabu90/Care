@@ -13,11 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import arunkbabu.care.Constants
 import arunkbabu.care.R
+import arunkbabu.care.Speciality
 import arunkbabu.care.Utils
-import arunkbabu.care.fragments.DoctorSearchCategoryFragment
-import arunkbabu.care.fragments.DoctorsReportsFragment
-import arunkbabu.care.fragments.PatientProfileFragment
-import arunkbabu.care.fragments.ReportProblemFragment
+import arunkbabu.care.fragments.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -40,18 +38,19 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
     private var mIsLaunched = false
     private var mFragId = Constants.NULL_INT
 
-    var mFullName: String = ""
+    var mFullName = ""
     var mSex: Int = Constants.NULL_INT
-    var mEmail: String = ""
+    var mEmail = ""
     var mEpochDob: Long = 0
     var mUserType: Int = 0
     var mAge: Int = 0
-    var mContactNumber: String = ""
-    var mHeight: String = ""
-    var mWeight: String = ""
-    var mDob: String = ""
-    var mBmi: String = ""
-    var mPatientDpPath: String = ""
+    var mContactNumber = ""
+    var mHeight = ""
+    var mWeight = ""
+    var mDob = ""
+    var mBmi = ""
+    var mPatientDpPath = ""
+    var mReportingDoctorId = ""
 
     companion object {
         private const val REPORT_PROBLEM_FRAGMENT_ID = 9000
@@ -190,6 +189,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                                 ""
                             }
                             mPatientDpPath = d.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
+                            mReportingDoctorId = d.getString(Constants.FIELD_PREFERRED_DOCTOR) ?: ""
 
                             val sex = d.getLong(Constants.FIELD_SEX)
                             if (sex != null) {
@@ -345,6 +345,16 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
         }
     }
 
+    /**
+     * Called when a Speciality-Category in DoctorSearchCategoryFragment is clicked
+     * @param speciality The speciality category clicked
+     */
+    fun onDocCategoryClick(speciality: Speciality) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.patient_activity_fragment_container, DocSearchResultsFragment(speciality.id))
+            .commit()
+    }
+
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
         // User is either signed out or the login credentials no longer exists. So launch the login
         // activity again for the user to sign-in
@@ -353,6 +363,19 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
             startActivity(Intent(this, LoginActivity::class.java))
             Toast.makeText(this, getString(R.string.signed_out), Toast.LENGTH_SHORT).show()
             finish()
+        }
+    }
+
+    override fun onBackPressed() {
+        if (DocSearchResultsFragment.docSearchResultsFragmentActive) {
+            // If current Fragment is Search Results Fragment then go back to the previous fragment
+            // (ie, DoctorSearchCategoryFragment) rather than exiting the app/activity
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.patient_activity_fragment_container, DoctorSearchCategoryFragment())
+                .commit()
+        } else {
+            // Default back button behaviour
+            super.onBackPressed()
         }
     }
 

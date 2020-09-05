@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import arunkbabu.care.R
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_sign_up_doctor_speciality.*
+import java.util.*
 
 class SignUpDoctorSpecialityFragment : Fragment() {
     var speciality = ""
+        get() = field.capitalize(Locale.UK)
     var qualifications = ""
 
     companion object {

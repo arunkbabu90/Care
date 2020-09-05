@@ -15,6 +15,7 @@ import arunkbabu.care.Utils
 import arunkbabu.care.activities.DoctorActivity
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_doctor_edit_profile.*
+import java.util.*
 
 class DoctorEditProfileFragment : Fragment() {
     companion object {
@@ -90,7 +91,7 @@ class DoctorEditProfileFragment : Fragment() {
      */
     private fun getDataFromViews(): ProfileData? {
         val name: String = tv_profileEdit_fullName.text.toString()
-        val speciality: String = atv_profileEdit_speciality.text.toString()
+        val speciality: String = atv_profileEdit_speciality.text.toString().capitalize(Locale.UK)
         val phone: String = tv_profileEdit_phone.text.toString()
         val sex: String = atv_profileEdit_sex.text.toString()
         val sexInt: Int = Utils.toSexInt(sex)

@@ -38,6 +38,7 @@ import arunkbabu.care.R;
 import arunkbabu.care.Utils;
 import arunkbabu.care.adapters.OtherUntowardPagerAdapter;
 import arunkbabu.care.fragments.PatientReportDescriptionFragment;
+import arunkbabu.care.fragments.ReportProblemFragment;
 import arunkbabu.care.fragments.UploadFileFragment;
 import arunkbabu.care.views.CircularImageView;
 import butterknife.BindView;
@@ -60,12 +61,12 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private FirebaseUser mUser;
     private Target mTarget;
 
-    private static String sReportingDoctorId;
-    private static String sDocName;
-    private static String sDocDpPath;
-    private static String sPatientDpPath;
-    private static int sPatientSex;
-    private static String sPatientName;
+    private String mReportingDoctorId;
+    private String sDocName;
+    private String sDocDpPath;
+    private String mPatientDpPath;
+    private int mPatientSex;
+    private String mPatientName;
 
     private ArrayList<Uri> mDownloadURIs;
     private boolean mIsNetworkConnected;
@@ -103,8 +104,24 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             });
         }
 
-        // TODO: Set reporting doctor id here
-        sReportingDoctorId = "2ptB3p4QNMcbfWMwePSeu7Gh0A32";
+        // Get patient data from intent
+        mReportingDoctorId = getIntent().getStringExtra(ReportProblemFragment.REPORTING_DOCTOR_ID_EXTRAS_KEY);
+        mPatientName = getIntent().getStringExtra(ReportProblemFragment.PATIENT_NAME_EXTRAS_KEY);
+        mPatientSex = getIntent().getIntExtra(ReportProblemFragment.PATIENT_SEX_EXTRAS_KEY, Constants.NULL_INT);
+        mPatientDpPath = getIntent().getStringExtra(ReportProblemFragment.PATIENT_DP_EXTRAS_KEY);
+
+        if (mReportingDoctorId == null)
+            mReportingDoctorId = "";
+
+        if (mPatientName == null)
+            mPatientName = "";
+
+        if (mPatientDpPath == null)
+            mPatientDpPath = "";
+
+        if (mReportingDoctorId.equals(""))
+            Utils.showErrorDialog(this, getString(R.string.info_select_doctor), "", getString(R.string.close));
+
         // Fetch the name, dp of the doctor from database
         fetchDoctorDetails();
     }
@@ -115,62 +132,31 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      *          Doctor DP: sDocDpPath
      */
     private void fetchDoctorDetails() {
-        mDb.collection(Constants.COLLECTION_USERS).document(sReportingDoctorId)
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot s = task.getResult();
-                if (s != null) {
-                    // Fetch success
-                    sDocName = s.getString(Constants.FIELD_FULL_NAME);
-                    sDocDpPath = s.getString(Constants.FIELD_PROFILE_PICTURE);
-                    mDocNameTextView.setText((sDocName == null || sDocName.equals("")) ? getString(R.string.not_set) : sDocName);
+        if (!mReportingDoctorId.isEmpty()) {
+            mDb.collection(Constants.COLLECTION_USERS).document(mReportingDoctorId).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot s = task.getResult();
+                            if (s != null) {
+                                // Fetch success
+                                sDocName = s.getString(Constants.FIELD_FULL_NAME);
+                                sDocDpPath = s.getString(Constants.FIELD_PROFILE_PICTURE);
+                                mDocNameTextView.setText((sDocName == null || sDocName.equals("")) ? getString(R.string.not_set) : sDocName);
 
-                    // Fetch the dp, sex of the patient from database
-                    fetchPatientDetails();
-                    // Hide the Loading message & Show the Constipation layout
-                    loadViews();
-                } else {
-                    Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
-    }
-
-    /**
-     * Fetches the patient's details from the database
-     * Includes Patient DP: sPatientDpPath
-     *          Patient Sex: sPatientSex
-     */
-    private void fetchPatientDetails() {
-        if (mUser != null) {
-            mDb.collection(Constants.COLLECTION_USERS).document(mUser.getUid())
-                    .get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot s = task.getResult();
-                    if (s != null) {
-                        // Fetch success
-                        sPatientDpPath = s.getString(Constants.FIELD_PROFILE_PICTURE);
-                        sPatientName = s.getString(Constants.FIELD_FULL_NAME);
-                        Long sex = s.getLong(Constants.FIELD_SEX);
-                        if (sex != null) {
-                            sPatientSex = sex.intValue();
+                                // Hide the Loading message & Show the Constipation layout
+                                loadViews();
+                            } else {
+                                Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
+                            finish();
                         }
-                        if (sPatientSex != 0 && sPatientSex != 1) {
-                            sPatientSex = Constants.SEX_MALE;
-                        }
-                    } else {
-                        Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                } else {
-                    Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
+                    });
+        } else {
+            mDocNameTextView.setText(R.string.not_set);
+            loadViews();
         }
     }
 
@@ -278,7 +264,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * @param reportId The String id of the report
      */
     private void sendRequestToDoctor(String reportId) {
-        String docRequestListPath = Constants.COLLECTION_USERS + "/" + sReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
+        String docRequestListPath = Constants.COLLECTION_USERS + "/" + mReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
         if (mUser != null) {
             // Get the user's id
             String userId = mUser.getUid();
@@ -286,8 +272,8 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             Map<String, Object> data = new HashMap<>();
             data.put(Constants.FIELD_PATIENT_ID, userId);
             data.put(Constants.FIELD_IS_A_VALID_REQUEST, true);
-            data.put(Constants.FIELD_PATIENT_NAME, sPatientName);
-            data.put(Constants.FIELD_PROFILE_PICTURE, sPatientDpPath);
+            data.put(Constants.FIELD_PATIENT_NAME, mPatientName);
+            data.put(Constants.FIELD_PROFILE_PICTURE, mPatientDpPath);
             data.put(Constants.FIELD_REPORT_TYPE, Constants.REPORT_TYPE_OTHER);
             data.put(Constants.FIELD_REPORT_ID, reportId);
             data.put(Constants.FIELD_REQUEST_TIMESTAMP, Timestamp.now());
@@ -315,7 +301,8 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * Make the views visible & hide the ErrorTextView
      */
     private void loadViews() {
-        loadImageToView(Uri.parse(sDocDpPath));
+        if (sDocDpPath != null)
+            loadImageToView(Uri.parse(sDocDpPath));
 
         mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
@@ -374,6 +361,10 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         } else {
             // Document is at last page. So create a report and send it to the doctor
             // SEND button
+            if (mReportingDoctorId == null || mReportingDoctorId.isEmpty()) {
+                Toast.makeText(this, R.string.err_no_doc_selected, Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (mIsNetworkConnected) {
                 // Internet Available
                 if (mIsAccountAlreadyVerified) {

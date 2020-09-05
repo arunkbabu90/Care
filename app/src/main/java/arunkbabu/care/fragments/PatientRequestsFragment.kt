@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.Patient
 import arunkbabu.care.R
@@ -64,7 +61,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
             mAdapter.setClickListener(this)
             rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_request_view.adapter = mAdapter
-//            runLayoutAnimation(rv_request_view)
+//            Utils.runLayoutAnimation(context, rv_request_view)
         }
     }
 
@@ -72,15 +69,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         when (v.id) {
             R.id.btn_accept -> onAcceptButtonClick(patient, position)
         }
-    }
-
-    /**
-     * Starts the layout animation
-     */
-    private fun runLayoutAnimation(recyclerView: RecyclerView) {
-        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report)
-        recyclerView.layoutAnimation = controller
-        recyclerView.scheduleLayoutAnimation()
     }
 
     /**
