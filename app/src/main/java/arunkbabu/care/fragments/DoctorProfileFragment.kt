@@ -45,10 +45,10 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     private var mSpeciality = ""
     private var mSex = Constants.NULL_INT
     private var mContactNo = ""
-    private var mQualifications = "None"
-    private var mExperience = "None"
-    private var mFellowships = "None"
-    private var mHospitalName = "None"
+    private var mQualifications = ""
+    private var mExperience = ""
+    private var mFellowships = ""
+    private var mHospitalName = ""
 
     companion object {
         var mIsUpdatesAvailable = false
@@ -138,7 +138,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             "Sex: $sex",
             "Qualifications: $mQualifications",
             "Experience: $mExperience",
-            "Fellowships $mFellowships",
+            "Fellowships: $mFellowships",
             "Practicing Hospital: $mHospitalName",
             "Registered Id: $mRegisteredId"
         )
@@ -167,6 +167,15 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             mSex = da.mSex
             mContactNo = da.mContactNumber
             mDpPath = da.mDoctorDpPath
+
+            if (mFellowships.isBlank())
+                mFellowships = "None"
+
+            if (mHospitalName.isBlank())
+                mHospitalName = "None"
+
+            if (mExperience.isBlank())
+                mExperience = "None"
 
             return mName.isNotBlank() && mEmail.isNotBlank() && mRegisteredId.isNotBlank()
                     && mQualifications.isNotBlank() && mSpeciality.isNotBlank() && mContactNo.isNotBlank()

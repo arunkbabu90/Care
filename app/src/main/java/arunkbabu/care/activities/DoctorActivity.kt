@@ -233,7 +233,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
             if (dl.isNotEmpty()) {
                 mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
-                    .set(dl)
+                    .update(dl)
                     .addOnSuccessListener { Log.d(TAG, "Save to Doctor List Success") }
                     .addOnFailureListener { Log.d(TAG, "Save to Doctor List Failure") }
             }
@@ -275,6 +275,11 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                             .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
                             .addOnSuccessListener { Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show() }
                             .addOnFailureListener { Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show() }
+
+                        mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+                            .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
+                            .addOnSuccessListener { Log.d(TAG, "Dp path push to Doctor List Success") }
+                            .addOnFailureListener { Log.d(TAG, "Dp path push to Doctor List Failure") }
                     } else {
                         Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
                     }
@@ -375,6 +380,12 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 .addOnFailureListener {
                     // Keep retrying if fails
                     pushVerificationStatusFlag(isVerified)
+                }
+            // Also push to DoctorList Collection for indexing
+            mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+                .update(Constants.FIELD_ACCOUNT_VERIFIED, isVerified)
+                .addOnFailureListener {
+                    Log.d(TAG, "Failed to Add Verification Status Flag to DoctorsList Collection")
                 }
         }
     }

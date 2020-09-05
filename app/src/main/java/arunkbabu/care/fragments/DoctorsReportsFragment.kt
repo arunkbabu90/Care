@@ -51,7 +51,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
         val user = auth.currentUser
         if (user != null) {
-            val docReportPath: String = Constants.COLLECTION_USERS + "/" + user.uid + "/" + Constants.COLLECTION_DOCTOR_REPORT
+            val docReportPath =  "${Constants.COLLECTION_USERS}/${user.uid}/${Constants.COLLECTION_DOCTOR_REPORT}"
             mDocReportQuery = db.collection(docReportPath)
                 .whereEqualTo(Constants.FIELD_IS_A_VALID_DOCTOR_REPORT, true)
                 .orderBy(Constants.FIELD_REQUEST_TIMESTAMP, Query.Direction.DESCENDING)

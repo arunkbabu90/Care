@@ -43,7 +43,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     private SignUpMainFragment mMainFrag;
     private ProcessingDialog mProcessingDialog;
 
-    private boolean mIsDoctor, mIsSigningUp;
+    private boolean mIsSigningUp;
     private String mFullName;
     private String mEmail;
     private String mPassword;
@@ -52,6 +52,8 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     private String mQualifications;
     private String mSpeciality;
     private int mUserType;
+
+    private static final String TAG = SignUpActivity.class.getSimpleName();
 
     /**
      * Error case occurred during adding information to user's profile
@@ -209,15 +211,20 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
     }
 
     /**
-     * Helper method to perform updateProfile(profileUpdateRequest)
+     * Helper method to update Firebase Profile & add it to Doctors List for indexing
      * @param user The FirebaseUser
      */
     private void updateProfile(FirebaseUser user) {
         String fullName = "";
+        HashMap<String, String> dl = new HashMap<>();
         if (mUserType == Constants.USER_TYPE_PATIENT) {
             fullName = mPatientFrag.getFullName();
-        } else if (mUserType == Constants.USER_TYPE_DOCTOR){
+        } else if (mUserType == Constants.USER_TYPE_DOCTOR) {
             fullName = mDoctorDetailsFrag.getFullName();
+            // For indexing doctor for searching
+            dl.put(Constants.FIELD_DOCTOR_QUALIFICATIONS, mQualifications);
+            dl.put(Constants.FIELD_DOCTOR_SPECIALITY, mSpeciality);
+            dl.put(Constants.FIELD_FULL_NAME, mFullName);
         }
 
         if (!fullName.equals("")) {
@@ -227,7 +234,19 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
 
             user.updateProfile(profileUpdateRequest)
                     .addOnSuccessListener(aVoid -> {
-                        pushDetailsToDatabase(user);
+                        if (dl.isEmpty()) {
+                            // Skip Indexing and Push the user data to database
+                            pushDetailsToDatabase(user);
+                        } else {
+                            // Push to Doctors List for Search Indexing
+                            mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.getUid())
+                                    .set(dl)
+                                    .addOnSuccessListener(aVoid1 -> {
+                                        // Push to Database
+                                        pushDetailsToDatabase(user);
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(this, R.string.err_indexing_failed, Toast.LENGTH_SHORT).show());
+                        }
                     })
                     .addOnFailureListener(e -> {
                         // Show error with retry button

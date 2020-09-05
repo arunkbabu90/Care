@@ -10,6 +10,7 @@
     <string name="save">Save</string>
     <string name="save_profile_data">Save Profile Data</string>
     <string name="err_invalid_value">Please choose or enter a valid value from the dropdown</string>
+    <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -24,13 +25,13 @@
     <string name="err_file_creation">Unable to create File. Please try again</string>
     <string name="err_report_creation_fail">Error Creating Report. Please try again!</string>
     <string name="err_user_not_logged_in">Error: User not logged in!</string>
-    <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
     <string name="fetching_data">Fetching data. Please wait…</string>
     <string name="reporting_doctor">Reporting Doctor</string>
     <string name="pain_report_hint">Describe your problem</string>
     <string name="err_get_download_image_url">Failed to get Image download URL</string>
     <string name="uploading_files">Uploading Files… Please Wait!</string>
     <string name="err_report_create_fail">Report Creation Failure!</string>
+    <string name="doc_speciality_qualification">%1$s (%2$s)</string>
 
     <!-- Login Activity -->
     <string name="email">Email</string>
@@ -50,6 +51,7 @@
     <string name="reset_password">Reset Password</string>
     <string name="err_send_verification_failed">Failed to send verification Email! Please make sure that you have entered the correct email of associated with your account and try again</string>
     <string name="err_email_send">Failed to send verification Email! Please try again</string>
+    <string name="err_indexing_failed">Error! Indexing search profile failed. Please try again</string>
 
     <!-- Request Activity -->
     <string name="patient_requests">Patient Requests</string>
@@ -158,4 +160,7 @@
     <string name="experience">Experience</string>
     <string name="fellowships">Fellowships</string>
     <string name="practicing_hospital">Practicing Hospital</string>
+    <string name="select">Select</string>
+    <string name="incomplete_profile">Your profile is incomplete. You won\'t appear in searches unless you complete it</string>
+    <string name="no_doctors_found">No doctors found matching your search</string>
 </resources>

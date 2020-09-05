@@ -162,7 +162,6 @@ public class Utils {
      */
     public static String toReportTypeString(int reportType) {
         String reportString;
-
         switch (reportType) {
             case Constants.REPORT_TYPE_OTHER:
                 reportString = "Other Untoward Event";
@@ -188,68 +187,52 @@ public class Utils {
      */
     public static String toSpecialityName(int specialityId) {
         String specialityString;
-
         switch (specialityId) {
             case Constants.SPECIALITY_GENERAL:
-                specialityString = "General";
+                specialityString = "General Medicine";
                 break;
-
             case Constants.SPECIALITY_ONCOLOGIST:
                 specialityString = "Oncologist";
                 break;
-
             case Constants.SPECIALITY_PEDIATRICIAN:
                 specialityString = "Pediatrician";
                 break;
-
             case Constants.SPECIALITY_ENDOCRINOLOGIST:
                 specialityString = "Endocrinologist";
                 break;
-
             case Constants.SPECIALITY_HEPATOLOGIST:
                 specialityString = "Hepatologist";
                 break;
-
             case Constants.SPECIALITY_ENT:
                 specialityString = "ENT";
                 break;
-
             case Constants.SPECIALITY_UROLOGIST:
                 specialityString = "Urologist";
                 break;
-
             case Constants.SPECIALITY_NEPHROLOGIST:
                 specialityString = "Nephrologist";
                 break;
-
             case Constants.SPECIALITY_NEUROLOGIST:
                 specialityString = "Neurologist";
                 break;
-
             case Constants.SPECIALITY_CARDIOLOGIST:
                 specialityString = "Cardiologist";
                 break;
-
             case Constants.SPECIALITY_PULMONOLOGIST:
                 specialityString = "Pulmonologist";
                 break;
-
             case Constants.SPECIALITY_PSYCHOLOGIST:
                 specialityString = "Psychologist";
                 break;
-
             case Constants.SPECIALITY_OPHTHALMOLOGIST:
                 specialityString = "Ophthalmologist";
                 break;
-
             case Constants.SPECIALITY_DENTIST:
                 specialityString = "Dentist";
                 break;
-
             case Constants.SPECIALITY_RHEUMATOLOGIST:
                 specialityString = "Rheumatologist";
                 break;
-
             case Constants.SPECIALITY_OTHER:
                 specialityString = "Other";
                 break;

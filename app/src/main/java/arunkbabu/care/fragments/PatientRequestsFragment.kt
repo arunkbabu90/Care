@@ -28,7 +28,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDb: FirebaseFirestore
     private lateinit var mGetRequestsQuery: Query
-    private var requestsCollectionPath: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +50,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         // Get Request details from database
         val user = mAuth.currentUser
         if (user != null) {
-            requestsCollectionPath = Constants.COLLECTION_USERS + "/" + user.uid + "/" + Constants.COLLECTION_PATIENT_REQUEST
+            val requestsCollectionPath = Constants.COLLECTION_USERS + "/" + user.uid + "/" + Constants.COLLECTION_PATIENT_REQUEST
             mGetRequestsQuery = mDb.collection(requestsCollectionPath)
                 .whereEqualTo(Constants.FIELD_IS_A_VALID_REQUEST, true)
                 .orderBy(Constants.FIELD_REQUEST_TIMESTAMP, Query.Direction.ASCENDING)
@@ -68,7 +67,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
 //            runLayoutAnimation(rv_request_view)
         }
     }
-
 
     override fun onItemClick(v: View, patient: Patient, position: Int) {
         when (v.id) {

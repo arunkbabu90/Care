@@ -6,10 +6,25 @@
     tools:context=".fragments.DocSearchResultsFragment">
 
     <TextView
-        android:id="@+id/tv_doc_search_results_speciality"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/tv_docSearchResults_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:textColor="@color/colorTextRed"
         android:gravity="center"
-        tools:text="Search Results for: General" />
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="@string/err_load_failed_default" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout_docSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_docSearchResults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>
