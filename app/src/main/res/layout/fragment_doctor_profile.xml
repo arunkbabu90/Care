@@ -17,17 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:src="@drawable/default_dp" />
 
-    <ProgressBar
-        android:id="@+id/pb_doc_profile_dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:translationZ="2dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/iv_doc_profile_photo"
-        app:layout_constraintEnd_toEndOf="@id/iv_doc_profile_photo"
-        app:layout_constraintStart_toStartOf="@id/iv_doc_profile_photo"
-        app:layout_constraintTop_toTopOf="@id/iv_doc_profile_photo" />
-
     <TextView
         android:id="@+id/tv_doc_profile_name"
         android:layout_width="wrap_content"

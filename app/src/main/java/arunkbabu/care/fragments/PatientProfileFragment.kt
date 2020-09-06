@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import arunkbabu.care.Constants
@@ -21,12 +20,15 @@ import arunkbabu.care.Utils
 import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.dialogs.DatePickerDialog
 import arunkbabu.care.dialogs.SimpleInputDialog
+import arunkbabu.care.resize
 import arunkbabu.care.views.TitleRadioCardView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.fragment_patient_profile.*
 import java.util.*
@@ -70,7 +72,11 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_patient_profile, container, false)
     }
@@ -107,9 +113,17 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     override fun onClick(v: View) {
         when (v.id) {
             R.id.iv_profile_photo -> {
-                val pickPhotoIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                val pickPhotoIntent = Intent(
+                    Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
                 pickPhotoIntent.type = "image/*"
-                startActivityForResult(Intent.createChooser(pickPhotoIntent, getString(R.string.pick_image)), REQUEST_CODE_PICK_IMAGE)
+                startActivityForResult(
+                    Intent.createChooser(
+                        pickPhotoIntent,
+                        getString(R.string.pick_image)
+                    ), REQUEST_CODE_PICK_IMAGE
+                )
             }
             R.id.tv_profile_name -> {
                 mFullNameClick = true
@@ -140,7 +154,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
      * Call this method only after [.fetchData] has finished fetching data from database
      */
     private fun populateDataToViews() {
-        loadImageToView(Uri.parse(mDpPath))
+        loadDpToView(Uri.parse(mDpPath))
 
         tv_profile_name.text = mFullName
         pcv_profile_email.bottomText = mEmail
@@ -287,11 +301,6 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         if (user != null) {
             mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .update(profileData)
-                .addOnSuccessListener {
-//                        if (context != null) {
-//                            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
-//                        }
-                }
                 .addOnFailureListener {
                     Toast.makeText(context, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
                 }
@@ -299,28 +308,33 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     }
 
     /**
-     * Loads an image from the specified URI to the ImageView
-     * @param imageUri The URI of the image to be loaded
+     * Loads the image from the given Uri
+     * @param imageUri Uri of the image to load
      */
-    private fun loadImageToView(@NonNull imageUri: Uri) {
-        mTarget = object : Target {
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                iv_profile_photo?.setImageBitmap(bitmap)
-                pb_profile_dp_loading?.visibility = View.GONE
-                if (mIsUpdatesAvailable && bitmap != null) {
-                    (activity as PatientActivity).uploadImageFile(bitmap)
+    private fun loadDpToView(imageUri: Uri) {
+        Glide.with(this).asBitmap().load(imageUri).into(object : CustomTarget<Bitmap>() {
+                override fun onLoadStarted(placeholder: Drawable?) {
+                    iv_profile_photo?.showProgressBar()
                 }
-            }
 
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                pb_profile_dp_loading?.visibility = View.GONE
-            }
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    iv_profile_photo?.hideProgressBar()
+                    iv_profile_photo?.setImageBitmap(resource)
+                    if (mIsUpdatesAvailable) {
+                        // Scale Down the bitmap & Upload
+                        val rBitmap = resource.resize(height = Constants.DP_UPLOAD_SIZE, width = Constants.DP_UPLOAD_SIZE)
+                        (activity as PatientActivity).uploadImageFile(rBitmap)
+                    }
+                }
 
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                pb_profile_dp_loading?.visibility = View.VISIBLE
-            }
-        }
-        Picasso.get().load(imageUri).resize(960,0).into(mTarget as Target)
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    iv_profile_photo?.hideProgressBar()
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    iv_profile_photo?.setImageBitmap(null)
+                }
+            })
     }
 
     /**
@@ -347,7 +361,10 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
                 // Height Click
                 if (pcv_profile_weight.bottomText != "" && inputText != "") {
                     // Calculate BMI if height and weight are present
-                    pcv_profile_bmi.bottomText = Utils.calculateBMI(pcv_profile_weight.bottomText, inputText)
+                    pcv_profile_bmi.bottomText = Utils.calculateBMI(
+                        pcv_profile_weight.bottomText,
+                        inputText
+                    )
                 }
                 pcv_profile_height.bottomText = inputText
                 mHeight = inputText
@@ -357,7 +374,10 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
                 // Weight Click
                 if (pcv_profile_height.bottomText != "" && inputText != "") {
                     // Calculate BMI if height and weight are present
-                    pcv_profile_bmi.bottomText = Utils.calculateBMI(inputText, pcv_profile_height.bottomText)
+                    pcv_profile_bmi.bottomText = Utils.calculateBMI(
+                        inputText,
+                        pcv_profile_height.bottomText
+                    )
                 }
                 pcv_profile_weight.bottomText = inputText
                 mWeight = inputText
@@ -388,7 +408,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
             val uri = data?.data
             if (uri != null) {
                 mIsUpdatesAvailable = true
-                loadImageToView(imageUri = uri)
+                loadDpToView(imageUri = uri)
             }
         }
     }

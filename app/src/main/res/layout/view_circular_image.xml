@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
         <ImageView
-            android:id="@+id/iv_display_picture"
+            android:id="@+id/circularImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/patient_profile_picture"
             android:scaleType="fitCenter" />
+
+        <ProgressBar
+            android:id="@+id/circularImageView_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:translationZ="2dp" />
 </merge>

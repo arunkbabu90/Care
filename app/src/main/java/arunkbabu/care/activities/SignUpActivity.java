@@ -17,6 +17,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import arunkbabu.care.Constants;
@@ -225,6 +226,7 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
             dl.put(Constants.FIELD_DOCTOR_QUALIFICATIONS, mQualifications);
             dl.put(Constants.FIELD_DOCTOR_SPECIALITY, mSpeciality);
             dl.put(Constants.FIELD_FULL_NAME, mFullName);
+            dl.put(Constants.FIELD_SEARCH_NAME, mFullName.toLowerCase(Locale.UK));
         }
 
         if (!fullName.equals("")) {

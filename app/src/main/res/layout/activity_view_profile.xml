@@ -6,15 +6,92 @@
     android:layout_height="match_parent"
     tools:context=".activities.ViewProfileActivity">
 
+    <arunkbabu.care.views.CircularImageView
+        android:id="@+id/iv_viewProfile_dp"
+        android:layout_width="@dimen/dp_image_view_size_large"
+        android:layout_height="@dimen/dp_image_view_size_large"
+        android:layout_margin="@dimen/large_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:src="@drawable/default_dp" />
+
     <TextView
-        android:id="@+id/tv_viewProfile_error"
+        android:id="@+id/tv_viewProfile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        tools:text="Text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:fontFamily="@font/muli_bold"
+        tools:text="Dr. Aaron George"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_viewProfile_dp" />
+
+    <TextView
+        android:id="@+id/tv_viewProfile_speciality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        tools:text="Cardiologist"
+        android:textColor="@color/colorTextLightGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_name" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_viewProfile_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_margin"
+        android:contentDescription="@string/select_as_preferred_doctor"
+        android:text="@string/select_doctor"
+        android:textColor="@color/colorGreen"
+        android:transitionName="doc_profile_edit_transition_container"
+        app:backgroundTint="@android:color/transparent"
+        app:icon="@drawable/ic_select"
+        app:iconTint="@color/colorGreen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality"
+        app:strokeColor="@color/colorGreen"
+        app:strokeWidth="2dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_viewProfile"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/medium_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/fab_viewProfile_select" />
+
+    <ProgressBar
+        android:id="@+id/pb_viewProfile_data_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/rv_viewProfile"
+        app:layout_constraintEnd_toEndOf="@id/rv_viewProfile"
+        app:layout_constraintStart_toStartOf="@id/rv_viewProfile"
+        app:layout_constraintTop_toTopOf="@id/rv_viewProfile" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_viewProfile_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality"
+        android:text="@string/err_load_failed_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

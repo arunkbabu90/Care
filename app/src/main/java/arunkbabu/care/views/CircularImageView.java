@@ -3,10 +3,13 @@ package arunkbabu.care.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
@@ -27,6 +30,7 @@ public class CircularImageView extends MaterialCardView {
     public static final int SCALE_TYPE_CENTERINSIDE = 7;
 
     private ImageView mImageView;
+    private ProgressBar mLoadingCircle;
     private int mDpResourceId;
     private int mScaleType;
     private int mIconTint;
@@ -62,6 +66,7 @@ public class CircularImageView extends MaterialCardView {
             float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
             setRadius(radius); // Card Radius
             setCardBackgroundColor(getResources().getColor(R.color.colorBackgroundGrey)); // Background Color
+            mLoadingCircle = findViewById(R.id.circularImageView_progressBar);
             mIsInflationSuccess = true;
         } else {
             Toast.makeText(context, getResources().getString(R.string.err_unexpected), Toast.LENGTH_LONG).show();
@@ -123,6 +128,14 @@ public class CircularImageView extends MaterialCardView {
     }
 
     /**
+     * Set the image to the view
+     * @param drawable Drawable: The image drawable
+     */
+    public void setImageDrawable(Drawable drawable) {
+        mImageView.setImageDrawable(drawable);
+    }
+
+    /**
      * Set the Tint of the icon or image in the image view
      * @param color The color resource id
      */
@@ -131,11 +144,25 @@ public class CircularImageView extends MaterialCardView {
             mImageView.setColorFilter(ContextCompat.getColor(getContext(), color));
     }
 
+    /**
+     * Show the loading circle
+     */
+    public void showProgressBar() {
+        mLoadingCircle.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hide the loading circle
+     */
+    public void hideProgressBar() {
+        mLoadingCircle.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         // Load the image only if the view is inflated; to prevent app crash
-        mImageView = findViewById(R.id.iv_display_picture);
+        mImageView = findViewById(R.id.circularImageView);
         if (mIsInflationSuccess) {
             if (mDpResourceId != -1) {
                 setImageFromResource(mDpResourceId);

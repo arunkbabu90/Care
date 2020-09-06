@@ -12,6 +12,7 @@
     <string name="err_invalid_value">Please choose or enter a valid value from the dropdown</string>
     <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
     <string name="info_select_doctor">Go back and select a doctor first from the Search tab!</string>
+    <string name="profile_picture">Profile Picture</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -31,6 +32,7 @@
     <string name="pain_report_hint">Describe your problem</string>
     <string name="err_get_download_image_url">Failed to get Image download URL</string>
     <string name="uploading_files">Uploading Files… Please Wait!</string>
+    <string name="uploading_photo">Uploading Photo…!</string>
     <string name="err_report_create_fail">Report Creation Failure!</string>
     <string name="doc_speciality_qualification">%1$s (%2$s)</string>
     <string name="select">Select</string>
@@ -38,6 +40,8 @@
     <string name="doctor_selected">Dr. %1$s selected as your preferred Doctor</string>
     <string name="err_failed_set_preferred_doctor">Error! Unable to set as preferred doctor. Please try again</string>
     <string name="err_no_doc_selected">Error! Please select a doctor to send this report to</string>
+    <string name="select_as_preferred_doctor">Select as your preferred doctor</string>
+    <string name="select_doctor">Select Doctor</string>
 
     <!-- Login Activity -->
     <string name="email">Email</string>
@@ -167,4 +171,5 @@
     <string name="fellowships">Fellowships</string>
     <string name="practicing_hospital">Practicing Hospital</string>
     <string name="incomplete_profile">Your profile is incomplete. You won\'t appear in searches unless you complete it</string>
+    <string name="selected">Selected</string>
 </resources>

@@ -80,7 +80,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
      * Starts the layout animation
      */
     private fun runLayoutAnimation(recyclerView: RecyclerView) {
-        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report)
+        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation_reverse)
         recyclerView.layoutAnimation = controller
         recyclerView.scheduleLayoutAnimation()
     }

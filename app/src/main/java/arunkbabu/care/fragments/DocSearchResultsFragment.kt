@@ -35,7 +35,7 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
     private lateinit var mDb: FirebaseFirestore
 
     companion object {
-        const val DOCUMENT_ID_EXTRAS_KEY = "key_intent_extras_document_id"
+        const val USER_ID_EXTRAS_KEY = "key_intent_extras_document_id"
         const val DOCTOR_NAME_EXTRAS_KEY = "key_intent_extras_doctor_name"
         const val DOCTOR_DP_EXTRAS_KEY = "key_intent_extras_doctor_profile_picture"
 
@@ -107,7 +107,7 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
      */
     private fun onItemClick(doctor: Doctor) {
         val viewProfileIntent = Intent(context, ViewProfileActivity::class.java)
-        viewProfileIntent.putExtra(DOCUMENT_ID_EXTRAS_KEY, doctor.documentId)
+        viewProfileIntent.putExtra(USER_ID_EXTRAS_KEY, doctor.documentId)
         viewProfileIntent.putExtra(DOCTOR_NAME_EXTRAS_KEY, doctor.full_name)
         viewProfileIntent.putExtra(DOCTOR_DP_EXTRAS_KEY, doctor.profilePicture)
         startActivity(viewProfileIntent)
@@ -125,7 +125,7 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
             mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .set(preferredDoc, SetOptions.merge())
                 .addOnSuccessListener {
-                    (activity as PatientActivity).mReportingDoctorId = doctor.documentId
+                    PatientActivity.sReportingDoctorId = doctor.documentId
                     Toast.makeText(context, getString(R.string.doctor_selected, doctor.full_name), Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { Toast.makeText(context, getString(R.string.err_failed_set_preferred_doctor), Toast.LENGTH_SHORT).show() }

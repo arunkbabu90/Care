@@ -46,7 +46,7 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
             R.id.btn_report_problem -> {
                 val pa = (activity as PatientActivity)
                 val reportProblemIntent = Intent(context, OtherUntowardActivity::class.java)
-                reportProblemIntent.putExtra(REPORTING_DOCTOR_ID_EXTRAS_KEY, pa.mReportingDoctorId)
+                reportProblemIntent.putExtra(REPORTING_DOCTOR_ID_EXTRAS_KEY, PatientActivity.sReportingDoctorId)
                 reportProblemIntent.putExtra(PATIENT_NAME_EXTRAS_KEY, pa.mFullName)
                 reportProblemIntent.putExtra(PATIENT_SEX_EXTRAS_KEY, pa.mSex)
                 reportProblemIntent.putExtra(PATIENT_DP_EXTRAS_KEY, pa.mPatientDpPath)

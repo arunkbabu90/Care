@@ -2,25 +2,25 @@ package arunkbabu.care;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import arunkbabu.care.dialogs.ErrorDialog;
+import arunkbabu.care.views.CircularImageView;
 
 public class Utils {
     /**
@@ -350,119 +351,6 @@ public class Utils {
     }
 
     /**
-     * Calculates the size in MegaPixels from the given image Width & Height
-     * @param height Height of the image
-     * @param width Width of the image
-     * @return Size in MegaPixels
-     */
-    private static float effectiveMegaPixels(float height, float width) {
-        return (height*width) / 1000000;
-    }
-
-    /**
-     * Get the real path from a uri returned by the Storage Access Framework
-     * @param context The application context
-     * @param imageUri The Uri to be parsed
-     * @return The Real path of the image
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private static String getStorageAccessFrameworkUri(Context context, Uri imageUri){
-        // Will return "image:x*"
-        String wholeID = DocumentsContract.getDocumentId(imageUri);
-
-        // Split at colon, use second item in the array
-        String id = wholeID.split(":")[1];
-
-        String[] column = { MediaStore.Images.Media.DATA };
-
-        // where id is equal to
-        String sel = MediaStore.Images.Media._ID + "=?";
-
-        Cursor cursor = context.getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{ id }, null);
-
-        String filePath = "";
-
-        int columnIndex = cursor.getColumnIndex(column[0]);
-
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
-        }
-
-        cursor.close();
-        return filePath;
-    }
-
-    /**
-     * Retrieves the real path from a MediaStore Uri (content://)
-     * @param context The application Context
-     * @param contentUri The Uri to be converted to path
-     * @return The real path of the MediaStore Uri
-     */
-    private static String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    /**
-     * Returns the image's resize dimensions from a MediaStore (content://) Uri or file (file://) Uri so
-     * that it can be used to load the image as 2MP FHD image or in efficient size
-     * @param context The Application Context
-     * @param imageUri The Uri of the image
-     * @return The resize dimensions for the image
-     */
-    public static Dimension getResizeDimensions(Context context, Uri imageUri) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        // Intelligently executes appropriate form of getting resize dimensions respective to the type of Uri
-        if (imageUri.toString().startsWith("content://com.android.providers")) {
-            BitmapFactory.decodeFile(new File(getStorageAccessFrameworkUri(context, imageUri)).getAbsolutePath(), options);
-        } else if (imageUri.toString().startsWith("content://")) {
-            BitmapFactory.decodeFile(new File(getRealPathFromURI(context, imageUri)).getAbsolutePath(), options);
-        } else {
-            BitmapFactory.decodeFile(new File(imageUri.getPath()).getAbsolutePath(), options);
-        }
-        float height = options.outHeight;
-        float width = options.outWidth;
-        options.inJustDecodeBounds = false;
-
-        float megaPixels = effectiveMegaPixels(height, width);
-        float newHeight, newWidth;
-
-        // IF the Original Image dimensions is less than 2 MP then don't scale
-        if (megaPixels > 0.912) {
-            if (width > height) {
-                // landscape
-                newHeight = (height / width)*950;
-                newWidth = 950;
-            } else if (height > width) {
-                // portrait
-                newHeight = 960;
-                newWidth = (width / height)*960;
-            } else {
-                newHeight = height/2;
-                newWidth = width/2;
-            }
-        } else {
-            newHeight = height;
-            newWidth = width;
-        }
-
-        return new Dimension((int)newHeight, (int)newWidth);
-    }
-
-    /**
      * Show the error dialog
      * @param message The error message to be shown
      * @param positiveButtonLabel The label of the positive button. If empty, the button will be disabled
@@ -504,10 +392,79 @@ public class Utils {
      * Starts the recycler view layout animation
      * @param context The context
      * @param recyclerView The recyclerview to run the animation on
+     * @param reverseAnimation Whether to reverse the animation effect.
+     *                        If True then the animation will play in the reverse order
      */
-    public static void runLayoutAnimation(Context context, RecyclerView recyclerView) {
-        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_doctors_report);
+    public static void runLayoutAnimation(Context context, RecyclerView recyclerView, boolean reverseAnimation) {
+        LayoutAnimationController controller;
+        if (reverseAnimation) {
+            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation_reverse);
+        } else {
+            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation);
+        }
         recyclerView.setLayoutAnimation(controller);
         recyclerView.scheduleLayoutAnimation();
+    }
+
+    /**
+     * Loads the image to image view from the given String path
+     * @param imageURL String: The URL of the image to load
+     * @param c The context
+     * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
+     */
+    public static void loadDpToView(Context c, String imageURL, CircularImageView circularImageView) {
+        Glide.with(c).load(imageURL).into(new CustomTarget<Drawable>() {
+            @Override
+            public void onLoadStarted(@Nullable Drawable placeholder) {
+                circularImageView.showProgressBar();
+            }
+
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                circularImageView.hideProgressBar();
+                circularImageView.setImageDrawable(resource);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                circularImageView.hideProgressBar();
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                circularImageView.setImageDrawable(null);
+            }
+        });
+    }
+
+    /**
+     * Loads the image to image view from the given Uri
+     * @param imageUri Uri of the image to load
+     * @param c The context
+     * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
+     */
+    public static void loadDpToView(Context c, Uri imageUri, CircularImageView circularImageView) {
+        Glide.with(c).load(imageUri).into(new CustomTarget<Drawable>() {
+            @Override
+            public void onLoadStarted(@Nullable Drawable placeholder) {
+                circularImageView.showProgressBar();
+            }
+
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                circularImageView.hideProgressBar();
+                circularImageView.setImageDrawable(resource);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                circularImageView.hideProgressBar();
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                circularImageView.setImageDrawable(null);
+            }
+        });
     }
 }

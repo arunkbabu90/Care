@@ -26,13 +26,6 @@
                 android:layout_marginTop="@dimen/large_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 app:src="@drawable/default_dp" />
-
-            <ProgressBar
-                android:id="@+id/pb_profile_dp_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:translationZ="2dp" />
         </FrameLayout>
 
         <com.google.android.material.textview.MaterialTextView

@@ -7,6 +7,8 @@ public class Constants {
     public static final int NULL_INT = -1;
     public static final int INVALID = -2;
 
+    public static final String PROFILE_PICTURE_EXTRA_KEY = "key_profile_picture_extra";
+
     // Request Activity
     public static final String PATIENT_REPORT_TYPE_KEY = "key_patient_report_type";
     public static final String PATIENT_ID_KEY = "key_patient_id";
@@ -54,8 +56,9 @@ public class Constants {
     public static final String FIELD_DOCTOR_QUALIFICATIONS = "qualification";
     public static final String FIELD_DOCTOR_FELLOWSHIPS = "fellowships";
     public static final String FIELD_WORKING_HOSPITAL_NAME = "hospital";
+    public static final String FIELD_SEARCH_NAME = "searchName";
 
-    // Cloud Firestore Related
+    // Cloud Storage Related
     public static final String DIRECTORY_PROFILE_PICTURE = "/ProfilePictures/";
     public static final String DIRECTORY_SENT_IMAGES = "/SentImages/";
     public static final String PROFILE_PICTURE_FILE_NAME = "IMG_USER_PROFILE_PICTURE";
@@ -64,6 +67,8 @@ public class Constants {
     public static final int SEX_MALE = 1;
 
     public static final String IMG_FORMAT_JPG = ".jpg";
+    public static final int JPG_QUALITY = 80;
+    public static final int DP_UPLOAD_SIZE = 960;
 
     public static final int USER_TYPE_PATIENT = 50;
     public static final int USER_TYPE_DOCTOR = 51;

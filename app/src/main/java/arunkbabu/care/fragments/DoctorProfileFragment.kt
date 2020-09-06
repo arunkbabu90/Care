@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,23 +21,25 @@ import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.adapters.DoctorProfileAdapter
+import arunkbabu.care.resize
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.fragment_doctor_profile.*
 
 class DoctorProfileFragment : Fragment(), View.OnClickListener {
     private lateinit var mAdapter: DoctorProfileAdapter
-    private lateinit var mTarget: Target
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mCloudStore: FirebaseStorage
     private lateinit var mDb: FirebaseFirestore
 
     private var isViewsLoaded: Boolean = false
     private var mDpPath = ""
+    private var mDpFilePath = ""
     private var mName = ""
     private var mEmail = ""
     private var mRegisteredId = ""
@@ -63,7 +64,11 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_doctor_profile, container, false)
     }
@@ -82,7 +87,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             // No data available. So retry in a few seconds
             Handler(Looper.getMainLooper()).postDelayed({
                 hasData = getProfileData()
-                if (hasData){
+                if (hasData) {
                     loadToViews()
                 } else {
                     tv_doc_profile_err?.visibility = View.VISIBLE
@@ -102,9 +107,17 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.iv_doc_profile_photo -> {
-                val pickImg = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                val pickImg = Intent(
+                    Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
                 pickImg.type = "image/*"
-                startActivityForResult(Intent.createChooser(pickImg, getString(R.string.pick_image)), REQUEST_CODE_PICK_IMAGE)
+                startActivityForResult(
+                    Intent.createChooser(
+                        pickImg,
+                        getString(R.string.pick_image)
+                    ), REQUEST_CODE_PICK_IMAGE
+                )
             }
             R.id.btn_doc_sign_out -> {
                 (activity as DoctorActivity).signOut()
@@ -122,7 +135,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     private fun loadToViews() {
         if (mDpPath.isNotBlank()) {
             // Load profile picture
-            loadImageToView(Uri.parse(mDpPath))
+            loadDpToView(Uri.parse(mDpPath))
         }
 
         tv_doc_profile_name?.text = getString(R.string.doc_name, mName)
@@ -133,14 +146,14 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             sex = "Not Provided"
 
         val profData = arrayListOf(
-            "Email: $mEmail",
-            "Phone: $mContactNo",
-            "Sex: $sex",
-            "Qualifications: $mQualifications",
-            "Experience: $mExperience",
-            "Fellowships: $mFellowships",
-            "Practicing Hospital: $mHospitalName",
-            "Registered Id: $mRegisteredId"
+            "Email" to mEmail,
+            "Phone" to mContactNo,
+            "Sex" to sex,
+            "Qualifications" to mQualifications,
+            "Experience" to mExperience,
+            "Fellowships" to mFellowships,
+            "Practicing Hospital" to mHospitalName,
+            "Registered Id" to mRegisteredId
         )
         mAdapter = DoctorProfileAdapter(profData)
         rv_doc_profile?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -184,28 +197,35 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Loads an image from the specified URI to the ImageView
-     * @param imageUri The URI of the image to be loaded
+     * Loads the image from the given Uri
+     * @param imageUri Uri of the image to load
      */
-    private fun loadImageToView(@NonNull imageUri: Uri) {
-        mTarget = object : Target {
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                iv_doc_profile_photo?.setImageBitmap(bitmap)
-                pb_doc_profile_dp?.visibility = View.GONE
-                if (mIsUpdatesAvailable && bitmap != null) {
-                    (activity as DoctorActivity).uploadImageFile(bitmap)
+    private fun loadDpToView(imageUri: Uri) {
+        Glide.with(this).asBitmap()
+            .load(imageUri)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadStarted(placeholder: Drawable?) {
+                    iv_doc_profile_photo?.showProgressBar()
                 }
-            }
 
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                pb_doc_profile_dp?.visibility = View.GONE
-            }
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    iv_doc_profile_photo?.hideProgressBar()
+                    iv_doc_profile_photo?.setImageBitmap(resource)
+                    if (mIsUpdatesAvailable) {
+                        // Scale Down the bitmap & Upload
+                        val rBitmap = resource.resize(height = Constants.DP_UPLOAD_SIZE, width = Constants.DP_UPLOAD_SIZE)
+                        (activity as DoctorActivity).uploadImageFile(rBitmap)
+                    }
+                }
 
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-                pb_doc_profile_dp?.visibility = View.VISIBLE
-            }
-        }
-        Picasso.get().load(imageUri).noFade().resize(960,0).into(mTarget)
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    iv_doc_profile_photo?.hideProgressBar()
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    iv_doc_profile_photo?.setImageBitmap(null)
+                }
+            })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -214,9 +234,9 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             val uri = data?.data
             if (uri != null && isViewsLoaded) {
                 if (Utils.isNetworkConnected(context)) {
-                    pb_doc_profile_dp?.visibility = View.VISIBLE
+                    iv_doc_profile_photo?.showProgressBar()
                     mIsUpdatesAvailable = true
-                    loadImageToView(imageUri = uri)
+                    loadDpToView(uri)
                 } else {
                     Toast.makeText(context, R.string.err_internet_default, Toast.LENGTH_SHORT).show()
                 }

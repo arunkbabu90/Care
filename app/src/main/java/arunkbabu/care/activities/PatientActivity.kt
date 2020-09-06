@@ -50,13 +50,14 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
     var mDob = ""
     var mBmi = ""
     var mPatientDpPath = ""
-    var mReportingDoctorId = ""
 
     companion object {
         private const val REPORT_PROBLEM_FRAGMENT_ID = 9000
         private const val DOC_SEARCH_FRAGMENT_ID = 9001
         private const val DOCTORS_REPORT_FRAGMENT_ID = 9002
         private const val PATIENT_PROFILE_FRAGMENT_ID = 9003
+
+        var sReportingDoctorId = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -189,7 +190,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                                 ""
                             }
                             mPatientDpPath = d.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
-                            mReportingDoctorId = d.getString(Constants.FIELD_PREFERRED_DOCTOR) ?: ""
+                            sReportingDoctorId = d.getString(Constants.FIELD_PREFERRED_DOCTOR) ?: ""
 
                             val sex = d.getLong(Constants.FIELD_SEX)
                             if (sex != null) {
@@ -210,16 +211,18 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
      * @param bitmap The image to upload
      */
     fun uploadImageFile(bitmap: Bitmap) {
-        pb_profile_dp_loading?.visibility = View.VISIBLE
+        iv_profile_photo?.showProgressBar()
+        Toast.makeText(this, R.string.uploading_photo, Toast.LENGTH_SHORT).show()
 
-        val user: FirebaseUser? = mAuth.currentUser
         // Convert the image bitmap to InputStream
         val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, Constants.JPG_QUALITY, bos)
         val bs = ByteArrayInputStream(bos.toByteArray())
+
+        val user: FirebaseUser? = mAuth.currentUser
         if (user != null) {
             // Upload the image file
-            val uploadPath = user.uid + "/" + Constants.DIRECTORY_PROFILE_PICTURE + "/" + Constants.PROFILE_PICTURE_FILE_NAME
+            val uploadPath = "${user.uid}/${Constants.DIRECTORY_PROFILE_PICTURE}/${Constants.PROFILE_PICTURE_FILE_NAME}${Constants.IMG_FORMAT_JPG}"
             val storageReference = mCloudStore.getReference(uploadPath)
             storageReference.putStream(bs)
                 .continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
@@ -244,7 +247,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, Bot
                     } else {
                         Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show()
                     }
-                    pb_profile_dp_loading?.visibility = View.GONE
+                    iv_profile_photo?.hideProgressBar()
                 }
         }
         PatientProfileFragment.mIsUpdatesAvailable = false
