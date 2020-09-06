@@ -63,7 +63,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     implementation 'androidx.paging:paging-runtime:2.1.2'
-    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 }

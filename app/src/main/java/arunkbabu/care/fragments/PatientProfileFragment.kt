@@ -29,7 +29,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.fragment_patient_profile.*
 import java.util.*
 import kotlin.collections.HashMap

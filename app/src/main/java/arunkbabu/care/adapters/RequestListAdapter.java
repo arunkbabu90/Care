@@ -1,8 +1,6 @@
 package arunkbabu.care.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import arunkbabu.care.Patient;
 import arunkbabu.care.R;
@@ -48,7 +44,7 @@ public class RequestListAdapter extends FirestoreRecyclerAdapter<Patient, Reques
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_patient_request, parent, false);
-        return new RequestViewHolder(view);
+        return new RequestViewHolder(parent.getContext(), view);
     }
 
     @Override
@@ -82,10 +78,11 @@ public class RequestListAdapter extends FirestoreRecyclerAdapter<Patient, Reques
         @BindView(R.id.tv_patient_report_type) TextView mPatientReportTypeTextView;
         @BindView(R.id.tv_patient_name) TextView mPatientNameTextView;
 
-        private Target mTarget;
+        private Context context;
 
-        RequestViewHolder(View view) {
+        RequestViewHolder(Context context, View view) {
             super(view);
+            this.context = context;
             ButterKnife.bind(this, view);
         }
 
@@ -93,33 +90,13 @@ public class RequestListAdapter extends FirestoreRecyclerAdapter<Patient, Reques
             mPatientReportTypeTextView.setText(String.format("Report on %s", Utils.toReportTypeString(patient.getReportType())));
             mPatientNameTextView.setText(patient.getPatientName());
             // Load the patient dp
-            loadImageToView(Uri.parse(patient.getProfilePicture()));
+            Utils.loadDpToView(context, patient.getProfilePicture(), mPatientDpView);
 
             mAcceptButton.setOnClickListener(v -> {
                 if (mItemClickListener != null) {
                     mItemClickListener.onItemClick(v, patient, getAdapterPosition());
                 }
             });
-        }
-
-        /**
-         * Loads an image from the specified URI to the ImageView
-         * @param imageUri The URI of the image to be loaded
-         */
-        private void loadImageToView(Uri imageUri) {
-            mTarget = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    mPatientDpView.setImageBitmap(bitmap);
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) { }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) { }
-            };
-            Picasso.get().load(imageUri).resize(240, 0).into(mTarget);
         }
     }
 

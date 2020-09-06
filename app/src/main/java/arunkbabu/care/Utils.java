@@ -409,11 +409,11 @@ public class Utils {
     /**
      * Loads the image to image view from the given String path
      * @param imageURL String: The URL of the image to load
-     * @param c The context
+     * @param context The context
      * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
      */
-    public static void loadDpToView(Context c, String imageURL, CircularImageView circularImageView) {
-        Glide.with(c).load(imageURL).into(new CustomTarget<Drawable>() {
+    public static void loadDpToView(Context context, String imageURL, CircularImageView circularImageView) {
+        Glide.with(context).load(imageURL).into(new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 circularImageView.showProgressBar();
@@ -440,11 +440,11 @@ public class Utils {
     /**
      * Loads the image to image view from the given Uri
      * @param imageUri Uri of the image to load
-     * @param c The context
+     * @param context The context
      * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
      */
-    public static void loadDpToView(Context c, Uri imageUri, CircularImageView circularImageView) {
-        Glide.with(c).load(imageUri).into(new CustomTarget<Drawable>() {
+    public static void loadDpToView(Context context, Uri imageUri, CircularImageView circularImageView) {
+        Glide.with(context).load(imageUri).into(new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 circularImageView.showProgressBar();

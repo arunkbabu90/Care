@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,10 +26,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +67,6 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
     private Uri mFileUri;
     private int mSelectedPosition;
     private SelectedFilesAdapter mAdapter;
-    private Target mTarget;
     public static ArrayList<Uri> sPathList;
     public static ArrayList<String> sFileNameList;
     private String cUndoFileNameCache;
@@ -231,25 +230,28 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         if (mSelectedPhotoImageView.getVisibility() == View.INVISIBLE || mSelectedPhotoImageView.getVisibility() == View.GONE) {
             mSelectedPhotoImageView.setVisibility(View.VISIBLE);
         }
-        mTarget = new Target() {
+        Glide.with(this).load(sPathList.get(position)).into(new CustomTarget<Drawable>() {
             @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mSelectedPhotoImageView.setImageBitmap(bitmap);
-                mProgressCircle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                mProgressCircle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            public void onLoadStarted(@Nullable Drawable placeholder) {
                 mProgressCircle.setVisibility(View.VISIBLE);
             }
-        };
 
-        Picasso.get().load(sPathList.get(position)).into(mTarget);
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                mSelectedPhotoImageView.setImageDrawable(resource);
+                mProgressCircle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                mProgressCircle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                mSelectedPhotoImageView.setImageDrawable(null);
+            }
+        });
     }
 
     /**
@@ -260,25 +262,29 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         if (mSelectedPhotoImageView.getVisibility() == View.INVISIBLE || mSelectedPhotoImageView.getVisibility() == View.GONE) {
             mSelectedPhotoImageView.setVisibility(View.VISIBLE);
         }
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mSelectedPhotoImageView.setImageBitmap(bitmap);
-                mProgressCircle.setVisibility(View.GONE);
-            }
 
+        Glide.with(this).load(imageUri).into(new CustomTarget<Drawable>() {
             @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                mProgressCircle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
+            public void onLoadStarted(@Nullable Drawable placeholder) {
                 mProgressCircle.setVisibility(View.VISIBLE);
             }
-        };
 
-        Picasso.get().load(imageUri).into(mTarget);
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                mSelectedPhotoImageView.setImageDrawable(resource);
+                mProgressCircle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                mProgressCircle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                mSelectedPhotoImageView.setImageDrawable(null);
+            }
+        });
     }
 
     /**
@@ -403,7 +409,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             mAdapter = new SelectedFilesAdapter(sFileNameList);
             mSelectedFilesRecyclerView.setAdapter(mAdapter);
             if (sPathList != null && sPathList.size() > 0) {
-                Picasso.get().load(sPathList.get(mSelectedPosition)).into(mSelectedPhotoImageView);
+                Glide.with(this).load(sPathList.get(mSelectedPosition)).into(mSelectedPhotoImageView);
             }
         }
     }

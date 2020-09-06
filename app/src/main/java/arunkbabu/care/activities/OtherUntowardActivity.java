@@ -1,7 +1,5 @@
 package arunkbabu.care.activities;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -26,8 +24,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +55,6 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private FirebaseAuth mAuth;
     private FirebaseStorage mCloudStore;
     private FirebaseUser mUser;
-    private Target mTarget;
 
     private String mReportingDoctorId;
     private String sDocName;
@@ -158,32 +153,6 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             mDocNameTextView.setText(R.string.not_set);
             loadViews();
         }
-    }
-
-    /**
-     * Loads an image from the specified URI to the ImageView
-     * @param imageUri The URI of the image to be loaded
-     */
-    private void loadImageToView(@NonNull Uri imageUri) {
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mDpProgressBar.setVisibility(View.GONE);
-                mDocDpImageView.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                mDpProgressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                mDpProgressBar.setVisibility(View.VISIBLE);
-            }
-        };
-
-        Picasso.get().load(imageUri).resize(300,0).into(mTarget);
     }
 
     /**
@@ -302,7 +271,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      */
     private void loadViews() {
         if (sDocDpPath != null)
-            loadImageToView(Uri.parse(sDocDpPath));
+            Utils.loadDpToView(this, sDocDpPath, mDocDpImageView);
 
         mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
