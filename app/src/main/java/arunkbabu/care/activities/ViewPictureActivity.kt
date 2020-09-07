@@ -7,7 +7,6 @@ import android.view.ScaleGestureDetector
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GestureDetectorCompat
-import arunkbabu.care.Constants
 import arunkbabu.care.R
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_view_picture.*
@@ -24,13 +23,17 @@ class ViewPictureActivity : AppCompatActivity(),  GestureDetector.OnGestureListe
     private var mPosX: Float = 0f
     private var mPosY: Float = 0f
 
+    companion object {
+        val PROFILE_PICTURE_PATH_EXTRA_KEY = "key_profile_picture_path_extra"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_picture)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        val imagePath = intent.getStringExtra(Constants.PROFILE_PICTURE_EXTRA_KEY)
+        val imagePath = intent.getStringExtra(PROFILE_PICTURE_PATH_EXTRA_KEY)
         Glide.with(this).load(imagePath).into(iv_viewPicture)
 
         mGestureDetector = GestureDetectorCompat(this, this)

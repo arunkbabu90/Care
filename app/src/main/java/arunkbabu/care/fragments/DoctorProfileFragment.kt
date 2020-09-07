@@ -20,6 +20,7 @@ import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.activities.DoctorActivity
+import arunkbabu.care.activities.ViewPictureActivity
 import arunkbabu.care.adapters.DoctorProfileAdapter
 import arunkbabu.care.resize
 import com.bumptech.glide.Glide
@@ -39,7 +40,6 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
 
     private var isViewsLoaded: Boolean = false
     private var mDpPath = ""
-    private var mDpFilePath = ""
     private var mName = ""
     private var mEmail = ""
     private var mRegisteredId = ""
@@ -64,11 +64,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_doctor_profile, container, false)
     }
@@ -102,22 +98,20 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         iv_doc_profile_photo.setOnClickListener(this)
         btn_doc_sign_out.setOnClickListener(this)
         fab_doc_profile_edit.setOnClickListener(this)
+        fab_doc_profile_dp_edit.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
-            R.id.iv_doc_profile_photo -> {
-                val pickImg = Intent(
-                    Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                )
+            R.id.fab_doc_profile_dp_edit -> {
+                val pickImg = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 pickImg.type = "image/*"
-                startActivityForResult(
-                    Intent.createChooser(
-                        pickImg,
-                        getString(R.string.pick_image)
-                    ), REQUEST_CODE_PICK_IMAGE
-                )
+                startActivityForResult(Intent.createChooser(pickImg, getString(R.string.pick_image)), REQUEST_CODE_PICK_IMAGE)
+            }
+            R.id.iv_doc_profile_photo -> {
+                val viewPicture = Intent(context, ViewPictureActivity::class.java)
+                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as DoctorActivity).mDoctorDpPath)
+                startActivity(viewPicture)
             }
             R.id.btn_doc_sign_out -> {
                 (activity as DoctorActivity).signOut()
@@ -158,6 +152,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         mAdapter = DoctorProfileAdapter(profData)
         rv_doc_profile?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         rv_doc_profile?.adapter = mAdapter
+        Utils.runLayoutAnimation(context, rv_doc_profile, true)
 
         pb_doc_profile_data?.visibility = View.GONE
     }

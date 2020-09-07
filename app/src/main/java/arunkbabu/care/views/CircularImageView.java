@@ -34,6 +34,7 @@ public class CircularImageView extends MaterialCardView {
     private int mDpResourceId;
     private int mScaleType;
     private int mIconTint;
+    private int mBackgroundColor;
     private boolean mIsInflationSuccess;
 
     public CircularImageView(Context context) {
@@ -49,6 +50,7 @@ public class CircularImageView extends MaterialCardView {
             mDpResourceId = a.getResourceId(R.styleable.CircularImageView_src, -1);
             mScaleType = a.getInteger(R.styleable.CircularImageView_scaleType, 3);
             mIconTint = a.getColor(R.styleable.CircularImageView_iconTint, ContextCompat.getColor(context, android.R.color.transparent));
+            mBackgroundColor = a.getColor(R.styleable.CircularImageView_android_background, ContextCompat.getColor(context, R.color.colorBackgroundGrey));
         } finally {
             a.recycle();
         }
@@ -65,7 +67,7 @@ public class CircularImageView extends MaterialCardView {
             inflater.inflate(R.layout.view_circular_image, this, true);
             float radius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 180, getResources().getDisplayMetrics());
             setRadius(radius); // Card Radius
-            setCardBackgroundColor(getResources().getColor(R.color.colorBackgroundGrey)); // Background Color
+            setCardBackgroundColor(mBackgroundColor); // Background Color
             mLoadingCircle = findViewById(R.id.circularImageView_progressBar);
             mIsInflationSuccess = true;
         } else {

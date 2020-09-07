@@ -65,7 +65,7 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
         when (p0?.id) {
             R.id.iv_viewProfile_dp -> {
                 val viewPictureIntent = Intent(this, ViewPictureActivity::class.java)
-                viewPictureIntent.putExtra(Constants.PROFILE_PICTURE_EXTRA_KEY, mProfilePicturePath)
+                viewPictureIntent.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, mProfilePicturePath)
                 startActivity(viewPictureIntent)
             }
             R.id.fab_viewProfile_select -> {

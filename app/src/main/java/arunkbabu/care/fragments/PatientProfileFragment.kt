@@ -18,6 +18,7 @@ import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.activities.PatientActivity
+import arunkbabu.care.activities.ViewPictureActivity
 import arunkbabu.care.dialogs.DatePickerDialog
 import arunkbabu.care.dialogs.SimpleInputDialog
 import arunkbabu.care.resize
@@ -57,7 +58,6 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     private var mDob: String = ""
     private var mBmi: String = ""
     private var mDpPath: String = ""
-    private var mTarget: Target? = null
 
     companion object {
         var mIsUpdatesAvailable = false
@@ -71,11 +71,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_patient_profile, container, false)
     }
@@ -107,22 +103,20 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         pcv_profile_height.setOnClickListener(this)
         pcv_profile_weight.setOnClickListener(this)
         btn_profile_sign_out.setOnClickListener(this)
+        fab_profile_dp_edit.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.iv_profile_photo -> {
-                val pickPhotoIntent = Intent(
-                    Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                )
+            R.id.fab_profile_dp_edit -> {
+                val pickPhotoIntent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 pickPhotoIntent.type = "image/*"
-                startActivityForResult(
-                    Intent.createChooser(
-                        pickPhotoIntent,
-                        getString(R.string.pick_image)
-                    ), REQUEST_CODE_PICK_IMAGE
-                )
+                startActivityForResult(Intent.createChooser(pickPhotoIntent, getString(R.string.pick_image)), REQUEST_CODE_PICK_IMAGE)
+            }
+            R.id.iv_profile_photo -> {
+                val viewPicture = Intent(context, ViewPictureActivity::class.java)
+                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as PatientActivity).mPatientDpPath)
+                startActivity(viewPicture)
             }
             R.id.tv_profile_name -> {
                 mFullNameClick = true

@@ -12,10 +12,24 @@
         android:layout_width="@dimen/dp_image_view_size_large"
         android:layout_height="@dimen/dp_image_view_size_large"
         android:layout_margin="@dimen/large_margin"
+        app:scaleType="centerCrop"
+        android:background="@color/colorDarkBackgroundGrey1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:src="@drawable/default_dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_doc_profile_dp_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_edit"
+        app:fabSize="mini"
+        app:backgroundTint="@color/colorGreen"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintBottom_toBottomOf="@id/iv_doc_profile_photo"
+        app:layout_constraintEnd_toEndOf="@id/iv_doc_profile_photo"
+        app:layout_constraintStart_toStartOf="@id/iv_doc_profile_photo" />
 
     <TextView
         android:id="@+id/tv_doc_profile_name"
