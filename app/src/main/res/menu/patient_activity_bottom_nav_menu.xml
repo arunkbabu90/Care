@@ -15,6 +15,11 @@
         android:icon="@drawable/ic_action_doc_reports"
         android:title="@string/doctors_report" />
 
+    <item android:id="@+id/mnu_messages_patient"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_chat"
+        android:title="@string/messages"/>
+
     <item android:id="@+id/mnu_profile"
         android:enabled="true"
         android:icon="@drawable/ic_action_profile"

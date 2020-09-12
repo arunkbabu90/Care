@@ -18,10 +18,14 @@ import kotlinx.android.synthetic.main.fragment_report_problem.*
 class ReportProblemFragment : Fragment(), View.OnClickListener {
 
     companion object {
-        const val REPORTING_DOCTOR_ID_EXTRAS_KEY = "key_extras_reporting_doctor_id"
-        const val PATIENT_NAME_EXTRAS_KEY = "key_extras_patient_name"
-        const val PATIENT_SEX_EXTRAS_KEY = "key_extras_patient_sex"
-        const val PATIENT_DP_EXTRAS_KEY = "key_extras_patient_dp"
+        const val REPORTING_DOCTOR_ID_EXTRAS_KEY = "key_report_problem_extras_reporting_doctor_id"
+        const val PATIENT_NAME_EXTRAS_KEY = "key_report_problem_extras_patient_name"
+        const val PATIENT_SEX_EXTRAS_KEY = "key_report_problem_extras_patient_sex"
+        const val PATIENT_DP_EXTRAS_KEY = "key_report_problem_extras_patient_dp"
+        const val DOCTOR_DP_EXTRAS_KEY = "key_report_problem_doctor_dp"
+        const val DOCTOR_NAME_EXTRAS_KEY = "key_report_problem_doctor_name"
+
+        var reportProblemFragmentActive = false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +41,37 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_report_problem.isEnabled = false
+        reportProblemFragmentActive = true
+
+        if (PatientActivity.isDataLoaded)
+            activateViews()
+        else
+            pb_report_problem_loading.visibility = View.VISIBLE
 
         btn_report_problem.setOnClickListener(this)
+    }
+
+    /**
+     * Enable the views in this fragment
+     */
+    fun activateViews() {
+        btn_report_problem.isEnabled = true
+        pb_report_problem_loading.visibility = View.GONE
+    }
+
+    /**
+     * Helper method to hide the loading Circle
+     */
+    fun hideLoadingCircle() {
+        pb_report_problem_loading.visibility = View.GONE
+    }
+
+    /**
+     * Helper method to show the loading Circle
+     */
+    fun showLoadingCircle() {
+        pb_report_problem_loading.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View?) {
@@ -47,11 +80,18 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
                 val pa = (activity as PatientActivity)
                 val reportProblemIntent = Intent(context, OtherUntowardActivity::class.java)
                 reportProblemIntent.putExtra(REPORTING_DOCTOR_ID_EXTRAS_KEY, PatientActivity.sReportingDoctorId)
-                reportProblemIntent.putExtra(PATIENT_NAME_EXTRAS_KEY, pa.mFullName)
-                reportProblemIntent.putExtra(PATIENT_SEX_EXTRAS_KEY, pa.mSex)
-                reportProblemIntent.putExtra(PATIENT_DP_EXTRAS_KEY, pa.mPatientDpPath)
+                reportProblemIntent.putExtra(PATIENT_NAME_EXTRAS_KEY, pa.fullName)
+                reportProblemIntent.putExtra(PATIENT_SEX_EXTRAS_KEY, pa.sex)
+                reportProblemIntent.putExtra(PATIENT_DP_EXTRAS_KEY, pa.patientDpPath)
+                reportProblemIntent.putExtra(DOCTOR_DP_EXTRAS_KEY, pa.docDpPath)
+                reportProblemIntent.putExtra(DOCTOR_NAME_EXTRAS_KEY, pa.docName)
                 startActivity(reportProblemIntent)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        reportProblemFragmentActive = false
     }
 }

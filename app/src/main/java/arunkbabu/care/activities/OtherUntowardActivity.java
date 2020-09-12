@@ -41,14 +41,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class OtherUntowardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
-    @BindView(R.id.tv_otheruntoward_error) TextView mErrorTextView;
-    @BindView(R.id.tv_otheruntoward_doctor_name) TextView mDocNameTextView;
-    @BindView(R.id.iv_otheruntoward_doctor_dp) CircularImageView mDocDpImageView;
-    @BindView(R.id.vp_otheruntoward) ViewPager mPager;
-    @BindView(R.id.btn_otheruntoward_next) MaterialButton mNextButton;
-    @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
-    @BindView(R.id.pb_otheruntoward_dp) ProgressBar mDpProgressBar;
-    @BindView(R.id.otheruntoward_reporting_doctor) TextView mReportingDoctorTextView;
+    @BindView(R.id.tv_otheruntoward_error)
+    TextView mErrorTextView;
+    @BindView(R.id.tv_otheruntoward_doctor_name)
+    TextView mDocNameTextView;
+    @BindView(R.id.iv_otheruntoward_doctor_dp)
+    CircularImageView mDocDpImageView;
+    @BindView(R.id.vp_otheruntoward)
+    ViewPager mPager;
+    @BindView(R.id.btn_otheruntoward_next)
+    MaterialButton mNextButton;
+    @BindView(R.id.pb_otheruntoward)
+    ProgressBar mProgressBar;
+    @BindView(R.id.pb_otheruntoward_dp)
+    ProgressBar mDpProgressBar;
+    @BindView(R.id.otheruntoward_reporting_doctor)
+    TextView mReportingDoctorTextView;
 
     private OtherUntowardPagerAdapter mAdapter;
     private FirebaseFirestore mDb;
@@ -57,8 +65,8 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private FirebaseUser mUser;
 
     private String mReportingDoctorId;
-    private String sDocName;
-    private String sDocDpPath;
+    private String mDocName;
+    private String mDocDpPath;
     private String mPatientDpPath;
     private int mPatientSex;
     private String mPatientName;
@@ -104,6 +112,8 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         mPatientName = getIntent().getStringExtra(ReportProblemFragment.PATIENT_NAME_EXTRAS_KEY);
         mPatientSex = getIntent().getIntExtra(ReportProblemFragment.PATIENT_SEX_EXTRAS_KEY, Constants.NULL_INT);
         mPatientDpPath = getIntent().getStringExtra(ReportProblemFragment.PATIENT_DP_EXTRAS_KEY);
+        mDocDpPath = getIntent().getStringExtra(ReportProblemFragment.DOCTOR_DP_EXTRAS_KEY);
+        mDocName = getIntent().getStringExtra(ReportProblemFragment.DOCTOR_NAME_EXTRAS_KEY);
 
         if (mReportingDoctorId == null)
             mReportingDoctorId = "";
@@ -114,17 +124,25 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         if (mPatientDpPath == null)
             mPatientDpPath = "";
 
+        if (mDocName == null)
+            mDocName = "";
+
+        if (mDocDpPath == null)
+            mDocDpPath = "";
+
         if (mReportingDoctorId.equals(""))
             Utils.showErrorDialog(this, getString(R.string.info_select_doctor), "", getString(R.string.close));
 
-        // Fetch the name, dp of the doctor from database
-        fetchDoctorDetails();
+        if (mDocName.equals(""))
+            fetchDoctorDetails();
+        else
+            loadViews();
     }
 
     /**
-     * Fetches the doctor's details from the database
+     * Fetches the name, dp of the doctor from database
      * Includes Doctor Name: sDocName
-     *          Doctor DP: sDocDpPath
+     * Doctor DP: sDocDpPath
      */
     private void fetchDoctorDetails() {
         if (!mReportingDoctorId.isEmpty()) {
@@ -134,9 +152,9 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                             DocumentSnapshot s = task.getResult();
                             if (s != null) {
                                 // Fetch success
-                                sDocName = s.getString(Constants.FIELD_FULL_NAME);
-                                sDocDpPath = s.getString(Constants.FIELD_PROFILE_PICTURE);
-                                mDocNameTextView.setText((sDocName == null || sDocName.equals("")) ? getString(R.string.not_set) : sDocName);
+                                mDocName = s.getString(Constants.FIELD_FULL_NAME);
+                                mDocDpPath = s.getString(Constants.FIELD_PROFILE_PICTURE);
+                                mDocNameTextView.setText((mDocName == null || mDocName.equals("")) ? getString(R.string.not_set) : mDocName);
 
                                 // Hide the Loading message & Show the Constipation layout
                                 loadViews();
@@ -210,7 +228,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             Map<String, Object> downloadUrls = new HashMap<>();
             for (int i = 0; i < mDownloadURIs.size(); i++) {
                 // Stringify the URI for uploading to db; Otherwise it won't work
-                String url = (mDownloadURIs.get(i)!= null) ? mDownloadURIs.get(i).toString() : "";
+                String url = (mDownloadURIs.get(i) != null) ? mDownloadURIs.get(i).toString() : "";
                 downloadUrls.put("img" + i, url);
             }
 
@@ -230,6 +248,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
 
     /**
      * Step 3: Send the report to doctor
+     *
      * @param reportId The String id of the report
      */
     private void sendRequestToDoctor(String reportId) {
@@ -250,7 +269,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             mDb.collection(docRequestListPath).add(data)
                     .addOnSuccessListener(documentReference -> {
                         Toast.makeText(this,
-                                getString(R.string.request_sent, sDocName), Toast.LENGTH_LONG).show();
+                                getString(R.string.request_sent, mDocName), Toast.LENGTH_LONG).show();
                         mNextButton.setEnabled(true);
                         mProgressBar.setVisibility(View.GONE);
                     })
@@ -270,8 +289,10 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * Make the views visible & hide the ErrorTextView
      */
     private void loadViews() {
-        if (sDocDpPath != null)
-            Utils.loadDpToView(this, sDocDpPath, mDocDpImageView);
+        if (mDocDpPath != null)
+            Utils.loadDpToView(this, mDocDpPath, mDocDpImageView);
+
+        mDocNameTextView.setText(mDocName.equals("") ? getString(R.string.not_set) : mDocName);
 
         mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mAdapter);
@@ -318,6 +339,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
 
     /**
      * Define Next Button Click behaviour
+     *
      * @param view The current button view
      */
     public void onNextPress(View view) {
@@ -361,6 +383,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
 
     /**
      * Checks whether the user is currently at the last page
+     *
      * @return True if the user is at the last page
      */
     private boolean isAtLastPage() {
@@ -368,10 +391,12 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
     @Override
-    public void onPageScrollStateChanged(int state) { }
+    public void onPageScrollStateChanged(int state) {
+    }
 
     @Override
     public void onPageSelected(int position) {

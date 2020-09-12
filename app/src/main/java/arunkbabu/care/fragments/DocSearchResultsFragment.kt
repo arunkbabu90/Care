@@ -89,11 +89,6 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
                 swipeRefreshLayout_docSearchResults, rv_docSearchResults,
                 { doctor -> onItemClick(doctor) }, { doctor -> onSelectButtonClick(doctor) } )
 
-//            mAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-//                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-//                    val itemCount = mAdapter.itemCount
-//                }
-//            })
             rv_docSearchResults.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_docSearchResults.adapter = mAdapter
 

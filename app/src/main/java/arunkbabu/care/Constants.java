@@ -24,8 +24,16 @@ public class Constants {
     public static final String COLLECTION_REPORT_DETAILS = "ReportDetails";
     public static final String COLLECTION_DOCTORS_LIST = "DoctorsList";
 
-    public static final String FIELD_USER_TYPE = "user_type";
+    public static final String ROOT_CHATS = "Chats";
+    public static final String ROOT_MESSAGES = "Messages";
 
+    public static final String FIELD_MESSAGE = "msg";
+    public static final String FIELD_SENDER_ID = "senderId";
+    public static final String FIELD_SENDER_NAME = "senderName";
+    public static final String FIELD_MSG_TIMESTAMP = "msgTimestamp";
+    public static final String FIELD_CHAT_TIMESTAMP = "chatTimestamp";
+
+    public static final String FIELD_USER_TYPE = "user_type";
     public static final String FIELD_FULL_NAME = "full_name";
     public static final String FIELD_SEX = "sex";
     public static final String FIELD_CONTACT_NUMBER = "contact_number";

@@ -11,6 +11,7 @@
         android:layout_width="@dimen/dp_image_view_size_large"
         android:layout_height="@dimen/dp_image_view_size_large"
         android:layout_margin="@dimen/large_margin"
+        app:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

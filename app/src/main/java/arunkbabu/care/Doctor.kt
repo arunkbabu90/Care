@@ -1,7 +1,7 @@
 package arunkbabu.care
 
 /**
- * Used in Search for holding the data of a Doctor in the list
+ * Data Object representing a single Doctor in the Search Results list
  */
 data class Doctor(var documentId: String = "",
                   val full_name: String = "",

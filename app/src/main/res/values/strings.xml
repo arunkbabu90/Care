@@ -13,6 +13,7 @@
     <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
     <string name="info_select_doctor">Go back and select a doctor first from the Search tab!</string>
     <string name="profile_picture">Profile Picture</string>
+    <string name="messages">Messages</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -140,7 +141,6 @@
     <string name="type_a_message">Type a Message</string>
     <string name="send">Send</string>
     <string name="add_medicine">Add Medicine</string>
-    <string name="messages">Messages</string>
     <string name="add_a_note">Add a note</string>
     <string name="instructions_for_medication">Instructions for Medication</string>
     <string name="loading_data">Loading Data…</string>
@@ -172,4 +172,8 @@
     <string name="practicing_hospital">Practicing Hospital</string>
     <string name="incomplete_profile">Your profile is incomplete. You won\'t appear in searches unless you complete it</string>
     <string name="selected">Selected</string>
+
+    <!--  Chat Activity -->
+    <string name="type_message">Type a message</string>
+    <string name="no_chats">No Chats</string>
 </resources>

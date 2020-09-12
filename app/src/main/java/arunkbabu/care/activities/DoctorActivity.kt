@@ -18,7 +18,7 @@ import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.fragments.DoctorEditProfileFragment
 import arunkbabu.care.fragments.DoctorProfileFragment
-import arunkbabu.care.fragments.MessageFragment
+import arunkbabu.care.fragments.MessagesFragment
 import arunkbabu.care.fragments.PatientRequestsFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -123,7 +123,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             R.id.mnu_messages_doc -> {
                 if (mFragId != DOC_PRIVATE_MESSAGE_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.doctor_activity_fragment_container, MessageFragment())
+                        .replace(R.id.doctor_activity_fragment_container, MessagesFragment())
                         .commit()
                     mFragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
                 }

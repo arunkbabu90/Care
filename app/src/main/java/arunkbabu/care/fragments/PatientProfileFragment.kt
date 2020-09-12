@@ -115,7 +115,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
             }
             R.id.iv_profile_photo -> {
                 val viewPicture = Intent(context, ViewPictureActivity::class.java)
-                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as PatientActivity).mPatientDpPath)
+                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as PatientActivity).patientDpPath)
                 startActivity(viewPicture)
             }
             R.id.tv_profile_name -> {
@@ -175,18 +175,18 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     private fun getProfileData(): Boolean {
         if (activity != null) {
             val pa = activity as PatientActivity
-            mFullName = pa.mFullName
-            mEmail = pa.mEmail
-            mSex = pa.mSex
-            mEpochDob = pa.mEpochDob
-            mAge = pa.mAge
-            mUserType = pa.mUserType
-            mContactNumber = pa.mContactNumber
-            mHeight = pa.mHeight
-            mWeight = pa.mWeight
-            mDob = pa.mDob
-            mBmi = pa.mBmi
-            mDpPath = pa.mPatientDpPath
+            mFullName = pa.fullName
+            mEmail = pa.email
+            mSex = pa.sex
+            mEpochDob = pa.epochDob
+            mAge = pa.age
+            mUserType = pa.userType
+            mContactNumber = pa.contactNumber
+            mHeight = pa.height
+            mWeight = pa.weight
+            mDob = pa.dob
+            mBmi = pa.bmi
+            mDpPath = pa.patientDpPath
 
             return mFullName.isNotBlank() && mEmail.isNotBlank() && mContactNumber.isNotBlank()
         }
@@ -258,17 +258,17 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
 
         if (mFullName != "") {
             profileData[Constants.FIELD_FULL_NAME] = mFullName
-            pa.mFullName = mFullName
+            pa.fullName = mFullName
         }
 
         if (mContactNumber != "") {
             profileData[Constants.FIELD_CONTACT_NUMBER] = mContactNumber
-            pa.mContactNumber = mContactNumber
+            pa.contactNumber = mContactNumber
         }
 
         if (mEpochDob != Constants.NULL_INT.toLong()) {
             profileData[Constants.FIELD_DOB] = mEpochDob
-            pa.mEpochDob = mEpochDob
+            pa.epochDob = mEpochDob
         }
 
         if (rcv_profile_sex.isRadio1Checked)
@@ -278,17 +278,17 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
 
         if (mSex != Constants.NULL_INT) {
             profileData[Constants.FIELD_SEX] = mSex
-            pa.mSex = mSex
+            pa.sex = mSex
         }
 
         if (mHeight != "") {
             profileData[Constants.FIELD_HEIGHT] = mHeight
-            pa.mHeight = mHeight
+            pa.height = mHeight
         }
 
         if (mWeight != "") {
             profileData[Constants.FIELD_WEIGHT] = mWeight
-            pa.mWeight = mWeight
+            pa.weight = mWeight
         }
 
         if (user != null) {

@@ -3,21 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:transitionGroup="true"
-    tools:context=".fragments.PatientRequestsFragment">
+    tools:context=".fragments.MessagesFragment">
 
     <TextView
-        android:id="@+id/tv_no_requests"
+        android:id="@+id/tv_messagesFrag_noChats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/no_requests_available"
+        android:text="@string/no_chats"
         android:textColor="@color/colorTextLightGrey"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_request_view"
+        android:id="@+id/rv_messagesFrag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
