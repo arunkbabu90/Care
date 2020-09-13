@@ -3,6 +3,7 @@ package arunkbabu.care
 /**
  * Data Object representing a single Chat Person in the Messages Fragment list
  */
-data class Chat(val senderName: String = "",
+data class Chat(val full_name: String = "",
                 val profilePicture: String = "",
-                val chatTimestamp: Long = -1)
+                val lastMessage: String = "",
+                val chatTimestamp: Long = -1 )

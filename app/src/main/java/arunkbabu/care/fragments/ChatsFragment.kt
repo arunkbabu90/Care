@@ -14,11 +14,13 @@ import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.adapters.ChatAdapter
 import com.google.android.material.transition.MaterialSharedAxis
-import kotlinx.android.synthetic.main.fragment_messages.*
+import kotlinx.android.synthetic.main.fragment_chats.*
 
-class MessagesFragment : Fragment() {
+class ChatsFragment : Fragment() {
     private lateinit var adapter: ChatAdapter
     private var chats = ArrayList<Chat>()
+    private var userId = ""
+    private var receiverId = ""
 
     companion object {
         var messagesFragmentActive = false
@@ -33,7 +35,7 @@ class MessagesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_messages, container, false)
+        return inflater.inflate(R.layout.fragment_chats, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,25 +59,31 @@ class MessagesFragment : Fragment() {
         }
 
         val lm = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
-        adapter =  ChatAdapter(chats) { chat -> startChatActivity(chat) }
         lm.stackFromEnd = true
+        adapter =  ChatAdapter(chats) { chat -> startChatActivity(chat) }
         rv_messagesFrag.layoutManager = lm
         rv_messagesFrag.adapter = adapter
 
-        if (pa != null)
+        if (pa != null) {
             updateData(pa.chats)
+            userId = pa.userId
+            receiverId = PatientActivity.sReportingDoctorId
+        }
 
-        if (da != null)
+        if (da != null) {
             updateData(da.chats)
+            userId = da.userId
+        }
 
         messagesFragmentActive = true
     }
 
     private fun startChatActivity(chat: Chat) {
         val i = Intent(context, ChatActivity::class.java)
-        i.putExtra(ChatActivity.PERSON_NAME_EXTRA_KEY, chat.senderName)
+        i.putExtra(ChatActivity.PERSON_NAME_EXTRA_KEY, chat.full_name)
         i.putExtra(ChatActivity.PROFILE_PICTURE_EXTRA_KEY, chat.profilePicture)
-        i.putExtra(ChatActivity.USER_ID_EXTRA_KEY, id)
+        i.putExtra(ChatActivity.RECEIVER_ID_EXTRA_KEY, receiverId)
+        i.putExtra(ChatActivity.USER_ID_EXTRA_KEY, userId)
         startActivity(i)
     }
 

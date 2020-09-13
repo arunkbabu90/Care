@@ -13,9 +13,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import arunkbabu.care.*
+import arunkbabu.care.fragments.ChatsFragment
 import arunkbabu.care.fragments.DoctorEditProfileFragment
 import arunkbabu.care.fragments.DoctorProfileFragment
-import arunkbabu.care.fragments.MessagesFragment
 import arunkbabu.care.fragments.PatientRequestsFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -42,6 +42,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private var mFragId = Constants.NULL_INT
 
     var chats = ArrayList<Chat>()
+    var userId = ""
     var doctorDpPath = ""
     var doctorFullName = ""
     var contactNumber = ""
@@ -74,6 +75,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         mCloudStore = FirebaseStorage.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
         mAuth.addAuthStateListener(this)
+        userId = mAuth.uid ?: ""
 
         // Fetch the account verification status flag from the database
         val user = mAuth.currentUser
@@ -121,7 +123,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             R.id.mnu_messages_doc -> {
                 if (mFragId != DOC_PRIVATE_MESSAGE_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.doctor_activity_fragment_container, MessagesFragment())
+                        .replace(R.id.doctor_activity_fragment_container, ChatsFragment())
                         .commit()
                     mFragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
                 }

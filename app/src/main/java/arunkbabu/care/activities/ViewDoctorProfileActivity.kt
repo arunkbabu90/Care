@@ -16,9 +16,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlinx.android.synthetic.main.activity_view_profile.*
+import kotlinx.android.synthetic.main.activity_view_doctor_profile.*
 
-class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
+class ViewDoctorProfileActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mDb: FirebaseFirestore
     private lateinit var mAuth: FirebaseAuth
 
@@ -35,7 +35,7 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_profile)
+        setContentView(R.layout.activity_view_doctor_profile)
 
         mDb = FirebaseFirestore.getInstance()
         mAuth = FirebaseAuth.getInstance()
@@ -78,6 +78,8 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
                         .set(preferredDoc, SetOptions.merge())
                         .addOnSuccessListener {
                             PatientActivity.sReportingDoctorId = mUserId
+                            PatientActivity.isNewDoctorSelected = true
+
                             // Update button state as Selected
                             fab_viewProfile_select.setIconResource(R.drawable.ic_select_filled)
                             fab_viewProfile_select.text = getString(R.string.selected)

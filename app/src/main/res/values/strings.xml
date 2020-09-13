@@ -13,7 +13,7 @@
     <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
     <string name="info_select_doctor">Go back and select a doctor first from the Search tab!</string>
     <string name="profile_picture">Profile Picture</string>
-    <string name="messages">Messages</string>
+    <string name="chats">Chats</string>
     <string name="back_button">Back button</string>
 
     <!-- Patient Activity -->
@@ -177,4 +177,5 @@
     <!--  Chat Activity -->
     <string name="type_message">Type a message</string>
     <string name="no_chats">No Chats</string>
+    <string name="err_create_chat_room">Creating chat room failed. Please quit the app check the internet and reopen to try again</string>
 </resources>

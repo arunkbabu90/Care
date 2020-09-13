@@ -5,6 +5,7 @@ package arunkbabu.care
  */
 data class Message(val msg: String = "",
                    val senderId: String = "",
+                   val receiverId: String = "",
                    val msgTimestamp: Long = -1) {
 
     companion object {

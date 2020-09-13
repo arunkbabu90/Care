@@ -14,7 +14,7 @@ import arunkbabu.care.Doctor
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.activities.PatientActivity
-import arunkbabu.care.activities.ViewProfileActivity
+import arunkbabu.care.activities.ViewDoctorProfileActivity
 import arunkbabu.care.adapters.DoctorSearchResultsAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.transition.MaterialSharedAxis
@@ -101,7 +101,7 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
      * @param doctor The selected Doctor
      */
     private fun onItemClick(doctor: Doctor) {
-        val viewProfileIntent = Intent(context, ViewProfileActivity::class.java)
+        val viewProfileIntent = Intent(context, ViewDoctorProfileActivity::class.java)
         viewProfileIntent.putExtra(USER_ID_EXTRAS_KEY, doctor.documentId)
         viewProfileIntent.putExtra(DOCTOR_NAME_EXTRAS_KEY, doctor.full_name)
         viewProfileIntent.putExtra(DOCTOR_DP_EXTRAS_KEY, doctor.profilePicture)
@@ -121,6 +121,8 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
                 .set(preferredDoc, SetOptions.merge())
                 .addOnSuccessListener {
                     PatientActivity.sReportingDoctorId = doctor.documentId
+                    (activity as PatientActivity).fetchDoctorDetails()
+
                     Toast.makeText(context, getString(R.string.doctor_selected, doctor.full_name), Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { Toast.makeText(context, getString(R.string.err_failed_set_preferred_doctor), Toast.LENGTH_SHORT).show() }

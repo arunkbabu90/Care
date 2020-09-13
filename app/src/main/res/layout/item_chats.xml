@@ -20,18 +20,37 @@
         android:id="@+id/itemChat_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         android:gravity="center"
         android:textSize="16sp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:fontFamily="@font/muli_bold"
         android:layout_toEndOf="@id/itemChat_dp"
-        android:layout_centerVertical="true"
-        android:textStyle="bold"
         tools:text="Arun K Babu"/>
+
+    <TextView
+        android:id="@+id/itemChat_lastMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/tiny_margin"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/colorTextGrey"
+        android:fontFamily="@font/muli_light"
+        android:layout_toEndOf="@id/itemChat_dp"
+        android:layout_below="@id/itemChat_name"
+        tools:text="Hi. How are you"/>
 
     <View
         android:layout_width="wrap_content"
         android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
         android:layout_below="@id/itemChat_dp"
         android:background="@color/colorAccent" />
 

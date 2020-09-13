@@ -38,12 +38,11 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var db: FirebaseFirestore
     private lateinit var cloudStore: FirebaseStorage
     private lateinit var chatRoot: DatabaseReference
-    private var messageFrag: MessagesFragment? = null
+    private var messageFrag: ChatsFragment? = null
     private var reportProblemFrag: ReportProblemFragment? = null
     private var accountAlreadyVerified: Boolean? = null
     private var fragId = Constants.NULL_INT
     private var isLaunched = false
-    private var isChildAdded = false
     private val keys = ArrayList<String>()
 
     var chats = ArrayList<Chat>()
@@ -60,8 +59,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     var dob = ""
     var bmi = ""
     var patientDpPath = ""
-    var docName: String = ""
-    var docDpPath: String = ""
+    var docName = ""
+    var docDpPath = ""
 
     companion object {
         private const val REPORT_PROBLEM_FRAGMENT_ID = 9000
@@ -72,6 +71,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         var sReportingDoctorId = ""
         var isDataLoaded = false
+        var isNewDoctorSelected = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,12 +83,17 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         auth = FirebaseAuth.getInstance()
         cloudStore = FirebaseStorage.getInstance()
         db = FirebaseFirestore.getInstance()
-        chatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS)
         // Add auth state listener for listening User Authentication changes like user sign-outs
         auth.addAuthStateListener(this)
-        chatRoot.orderByChild(Constants.FIELD_CHAT_TIMESTAMP).limitToLast(20).addChildEventListener(
-            this
-        )
+        userId = auth.uid ?: ""
+
+        if (userId.isNotBlank()) {
+            chatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(userId)
+            chatRoot.orderByChild(Constants.FIELD_CHAT_TIMESTAMP).limitToLast(20)
+                .addChildEventListener(this)
+        } else {
+            Toast.makeText(this, getString(R.string.err_create_chat_room), Toast.LENGTH_LONG).show()
+        }
 
         // Load the ReportProblemFragment as default "home"
         reportProblemFrag = ReportProblemFragment()
@@ -144,7 +149,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             }
             R.id.mnu_messages_patient -> {
                 if (fragId != PATIENT_MESSAGES_FRAGMENT_ID) {
-                    messageFrag = MessagesFragment()
+                    messageFrag = ChatsFragment()
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.patient_activity_fragment_container, messageFrag!!)
                         .commit()
@@ -252,7 +257,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * Includes Doctor Name: docName
      * Doctor DP: docDpPath
      */
-    private fun fetchDoctorDetails() {
+    fun fetchDoctorDetails() {
         if (sReportingDoctorId.isNotEmpty()) {
             db.collection(Constants.COLLECTION_USERS).document(sReportingDoctorId).get()
                 .addOnCompleteListener { task: Task<DocumentSnapshot?> ->
@@ -282,10 +287,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     private fun createChatRoomWithCurrentDoctor() {
         if (sReportingDoctorId.isNotBlank()) {
-            val map = hashMapOf<String, Any>(sReportingDoctorId to "")
-            chatRoot.updateChildren(map)
             val senderMap = hashMapOf(
-                Constants.FIELD_SENDER_NAME to docName,
+                Constants.FIELD_FULL_NAME to docName,
                 Constants.FIELD_PROFILE_PICTURE to docDpPath,
                 Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP
             )
@@ -491,16 +494,23 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         try {
             val key: String = snapshot.key ?: ""
             val chat: Chat = snapshot.getValue(Chat::class.java) ?: Chat()
+            // Avoid repeating chat items
             if (!keys.contains(key)) {
-                // Avoid repeating chat items
+                // If chat not exists. Just add the chat to end of list
                 chats.add(chat)
+                keys.add(key)
+            } else {
+                // If chat exists. Add new chat to end of list so that it shows on top of list
+                chats.removeAt(keys.indexOf(key))
+                keys.remove(key)
+                chats.add(chat)
+                keys.add(key)
             }
-            keys.add(key)
         } catch (e: DatabaseException) {
             e.printStackTrace()
         }
 
-        if (MessagesFragment.messagesFragmentActive) {
+        if (ChatsFragment.messagesFragmentActive) {
             messageFrag?.updateData(chats)
         }
     }
@@ -511,16 +521,25 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
         updateChats(snapshot)
-        isChildAdded = true
     }
 
     override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
         updateChats(snapshot)
-        isChildAdded = false
     }
 
     override fun onChildRemoved(snapshot: DataSnapshot) {
-        updateChats(snapshot)
+        // Remove it from our chats array too
+        try {
+            val key: String = snapshot.key ?: ""
+            chats.removeAt(keys.indexOf(key))
+            keys.remove(key)
+        } catch (e: DatabaseException) {
+            e.printStackTrace()
+        }
+
+        if (ChatsFragment.messagesFragmentActive) {
+            messageFrag?.updateData(chats)
+        }
     }
 
     override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
@@ -562,5 +581,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             // If email NOT Already Verified; check the status again
             checkAccountVerificationStatus()
         }
+
+        if (isNewDoctorSelected)
+            fetchDoctorDetails()
     }
 }

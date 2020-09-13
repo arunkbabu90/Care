@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ChatActivity"/>
         <activity android:name=".activities.ViewPictureActivity" />
-        <activity android:name=".activities.ViewProfileActivity" />
+        <activity android:name=".activities.ViewDoctorProfileActivity" />
         <activity android:name=".activities.ViewPatientReportActivity" />
         <activity android:name=".activities.DoctorActivity" />
         <activity android:name=".activities.SignUpActivity" />

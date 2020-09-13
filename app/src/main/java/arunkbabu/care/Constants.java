@@ -29,9 +29,10 @@ public class Constants {
 
     public static final String FIELD_MESSAGE = "msg";
     public static final String FIELD_SENDER_ID = "senderId";
-    public static final String FIELD_SENDER_NAME = "senderName";
+    public static final String FIELD_RECEIVER_ID = "receiverId";
     public static final String FIELD_MSG_TIMESTAMP = "msgTimestamp";
     public static final String FIELD_CHAT_TIMESTAMP = "chatTimestamp";
+    public static final String FIELD_LAST_MESSAGE = "lastMessage";
 
     public static final String FIELD_USER_TYPE = "user_type";
     public static final String FIELD_FULL_NAME = "full_name";

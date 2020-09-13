@@ -30,7 +30,8 @@ class ChatAdapter(private val chats: ArrayList<Chat>,
             if (chat.profilePicture.isNotBlank()) {
                 Utils.loadDpToView(context, chat.profilePicture, itemView.itemChat_dp)
             }
-            itemView.itemChat_name.text = chat.senderName
+            itemView.itemChat_name.text = chat.full_name
+            itemView.itemChat_lastMsg.text = if (chat.lastMessage.isBlank()) "No Messages" else chat.lastMessage
             itemView.setOnClickListener { itemClickListener(chat) }
         }
     }
