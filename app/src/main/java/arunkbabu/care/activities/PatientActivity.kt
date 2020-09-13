@@ -41,9 +41,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private var messageFrag: MessagesFragment? = null
     private var reportProblemFrag: ReportProblemFragment? = null
     private var accountAlreadyVerified: Boolean? = null
-    private var isLaunched = false
     private var fragId = Constants.NULL_INT
+    private var isLaunched = false
     private var isChildAdded = false
+    private val keys = ArrayList<String>()
 
     var chats = ArrayList<Chat>()
     var userId = ""
@@ -487,12 +488,17 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * Updates the chats in Message Fragment
      */
     private fun updateChats(snapshot: DataSnapshot) {
-        val chatList = ArrayList<Chat>()
-        snapshot.children.iterator().forEach { dataSnapshot ->
-            val chat = dataSnapshot.getValue(Chat::class.java) ?: Chat()
-            chatList.add(chat)
+        try {
+            val key: String = snapshot.key ?: ""
+            val chat: Chat = snapshot.getValue(Chat::class.java) ?: Chat()
+            if (!keys.contains(key)) {
+                // Avoid repeating chat items
+                chats.add(chat)
+            }
+            keys.add(key)
+        } catch (e: DatabaseException) {
+            e.printStackTrace()
         }
-        chats.addAll(chatList)
 
         if (MessagesFragment.messagesFragmentActive) {
             messageFrag?.updateData(chats)
@@ -504,22 +510,17 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * Called when a child is added in the REAL-TIME DATABASE
      */
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-
-        if (snapshot.key == sReportingDoctorId) {
-            updateChats(snapshot)
-            isChildAdded = true
-        }
+        updateChats(snapshot)
+        isChildAdded = true
     }
 
     override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-        if (!isChildAdded && snapshot.key == sReportingDoctorId)
-            updateChats(snapshot)
+        updateChats(snapshot)
         isChildAdded = false
     }
 
     override fun onChildRemoved(snapshot: DataSnapshot) {
-        if (snapshot.key == sReportingDoctorId)
-            updateChats(snapshot)
+        updateChats(snapshot)
     }
 
     override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }

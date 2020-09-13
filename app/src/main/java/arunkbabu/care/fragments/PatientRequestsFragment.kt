@@ -78,7 +78,7 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
      */
     private fun onAcceptButtonClick(patient: Patient, position: Int) {
         // Get the basic patient request details
-        val docName: String = (activity as DoctorActivity).mDoctorFullName
+        val docName: String = (activity as DoctorActivity).doctorFullName
         val patientId: String = patient.patientId
         val reportId: String = patient.reportId
         val requestId: String = mAdapter.snapshots.getSnapshot(position).id

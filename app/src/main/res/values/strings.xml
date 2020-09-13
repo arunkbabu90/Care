@@ -14,6 +14,7 @@
     <string name="info_select_doctor">Go back and select a doctor first from the Search tab!</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="messages">Messages</string>
+    <string name="back_button">Back button</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>

@@ -11,29 +11,34 @@
         android:id="@+id/toolbar_chatActivity"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
-        android:background="@color/colorGreenDark"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
-    <arunkbabu.care.views.CircularImageView
-        android:id="@+id/toolbarChat_dp"
-        android:layout_width="@dimen/dp_image_view_size_small"
-        android:layout_height="@dimen/dp_image_view_size_small"
-        android:layout_marginEnd="@dimen/default_margin"
-        app:scaleType="centerCrop"
-        app:src="@drawable/default_dp" />
+        <ImageButton
+            android:id="@+id/toolbarChat_backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_margin"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_action_back"
+            android:contentDescription="@string/back_button" />
 
-    <TextView
-        android:id="@+id/toolbarChat_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        tools:text="Arun K Babu"/>
+        <arunkbabu.care.views.CircularImageView
+            android:id="@+id/toolbarChat_dp"
+            android:layout_width="@dimen/dp_image_view_size_small"
+            android:layout_height="@dimen/dp_image_view_size_small"
+            android:layout_marginEnd="@dimen/default_margin"
+            app:scaleType="centerCrop"
+            app:src="@drawable/default_dp" />
+
+        <TextView
+            android:id="@+id/toolbarChat_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            tools:text="Arun K Babu" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Messages View -->
@@ -51,7 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:background="@drawable/pillbox_dark_edit_text_active_drawable"
+        android:background="@drawable/pillbox_black_edit_text_active_drawable"
         android:focusable="true"
         android:hint="@string/type_message"
         android:imeOptions="actionDone"
@@ -65,13 +70,15 @@
         android:importantForAutofill="no" />
 
     <!-- Send Button -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_sendMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_send"
-        app:tint="@android:color/white"
-        app:backgroundTint="@color/colorGreenDark"
+        app:strokeWidth="2dp"
+        app:icon="@drawable/ic_send"
+        app:iconTint="@color/colorGreen"
+        app:strokeColor="@color/colorGreen"
+        app:backgroundTint="@android:color/transparent"
         android:layout_margin="@dimen/default_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

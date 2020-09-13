@@ -2,13 +2,15 @@ package arunkbabu.care.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : AppCompatActivity() {
-    private val senderId = ""
-    private val receiverId = ""
+    private var senderId = ""
+    private var receiverId = ""
+    private var senderName = ""
+    private var senderDpPath = ""
 
     companion object {
         const val PERSON_NAME_EXTRA_KEY = "key_chat_person_name_extra"
@@ -20,7 +22,16 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorGreenDark1)
+        senderName = intent.getStringExtra(PERSON_NAME_EXTRA_KEY) ?: ""
+        senderDpPath = intent.getStringExtra(PROFILE_PICTURE_EXTRA_KEY) ?: ""
+        senderId = intent.getStringExtra(USER_ID_EXTRA_KEY) ?: ""
+
         setSupportActionBar(toolbar_chatActivity)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        toolbarChat_name.text = senderName
+        Utils.loadDpToView(this, senderDpPath, toolbarChat_dp)
+
+        toolbarChat_backBtn.setOnClickListener { finish() }
     }
 }

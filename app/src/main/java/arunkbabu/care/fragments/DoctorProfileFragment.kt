@@ -110,7 +110,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             }
             R.id.iv_doc_profile_photo -> {
                 val viewPicture = Intent(context, ViewPictureActivity::class.java)
-                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as DoctorActivity).mDoctorDpPath)
+                viewPicture.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, (activity as DoctorActivity).doctorDpPath)
                 startActivity(viewPicture)
             }
             R.id.btn_doc_sign_out -> {
@@ -164,17 +164,17 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     private fun getProfileData(): Boolean {
         if (activity != null) {
             val da: DoctorActivity = activity as DoctorActivity
-            mName = da.mDoctorFullName
-            mEmail = da.mEmail
-            mRegisteredId = da.mRegisterId
-            mQualifications = da.mQualifications
-            mExperience = da.mExperience
-            mFellowships = da.mFellowships
-            mHospitalName = da.mWorkingHospitalName
-            mSpeciality = da.mSpeciality
-            mSex = da.mSex
-            mContactNo = da.mContactNumber
-            mDpPath = da.mDoctorDpPath
+            mName = da.doctorFullName
+            mEmail = da.email
+            mRegisteredId = da.registerId
+            mQualifications = da.qualifications
+            mExperience = da.experience
+            mFellowships = da.fellowships
+            mHospitalName = da.workingHospitalName
+            mSpeciality = da.speciality
+            mSex = da.sex
+            mContactNo = da.contactNumber
+            mDpPath = da.doctorDpPath
 
             if (mFellowships.isBlank())
                 mFellowships = "None"

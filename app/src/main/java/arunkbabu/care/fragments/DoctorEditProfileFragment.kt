@@ -62,14 +62,14 @@ class DoctorEditProfileFragment : Fragment() {
         if (activity != null) {
             val da: DoctorActivity = (activity as DoctorActivity)
 
-            val name: String = da.mDoctorFullName
-            val speciality: String = da.mSpeciality
-            val phone: String = da.mContactNumber
-            val sex: String = Utils.toSexString(da.mSex)
-            val qualifications: String = da.mQualifications
-            val experience: String = da.mExperience
-            val fellowships: String = da.mFellowships
-            val hospital: String = da.mWorkingHospitalName
+            val name: String = da.doctorFullName
+            val speciality: String = da.speciality
+            val phone: String = da.contactNumber
+            val sex: String = Utils.toSexString(da.sex)
+            val qualifications: String = da.qualifications
+            val experience: String = da.experience
+            val fellowships: String = da.fellowships
+            val hospital: String = da.workingHospitalName
 
             tv_profileEdit_fullName.setText(name)
             atv_profileEdit_speciality.setText(speciality)

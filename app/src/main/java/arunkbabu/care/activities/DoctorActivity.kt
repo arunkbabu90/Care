@@ -12,10 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import arunkbabu.care.Constants
-import arunkbabu.care.ProfileData
-import arunkbabu.care.R
-import arunkbabu.care.Utils
+import arunkbabu.care.*
 import arunkbabu.care.fragments.DoctorEditProfileFragment
 import arunkbabu.care.fragments.DoctorProfileFragment
 import arunkbabu.care.fragments.MessagesFragment
@@ -44,17 +41,18 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private var mIsLaunched = false
     private var mFragId = Constants.NULL_INT
 
-    var mDoctorDpPath = ""
-    var mDoctorFullName = ""
-    var mContactNumber = ""
-    var mEmail = ""
-    var mRegisterId = ""
-    var mSpeciality = ""
-    var mQualifications = ""
-    var mSex = Constants.NULL_INT
-    var mFellowships = ""
-    var mExperience = ""
-    var mWorkingHospitalName = ""
+    var chats = ArrayList<Chat>()
+    var doctorDpPath = ""
+    var doctorFullName = ""
+    var contactNumber = ""
+    var email = ""
+    var registerId = ""
+    var speciality = ""
+    var qualifications = ""
+    var sex = Constants.NULL_INT
+    var fellowships = ""
+    var experience = ""
+    var workingHospitalName = ""
 
     val TAG: String = DoctorActivity::class.java.simpleName
 
@@ -86,7 +84,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         val d = task.result
                         if (d != null) {
                             mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED) ?: false
-                            mContactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
+                            contactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
                             if (!mAccountAlreadyVerified) {
                                 // If email NOT Already Verified; check the status again
                                 checkAccountVerificationStatus()
@@ -153,17 +151,17 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     if (it.isSuccessful) {
                         val document = it.result
                         if (document != null) {
-                            mDoctorFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
-                            mDoctorDpPath= document.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
-                            mEmail = user.email ?: ""
-                            mContactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
-                            mSex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT
-                            mRegisterId = document.getString(Constants.FIELD_DOC_REG_ID) ?: ""
-                            mQualifications = document.getString(Constants.FIELD_DOCTOR_QUALIFICATIONS) ?: ""
-                            mSpeciality = document.getString(Constants.FIELD_DOCTOR_SPECIALITY) ?: ""
-                            mFellowships = document.getString(Constants.FIELD_DOCTOR_FELLOWSHIPS) ?: ""
-                            mExperience = document.getString(Constants.FIELD_DOCTOR_EXPERIENCE) ?: ""
-                            mWorkingHospitalName = document.getString(Constants.FIELD_WORKING_HOSPITAL_NAME) ?: ""
+                            doctorFullName = document.getString(Constants.FIELD_FULL_NAME) ?: ""
+                            doctorDpPath= document.getString(Constants.FIELD_PROFILE_PICTURE) ?: ""
+                            email = user.email ?: ""
+                            contactNumber = document.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
+                            sex = document.getLong(Constants.FIELD_SEX)?.toInt() ?: Constants.NULL_INT
+                            registerId = document.getString(Constants.FIELD_DOC_REG_ID) ?: ""
+                            qualifications = document.getString(Constants.FIELD_DOCTOR_QUALIFICATIONS) ?: ""
+                            speciality = document.getString(Constants.FIELD_DOCTOR_SPECIALITY) ?: ""
+                            fellowships = document.getString(Constants.FIELD_DOCTOR_FELLOWSHIPS) ?: ""
+                            experience = document.getString(Constants.FIELD_DOCTOR_EXPERIENCE) ?: ""
+                            workingHospitalName = document.getString(Constants.FIELD_WORKING_HOSPITAL_NAME) ?: ""
                         } else {
                             Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
                         }
@@ -185,40 +183,40 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         val user: FirebaseUser? = mAuth.currentUser
 
         if (user != null) {
-            if (mDoctorFullName.isNotBlank()) {
-                pd[Constants.FIELD_FULL_NAME] = mDoctorFullName
-                dl[Constants.FIELD_FULL_NAME] = mDoctorFullName
-                dl[Constants.FIELD_SEARCH_NAME] = mDoctorFullName.toLowerCase(Locale.UK)
+            if (doctorFullName.isNotBlank()) {
+                pd[Constants.FIELD_FULL_NAME] = doctorFullName
+                dl[Constants.FIELD_FULL_NAME] = doctorFullName
+                dl[Constants.FIELD_SEARCH_NAME] = doctorFullName.toLowerCase(Locale.UK)
             }
 
-            if (mContactNumber.isNotBlank())
-                pd[Constants.FIELD_CONTACT_NUMBER] = mContactNumber
+            if (contactNumber.isNotBlank())
+                pd[Constants.FIELD_CONTACT_NUMBER] = contactNumber
 
-            if (mSex != Constants.NULL_INT)
-                pd[Constants.FIELD_SEX] = mSex
+            if (sex != Constants.NULL_INT)
+                pd[Constants.FIELD_SEX] = sex
 
-            if (mRegisterId.isNotBlank())
-                pd[Constants.FIELD_DOC_REG_ID] = mRegisterId
+            if (registerId.isNotBlank())
+                pd[Constants.FIELD_DOC_REG_ID] = registerId
 
-            if (mQualifications.isNotBlank()) {
-                pd[Constants.FIELD_DOCTOR_QUALIFICATIONS] = mQualifications
-                dl[Constants.FIELD_DOCTOR_QUALIFICATIONS] = mQualifications
+            if (qualifications.isNotBlank()) {
+                pd[Constants.FIELD_DOCTOR_QUALIFICATIONS] = qualifications
+                dl[Constants.FIELD_DOCTOR_QUALIFICATIONS] = qualifications
             }
 
-            if (mSpeciality.isNotBlank()) {
-                pd[Constants.FIELD_DOCTOR_SPECIALITY] = mSpeciality
-                dl[Constants.FIELD_DOCTOR_SPECIALITY] = mSpeciality
+            if (speciality.isNotBlank()) {
+                pd[Constants.FIELD_DOCTOR_SPECIALITY] = speciality
+                dl[Constants.FIELD_DOCTOR_SPECIALITY] = speciality
             }
 
-            if (mFellowships.isNotBlank())
-                pd[Constants.FIELD_DOCTOR_FELLOWSHIPS] = mFellowships
+            if (fellowships.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_FELLOWSHIPS] = fellowships
 
-            if (mExperience.isNotBlank())
-                pd[Constants.FIELD_DOCTOR_EXPERIENCE] = mExperience
+            if (experience.isNotBlank())
+                pd[Constants.FIELD_DOCTOR_EXPERIENCE] = experience
 
-            if (mWorkingHospitalName.isNotBlank()) {
-                pd[Constants.FIELD_WORKING_HOSPITAL_NAME] = mWorkingHospitalName
-                dl[Constants.FIELD_WORKING_HOSPITAL_NAME] = mWorkingHospitalName
+            if (workingHospitalName.isNotBlank()) {
+                pd[Constants.FIELD_WORKING_HOSPITAL_NAME] = workingHospitalName
+                dl[Constants.FIELD_WORKING_HOSPITAL_NAME] = workingHospitalName
             }
 
             mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
@@ -275,7 +273,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     if (task.isSuccessful && task.result != null) {
                         // Upload success; push the download URL to the database, also update the mDoctorDpPath
                         val imagePath = task.result.toString()
-                        mDoctorDpPath = imagePath
+                        doctorDpPath = imagePath
                         mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                             .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
                             .addOnSuccessListener { Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show() }
@@ -323,7 +321,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     // Launch the Verification Activity
                     val i = Intent(this, AccountVerificationActivity::class.java)
                     i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, user.email)
-                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mContactNumber)
+                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, contactNumber)
                     i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_CLOSE)
                     startActivity(i)
                 }
@@ -365,7 +363,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     // Launch the Verification Activity
                     val i = Intent(this, AccountVerificationActivity::class.java)
                     i.putExtra(AccountVerificationActivity.KEY_USER_EMAIL, user.email)
-                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, mContactNumber)
+                    i.putExtra(AccountVerificationActivity.KEY_USER_PHONE_NUMBER, contactNumber)
                     i.putExtra(AccountVerificationActivity.KEY_BACK_BUTTON_BEHAVIOUR, AccountVerificationActivity.BEHAVIOUR_CLOSE)
                     startActivity(i)
                 }
@@ -421,28 +419,28 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     fun onEditProfileSaveClick(data: ProfileData) {
         // Save the data values if not empty; to this activity and push them to database
         if (data.name.isNotBlank() && data.name != "null")
-            mDoctorFullName = data.name
+            doctorFullName = data.name
 
         if (data.phone.isNotBlank() && data.phone != "null")
-            mContactNumber = data.phone
+            contactNumber = data.phone
 
         if (data.speciality.isNotBlank() && data.speciality != "null")
-            mSpeciality = data.speciality
+            speciality = data.speciality
 
         if (data.qualifications.isNotBlank() && data.qualifications != "null")
-            mQualifications = data.qualifications
+            qualifications = data.qualifications
 
         if (data.sex != Constants.NULL_INT)
-            mSex = data.sex
+            sex = data.sex
 
         if (data.fellowships.isNotBlank() && data.fellowships != "null")
-            mFellowships = data.fellowships
+            fellowships = data.fellowships
 
         if (data.experience.isNotBlank() && data.experience != "null")
-            mExperience = data.experience
+            experience = data.experience
 
         if (data.practicingHospital.isNotBlank() && data.practicingHospital != "null")
-            mWorkingHospitalName = data.practicingHospital
+            workingHospitalName = data.practicingHospital
 
         pushToDatabase(pressBackOnSave = true)
     }

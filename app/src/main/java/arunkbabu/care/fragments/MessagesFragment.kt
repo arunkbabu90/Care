@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Chat
 import arunkbabu.care.R
 import arunkbabu.care.activities.ChatActivity
+import arunkbabu.care.activities.DoctorActivity
+import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.adapters.ChatAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_messages.*
@@ -17,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_messages.*
 class MessagesFragment : Fragment() {
     private lateinit var adapter: ChatAdapter
     private var chats = ArrayList<Chat>()
-    private var userId = ""
 
     companion object {
         var messagesFragmentActive = false
@@ -37,13 +38,37 @@ class MessagesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        messagesFragmentActive = true
+
+        val pa: PatientActivity?
+        val da: DoctorActivity?
+
+        pa = try {
+            activity as PatientActivity
+        } catch (e: ClassCastException) {
+            e.printStackTrace()
+            null
+        }
+
+        da = try {
+            activity as DoctorActivity
+        } catch (e: ClassCastException) {
+            e.printStackTrace()
+            null
+        }
 
         val lm = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
         adapter =  ChatAdapter(chats) { chat -> startChatActivity(chat) }
         lm.stackFromEnd = true
         rv_messagesFrag.layoutManager = lm
         rv_messagesFrag.adapter = adapter
+
+        if (pa != null)
+            updateData(pa.chats)
+
+        if (da != null)
+            updateData(da.chats)
+
+        messagesFragmentActive = true
     }
 
     private fun startChatActivity(chat: Chat) {
@@ -59,7 +84,8 @@ class MessagesFragment : Fragment() {
      * @param chats The list of new chats
      */
     fun updateData(chats: ArrayList<Chat>) {
-        this.chats = chats
+        this.chats.clear()
+        this.chats.addAll(chats)
         adapter.notifyDataSetChanged()
     }
 
