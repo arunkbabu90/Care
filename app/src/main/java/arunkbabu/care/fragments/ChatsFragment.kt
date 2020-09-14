@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.fragment_chats.*
 class ChatsFragment : Fragment() {
     private lateinit var adapter: ChatAdapter
     private var chats = ArrayList<Chat>()
-    private var userId = ""
+    private var senderId = ""
+    private var senderName = ""
+    private var senderDpPath = ""
 
     companion object {
         var messagesFragmentActive = false
@@ -65,12 +67,16 @@ class ChatsFragment : Fragment() {
 
         if (pa != null) {
             updateData(pa.chats)
-            userId = pa.userId
+            senderId = pa.userId
+            senderName = pa.fullName
+            senderDpPath = pa.patientDpPath
         }
 
         if (da != null) {
             updateData(da.chats)
-            userId = da.userId
+            senderId = da.userId
+            senderName = da.doctorFullName
+            senderDpPath = da.doctorDpPath
         }
 
         messagesFragmentActive = true
@@ -78,10 +84,12 @@ class ChatsFragment : Fragment() {
 
     private fun startChatActivity(chat: Chat) {
         val i = Intent(context, ChatActivity::class.java)
-        i.putExtra(ChatActivity.PERSON_NAME_EXTRA_KEY, chat.full_name)
-        i.putExtra(ChatActivity.PROFILE_PICTURE_EXTRA_KEY, chat.profilePicture)
+        i.putExtra(ChatActivity.RECEIVER_NAME_EXTRA_KEY, chat.full_name)
+        i.putExtra(ChatActivity.RECEIVER_DP_EXTRA_KEY, chat.profilePicture)
         i.putExtra(ChatActivity.RECEIVER_ID_EXTRA_KEY, chat.key)
-        i.putExtra(ChatActivity.USER_ID_EXTRA_KEY, userId)
+        i.putExtra(ChatActivity.SENDER_NAME_EXTRA_KEY, senderName)
+        i.putExtra(ChatActivity.SENDER_DP_EXTRA_KEY, senderDpPath)
+        i.putExtra(ChatActivity.SENDER_ID_EXTRA_KEY, senderId)
         startActivity(i)
     }
 

@@ -15,41 +15,50 @@ import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : AppCompatActivity(), ChildEventListener {
     private lateinit var msgRoot: DatabaseReference
+    private lateinit var receiverChatRoot: DatabaseReference
     private lateinit var lastMsgRoot: DatabaseReference
     private var adapter: MessageAdapter? = null
 
     private val messages = ArrayList<Message>()
     private var senderId = ""
     private var receiverId = ""
+    private var receiverName = ""
+    private var receiverDpPath = ""
     private var senderName = ""
     private var senderDpPath = ""
 
     companion object {
-        const val PERSON_NAME_EXTRA_KEY = "key_chat_person_name_extra"
+        const val RECEIVER_NAME_EXTRA_KEY = "key_chat_receiver_name_extra"
+        const val RECEIVER_DP_EXTRA_KEY = "key_chat_receiver_dp_extra"
         const val RECEIVER_ID_EXTRA_KEY = "key_chat_receiver_id_extra"
-        const val USER_ID_EXTRA_KEY = "key_chat_sender_id_extra"
-        const val PROFILE_PICTURE_EXTRA_KEY = "key_chat_profile_picture_extra"
+        const val SENDER_NAME_EXTRA_KEY = "key_chat_sender_name_extra"
+        const val SENDER_DP_EXTRA_KEY = "key_chat_sender_dp_extra"
+        const val SENDER_ID_EXTRA_KEY = "key_chat_sender_id_extra"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        senderName = intent.getStringExtra(PERSON_NAME_EXTRA_KEY) ?: ""
-        senderDpPath = intent.getStringExtra(PROFILE_PICTURE_EXTRA_KEY) ?: ""
+        receiverName = intent.getStringExtra(RECEIVER_NAME_EXTRA_KEY) ?: ""
+        receiverDpPath = intent.getStringExtra(RECEIVER_DP_EXTRA_KEY) ?: ""
         receiverId = intent.getStringExtra(RECEIVER_ID_EXTRA_KEY) ?: ""
-        senderId = intent.getStringExtra(USER_ID_EXTRA_KEY) ?: ""
+        senderId = intent.getStringExtra(SENDER_ID_EXTRA_KEY) ?: ""
+        senderName = intent.getStringExtra(SENDER_NAME_EXTRA_KEY) ?: ""
+        senderDpPath = intent.getStringExtra(SENDER_DP_EXTRA_KEY) ?: ""
 
         setSupportActionBar(toolbar_chatActivity)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        toolbarChat_name.text = senderName
-        Utils.loadDpToView(this, senderDpPath, toolbarChat_dp)
+        toolbarChat_name.text = receiverName
+        Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
         adapter = MessageAdapter(messages, userId = senderId)
         val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rv_messages.layoutManager = lm
         rv_messages.adapter = adapter
+
+        receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(receiverId).child(senderId)
 
         lastMsgRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(senderId)
             .child(receiverId).child(Constants.FIELD_LAST_MESSAGE)
@@ -69,6 +78,15 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
                 )
                 msgRoot.push().updateChildren(msgMap)
                 lastMsgRoot.setValue(message)
+                // Also push your id to doctor's chat index in "Chats". So that the receiver can
+                // connect with you
+                val senderMap = hashMapOf(
+                    Constants.FIELD_FULL_NAME to senderName,
+                    Constants.FIELD_PROFILE_PICTURE to senderDpPath,
+                    Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP,
+                    Constants.FIELD_LAST_MESSAGE to message
+                )
+                receiverChatRoot.updateChildren(senderMap)
 
                 et_typeMessage.setText("")
             }
@@ -80,6 +98,7 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
      */
     private fun loadMessages(snapshot: DataSnapshot) {
         val message = snapshot.getValue(Message::class.java) ?: Message()
+        message.key = snapshot.key ?: ""
         messages.add(message)
 
         adapter?.notifyDataSetChanged()

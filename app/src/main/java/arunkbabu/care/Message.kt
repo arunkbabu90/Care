@@ -3,7 +3,7 @@ package arunkbabu.care
 /**
  * Data Object representing a single Message in the Chat Room
  */
-data class Message(val key: String = "",
+data class Message(var key: String = "",
                    val msg: String = "",
                    val senderId: String = "",
                    val receiverId: String = "",
