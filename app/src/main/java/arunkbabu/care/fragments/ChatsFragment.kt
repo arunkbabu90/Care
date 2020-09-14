@@ -24,7 +24,7 @@ class ChatsFragment : Fragment() {
     private var senderDpPath = ""
 
     companion object {
-        var messagesFragmentActive = false
+        var isFragmentActive = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +79,7 @@ class ChatsFragment : Fragment() {
             senderDpPath = da.doctorDpPath
         }
 
-        messagesFragmentActive = true
+        isFragmentActive = true
     }
 
     private fun startChatActivity(chat: Chat) {
@@ -105,6 +105,6 @@ class ChatsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        messagesFragmentActive = false
+        isFragmentActive = false
     }
 }

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import arunkbabu.care.*
+import arunkbabu.care.R
 import arunkbabu.care.fragments.ChatsFragment
 import arunkbabu.care.fragments.DoctorEditProfileFragment
 import arunkbabu.care.fragments.DoctorProfileFragment
@@ -21,8 +22,11 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_doctor.*
@@ -33,13 +37,16 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
-    BottomNavigationView.OnNavigationItemSelectedListener {
-    private lateinit var mAuth: FirebaseAuth
-    private lateinit var mDb: FirebaseFirestore
-    private lateinit var mCloudStore: FirebaseStorage
-    private var mAccountAlreadyVerified = true
-    private var mIsLaunched = false
-    private var mFragId = Constants.NULL_INT
+    BottomNavigationView.OnNavigationItemSelectedListener, ChildEventListener {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var cloudStore: FirebaseStorage
+    private lateinit var chatRoot: DatabaseReference
+    private var chatsFrag: ChatsFragment? = null
+    private var isAccountAlreadyVerified = true
+    private var isLaunched = false
+    private var fragId = Constants.NULL_INT
+    private val keys = ArrayList<String>()
 
     var chats = ArrayList<Chat>()
     var userId = ""
@@ -70,24 +77,32 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         // Set flag as Patient
         Utils.userType = Constants.USER_TYPE_DOCTOR
 
-        mAuth = FirebaseAuth.getInstance()
-        mDb = FirebaseFirestore.getInstance()
-        mCloudStore = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        cloudStore = FirebaseStorage.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
-        mAuth.addAuthStateListener(this)
-        userId = mAuth.uid ?: ""
+        auth.addAuthStateListener(this)
+        userId = auth.uid ?: ""
+
+        if (userId.isNotBlank()) {
+            chatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(userId)
+            chatRoot.orderByChild(Constants.FIELD_CHAT_TIMESTAMP).limitToLast(20)
+                .addChildEventListener(this)
+        } else {
+            Toast.makeText(this, getString(R.string.err_create_chat_room), Toast.LENGTH_LONG).show()
+        }
 
         // Fetch the account verification status flag from the database
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         if (user != null) {
-            mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+            db.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .get().addOnCompleteListener { task: Task<DocumentSnapshot?> ->
                     if (task.isSuccessful) {
                         val d = task.result
                         if (d != null) {
-                            mAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED) ?: false
+                            isAccountAlreadyVerified = d.getBoolean(Constants.FIELD_ACCOUNT_VERIFIED) ?: false
                             contactNumber = d.getString(Constants.FIELD_CONTACT_NUMBER) ?: ""
-                            if (!mAccountAlreadyVerified) {
+                            if (!isAccountAlreadyVerified) {
                                 // If email NOT Already Verified; check the status again
                                 checkAccountVerificationStatus()
                             } else {
@@ -112,29 +127,32 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.mnu_requests_doc -> {
-                if (mFragId != PATIENT_REQUESTS_FRAGMENT_ID) {
+                if (fragId != PATIENT_REQUESTS_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.doctor_activity_fragment_container, PatientRequestsFragment())
                         .commit()
-                    mFragId = PATIENT_REQUESTS_FRAGMENT_ID
+                    fragId = PATIENT_REQUESTS_FRAGMENT_ID
+                    chatsFrag = null
                 }
                 true
             }
             R.id.mnu_messages_doc -> {
-                if (mFragId != DOC_PRIVATE_MESSAGE_FRAGMENT_ID) {
+                if (fragId != DOC_PRIVATE_MESSAGE_FRAGMENT_ID) {
+                    chatsFrag = ChatsFragment()
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.doctor_activity_fragment_container, ChatsFragment())
+                        .replace(R.id.doctor_activity_fragment_container, chatsFrag!!)
                         .commit()
-                    mFragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
+                    fragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
                 }
                 true
             }
             R.id.mnu_profile_doc -> {
-                if (mFragId != DOCTOR_PROFILE_FRAGMENT_ID) {
+                if (fragId != DOCTOR_PROFILE_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.doctor_activity_fragment_container, DoctorProfileFragment())
                         .commit()
-                    mFragId = DOCTOR_PROFILE_FRAGMENT_ID
+                    fragId = DOCTOR_PROFILE_FRAGMENT_ID
+                    chatsFrag = null
                 }
                 true
             }
@@ -146,9 +164,9 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * Retrieves all the profile data of the doctor
      */
     private fun fetchDoctorProfile() {
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         if (user != null) {
-            mDb.collection(Constants.COLLECTION_USERS).document(user.uid).get()
+            db.collection(Constants.COLLECTION_USERS).document(user.uid).get()
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         val document = it.result
@@ -182,7 +200,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         val pd: HashMap<String, Any> = HashMap()
         val dl: HashMap<String, Any> = HashMap()
 
-        val user: FirebaseUser? = mAuth.currentUser
+        val user: FirebaseUser? = auth.currentUser
 
         if (user != null) {
             if (doctorFullName.isNotBlank()) {
@@ -221,7 +239,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 dl[Constants.FIELD_WORKING_HOSPITAL_NAME] = workingHospitalName
             }
 
-            mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+            db.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .update(pd)
                 .addOnSuccessListener {
                     Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
@@ -235,7 +253,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 }
 
             if (dl.isNotEmpty()) {
-                mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+                db.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
                     .update(dl)
                     .addOnSuccessListener { Log.d(TAG, "Save to Doctor List Success") }
                     .addOnFailureListener { Log.d(TAG, "Save to Doctor List Failure") }
@@ -258,11 +276,11 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         bitmap.compress(Bitmap.CompressFormat.JPEG, Constants.JPG_QUALITY, bos)
         val bs = ByteArrayInputStream(bos.toByteArray())
 
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         if (user != null) {
             // Upload the image file
             val uploadPath = "${user.uid}/${Constants.DIRECTORY_PROFILE_PICTURE}/${Constants.PROFILE_PICTURE_FILE_NAME}${Constants.IMG_FORMAT_JPG}"
-            val storageReference = mCloudStore.getReference(uploadPath)
+            val storageReference = cloudStore.getReference(uploadPath)
             storageReference.putStream(bs).continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
                     if (!task.isSuccessful) {
                         // Upload failed
@@ -276,12 +294,12 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         // Upload success; push the download URL to the database, also update the mDoctorDpPath
                         val imagePath = task.result.toString()
                         doctorDpPath = imagePath
-                        mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+                        db.collection(Constants.COLLECTION_USERS).document(user.uid)
                             .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
                             .addOnSuccessListener { Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show() }
                             .addOnFailureListener { Toast.makeText(this, R.string.err_upload_failed, Toast.LENGTH_SHORT).show() }
 
-                        mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+                        db.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
                             .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
                             .addOnSuccessListener { Log.d(TAG, "Dp path push to Doctor List Success") }
                             .addOnFailureListener { Log.d(TAG, "Dp path push to Doctor List Failure") }
@@ -303,15 +321,15 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     private fun checkAccountVerificationSilently() {
         // Check whether the email associated with the account is verified
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         user?.reload()?.addOnSuccessListener {
             if (user.isEmailVerified) {
                 // Email verified
-                mAccountAlreadyVerified = true
+                isAccountAlreadyVerified = true
                 pushVerificationStatusFlag(true)
             } else {
                 // Email NOT verified
-                mAccountAlreadyVerified = false
+                isAccountAlreadyVerified = false
                 pushVerificationStatusFlag(false)
                 tv_doctor_err_msg.visibility = View.VISIBLE
                 tv_doctor_err_msg.setText(R.string.err_account_not_verified_desc_doc)
@@ -336,11 +354,11 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     private fun checkAccountVerificationStatus() {
         // Check whether the email associated with the account is verified
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         user?.reload()?.addOnSuccessListener {
             if (user.isEmailVerified) {
                 // Email verified
-                mAccountAlreadyVerified = true
+                isAccountAlreadyVerified = true
                 window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusVerified)
                 pushVerificationStatusFlag(true)
                 tv_doctor_err_msg.visibility = View.VISIBLE
@@ -354,7 +372,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 }, 3000)
             } else {
                 // Email NOT verified
-                mAccountAlreadyVerified = false
+                isAccountAlreadyVerified = false
                 window.statusBarColor = ContextCompat.getColor(this, R.color.colorStatusUnverified)
                 tv_doctor_err_msg.visibility = View.VISIBLE
                 tv_doctor_err_msg.setText(R.string.err_account_not_verified_desc_doc)
@@ -378,16 +396,16 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * @param isVerified The flag that needs to be set
      */
     private fun pushVerificationStatusFlag(isVerified: Boolean) {
-        val user = mAuth.currentUser
+        val user = auth.currentUser
         if (user != null) {
-            mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
+            db.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .update(Constants.FIELD_ACCOUNT_VERIFIED, isVerified)
                 .addOnFailureListener {
                     // Keep retrying if fails
                     pushVerificationStatusFlag(isVerified)
                 }
             // Also push to DoctorList Collection for indexing
-            mDb.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
+            db.collection(Constants.COLLECTION_DOCTORS_LIST).document(user.uid)
                 .update(Constants.FIELD_ACCOUNT_VERIFIED, isVerified)
                 .addOnFailureListener {
                     Log.d(TAG, "Failed to Add Verification Status Flag to DoctorsList Collection")
@@ -411,7 +429,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      * SignOut of your account
      */
     fun signOut() {
-        mAuth.signOut()
+        auth.signOut()
         finish()
     }
 
@@ -447,11 +465,40 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         pushToDatabase(pressBackOnSave = true)
     }
 
+    /**
+     * Updates the chats in ChatsFragment
+     */
+    private fun updateChats(snapshot: DataSnapshot) {
+        try {
+            val key: String = snapshot.key ?: ""
+            val chat: Chat = snapshot.getValue(Chat::class.java) ?: Chat()
+            chat.key = key
+            // Avoid repeating chat items
+            if (!keys.contains(key)) {
+                // If chat not exists. Just add the chat to end of list
+                chats.add(chat)
+                keys.add(key)
+            } else {
+                // If chat exists. Add new chat to end of list so that it shows at the TOP of list
+                chats.removeAt(keys.indexOf(key))
+                keys.remove(key)
+                chats.add(chat)
+                keys.add(key)
+            }
+        } catch (e: DatabaseException) {
+            e.printStackTrace()
+        }
+
+        if (ChatsFragment.isFragmentActive) {
+            chatsFrag?.updateData(chats)
+        }
+    }
+
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
         // User is either signed out or the login credentials no longer exists. So launch the login
         // activity again for the user to sign-in
-        if (firebaseAuth.currentUser == null && !mIsLaunched) {
-            mIsLaunched = true
+        if (firebaseAuth.currentUser == null && !isLaunched) {
+            isLaunched = true
             startActivity(Intent(this, LoginActivity::class.java))
             Toast.makeText(this, getString(R.string.signed_out), Toast.LENGTH_SHORT).show()
             finish()
@@ -465,7 +512,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
     override fun onResume() {
         super.onResume()
-        if (!mAccountAlreadyVerified) {
+        if (!isAccountAlreadyVerified) {
             // If email NOT Already Verified; check the status again
             checkAccountVerificationStatus()
         }
@@ -485,5 +532,36 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+        updateChats(snapshot)
+    }
+
+    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        updateChats(snapshot)
+    }
+
+    override fun onChildRemoved(snapshot: DataSnapshot) {
+        // Remove the chat entry from the ChatsFragment too
+        try {
+            val key: String = snapshot.key ?: ""
+            chats.removeAt(keys.indexOf(key))
+            keys.remove(key)
+        } catch (e: DatabaseException) {
+            e.printStackTrace()
+        }
+
+        if (ChatsFragment.isFragmentActive) {
+            chatsFrag?.updateData(chats)
+        }
+    }
+
+    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCancelled(error: DatabaseError) {
+        TODO("Not yet implemented")
     }
 }

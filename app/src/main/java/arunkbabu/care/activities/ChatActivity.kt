@@ -1,6 +1,7 @@
 package arunkbabu.care.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
@@ -55,16 +56,26 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
 
         adapter = MessageAdapter(messages, userId = senderId)
         val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        rv_messages.layoutManager = lm
-        rv_messages.adapter = adapter
+        rv_chats.layoutManager = lm
+        rv_chats.adapter = adapter
 
         receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(receiverId).child(senderId)
 
         lastMsgRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(senderId)
             .child(receiverId).child(Constants.FIELD_LAST_MESSAGE)
-        msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(senderId).child(receiverId)
-        msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(20)
-            .addChildEventListener(this)
+
+        if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+            msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(senderId)
+                .child(receiverId)
+            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(20)
+                .addChildEventListener(this)
+        } else {
+            // USER is doctor
+            msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(receiverId)
+                .child(senderId)
+            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(20)
+                .addChildEventListener(this)
+        }
 
         toolbarChat_backBtn.setOnClickListener { finish() }
         fab_sendMessage.setOnClickListener {
@@ -102,7 +113,15 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         messages.add(message)
 
         adapter?.notifyDataSetChanged()
-        rv_messages.smoothScrollToPosition(messages.size)
+        rv_chats?.smoothScrollToPosition(messages.size)
+
+        if (messages.size < 1) {
+            tv_chatActivity_error?.visibility = View.VISIBLE
+            rv_chats?.visibility = View.GONE
+        } else {
+            tv_chatActivity_error?.visibility = View.GONE
+            rv_chats?.visibility = View.VISIBLE
+        }
     }
 
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {

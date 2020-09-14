@@ -38,7 +38,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var db: FirebaseFirestore
     private lateinit var cloudStore: FirebaseStorage
     private lateinit var chatRoot: DatabaseReference
-    private var messageFrag: ChatsFragment? = null
+    private var chatsFrag: ChatsFragment? = null
     private var reportProblemFrag: ReportProblemFragment? = null
     private var accountAlreadyVerified: Boolean? = null
     private var fragId = Constants.NULL_INT
@@ -118,21 +118,18 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .replace(R.id.patient_activity_fragment_container, reportProblemFrag!!)
                         .commit()
                     fragId = REPORT_PROBLEM_FRAGMENT_ID
-                    messageFrag = null
+                    chatsFrag = null
                 }
                 true
             }
             R.id.mnu_search -> {
                 if (fragId != DOC_SEARCH_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.patient_activity_fragment_container,
-                            DoctorSearchCategoryFragment()
-                        )
+                        .replace(R.id.patient_activity_fragment_container, DoctorSearchCategoryFragment())
                         .commit()
                     fragId = DOC_SEARCH_FRAGMENT_ID
                     reportProblemFrag = null
-                    messageFrag = null
+                    chatsFrag = null
                 }
                 true
             }
@@ -143,15 +140,15 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = DOCTORS_REPORT_FRAGMENT_ID
                     reportProblemFrag = null
-                    messageFrag = null
+                    chatsFrag = null
                 }
                 true
             }
             R.id.mnu_messages_patient -> {
                 if (fragId != PATIENT_MESSAGES_FRAGMENT_ID) {
-                    messageFrag = ChatsFragment()
+                    chatsFrag = ChatsFragment()
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, messageFrag!!)
+                        .replace(R.id.patient_activity_fragment_container, chatsFrag!!)
                         .commit()
                     fragId = PATIENT_MESSAGES_FRAGMENT_ID
                     reportProblemFrag = null
@@ -165,7 +162,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = PATIENT_PROFILE_FRAGMENT_ID
                     reportProblemFrag = null
-                    messageFrag = null
+                    chatsFrag = null
                 }
                 true
             }
@@ -488,7 +485,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     /**
-     * Updates the chats in Message Fragment
+     * Updates the chats in ChatFragment
      */
     private fun updateChats(snapshot: DataSnapshot) {
         try {
@@ -511,40 +508,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             e.printStackTrace()
         }
 
-        if (ChatsFragment.messagesFragmentActive) {
-            messageFrag?.updateData(chats)
+        if (ChatsFragment.isFragmentActive) {
+            chatsFrag?.updateData(chats)
         }
     }
-
-
-    /**
-     * Called when a child is added in the REAL-TIME DATABASE
-     */
-    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-        updateChats(snapshot)
-    }
-
-    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-        updateChats(snapshot)
-    }
-
-    override fun onChildRemoved(snapshot: DataSnapshot) {
-        // Remove it from our chats array too
-        try {
-            val key: String = snapshot.key ?: ""
-            chats.removeAt(keys.indexOf(key))
-            keys.remove(key)
-        } catch (e: DatabaseException) {
-            e.printStackTrace()
-        }
-
-        if (ChatsFragment.messagesFragmentActive) {
-            messageFrag?.updateData(chats)
-        }
-    }
-
-    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
-    override fun onCancelled(error: DatabaseError) { }
 
 
     override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
@@ -586,4 +553,33 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         if (isNewDoctorSelected)
             fetchDoctorDetails()
     }
+
+    /**
+     * Called when a Chat is added to ChatsFragment (in the REAL-TIME DATABASE)
+     */
+    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+        updateChats(snapshot)
+    }
+
+    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        updateChats(snapshot)
+    }
+
+    override fun onChildRemoved(snapshot: DataSnapshot) {
+        // Remove the chat entry from the ChatsFragment too
+        try {
+            val key: String = snapshot.key ?: ""
+            chats.removeAt(keys.indexOf(key))
+            keys.remove(key)
+        } catch (e: DatabaseException) {
+            e.printStackTrace()
+        }
+
+        if (ChatsFragment.isFragmentActive) {
+            chatsFrag?.updateData(chats)
+        }
+    }
+
+    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
+    override fun onCancelled(error: DatabaseError) { }
 }
