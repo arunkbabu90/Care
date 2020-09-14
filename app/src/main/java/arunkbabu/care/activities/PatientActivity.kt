@@ -494,6 +494,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         try {
             val key: String = snapshot.key ?: ""
             val chat: Chat = snapshot.getValue(Chat::class.java) ?: Chat()
+            chat.key = key
             // Avoid repeating chat items
             if (!keys.contains(key)) {
                 // If chat not exists. Just add the chat to end of list

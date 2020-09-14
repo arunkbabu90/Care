@@ -3,7 +3,8 @@ package arunkbabu.care
 /**
  * Data Object representing a single Message in the Chat Room
  */
-data class Message(val msg: String = "",
+data class Message(val key: String = "",
+                   val msg: String = "",
                    val senderId: String = "",
                    val receiverId: String = "",
                    val msgTimestamp: Long = -1) {

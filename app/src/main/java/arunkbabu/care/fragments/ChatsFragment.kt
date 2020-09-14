@@ -20,7 +20,6 @@ class ChatsFragment : Fragment() {
     private lateinit var adapter: ChatAdapter
     private var chats = ArrayList<Chat>()
     private var userId = ""
-    private var receiverId = ""
 
     companion object {
         var messagesFragmentActive = false
@@ -67,7 +66,6 @@ class ChatsFragment : Fragment() {
         if (pa != null) {
             updateData(pa.chats)
             userId = pa.userId
-            receiverId = PatientActivity.sReportingDoctorId
         }
 
         if (da != null) {
@@ -82,7 +80,7 @@ class ChatsFragment : Fragment() {
         val i = Intent(context, ChatActivity::class.java)
         i.putExtra(ChatActivity.PERSON_NAME_EXTRA_KEY, chat.full_name)
         i.putExtra(ChatActivity.PROFILE_PICTURE_EXTRA_KEY, chat.profilePicture)
-        i.putExtra(ChatActivity.RECEIVER_ID_EXTRA_KEY, receiverId)
+        i.putExtra(ChatActivity.RECEIVER_ID_EXTRA_KEY, chat.key)
         i.putExtra(ChatActivity.USER_ID_EXTRA_KEY, userId)
         startActivity(i)
     }
