@@ -3,10 +3,10 @@
     <color name="colorPrimary">#2963C5</color>
     <color name="colorPrimaryDark">#194691</color>
     <color name="colorAccent">#6c7fe9</color>
-    <color name="colorNextButton">#4768E2</color>
     <color name="colorViolet">#8151A4</color>
     <color name="colorBlue">#0175EE</color>
     <color name="colorAcceptButton">#00b363</color>
+    <color name="colorAcceptButtonTransparent">#2000b363</color>
     <color name="colorBackgroundGrey">#EDEDED</color>
     <color name="colorDarkBackgroundGrey">#000000</color>
     <color name="colorDarkBackgroundGrey1">#212121</color>
@@ -21,6 +21,7 @@
     <color name="colorGreen">#4CAF50</color>
     <color name="colorGreenDark">#4CAF50</color>
     <color name="colorGreenDark1">#3F8E42</color>
+    <color name="colorLightIndigoTransparent">#207175FF</color>
 
     <color name="colorLightIndigoNormal">#7175FF</color>
     <color name="colorLightIndigoActivated">#8C9EFF</color>

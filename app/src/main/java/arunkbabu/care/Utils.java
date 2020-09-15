@@ -24,8 +24,8 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -295,43 +295,16 @@ public class Utils {
     }
 
     /**
-     * Get the time in (HH:mm) or (hh:mm) format from the given minutes
-     * @param minutes The minutes past midnight of the time
-     * @param is24HrFormat Whether to return 24 hr or 12 hr format.
-     *                     True to return it in 24 hr format; false it in 12 hr format
+     * Get the time in (HH:mm) or (hh:mm) format based on system preferences
+     * (ie 24Hr/12Hr format based on the settings in Android System)
+     * @param epoch The epoch timestamp
+     * @param applicationContext The Application Context
      * @return String: The human readable time string in (HH:mm) or (hh:mm) format
      */
-    public static String getTimeString(int minutes, boolean is24HrFormat) {
-        int hour = minutes / 60;
-        int minute = minutes % 60;
-
-        // Format the time properly first
-        StringBuilder timeBuilder = new StringBuilder();
-        if (hour < 10)
-            timeBuilder.append(0);
-
-        timeBuilder.append(hour);
-        timeBuilder.append(" : ");
-
-        if (minute < 10)
-            timeBuilder.append(0);
-
-        timeBuilder.append(minute);
-
-
-        String time = timeBuilder.toString();
-        if (!is24HrFormat) {
-            // 12 Hr Format
-            try {
-            SimpleDateFormat sdf24Hr = new SimpleDateFormat("HH : mm", Locale.UK);
-            SimpleDateFormat sdf12Hr = new SimpleDateFormat("hh : mm a", Locale.UK);
-            final Date date24Hr = sdf24Hr.parse(time);
-            time = sdf12Hr.format(date24Hr);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return time;
+    public static String getTimeString(Context applicationContext, long epoch) {
+        Date d = new Date(epoch);
+        DateFormat tf = android.text.format.DateFormat.getTimeFormat(applicationContext);
+        return tf.format(d);
     }
 
     /**
@@ -389,19 +362,30 @@ public class Utils {
     }
 
     /**
-     * Starts the recycler view layout animation
+     * Starts the Reveal Layout Animation on recycler view items
      * @param context The context
      * @param recyclerView The recyclerview to run the animation on
      * @param reverseAnimation Whether to reverse the animation effect.
      *                        If True then the animation will play in the reverse order
      */
-    public static void runLayoutAnimation(Context context, RecyclerView recyclerView, boolean reverseAnimation) {
+    public static void runStackedRevealAnimation(Context context, RecyclerView recyclerView, boolean reverseAnimation) {
         LayoutAnimationController controller;
         if (reverseAnimation) {
-            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation_reverse);
+            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.stacked_reveal_layout_animation_reverse);
         } else {
-            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation);
+            controller = AnimationUtils.loadLayoutAnimation(context, R.anim.stacked_reveal_layout_animation);
         }
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.scheduleLayoutAnimation();
+    }
+
+    /**
+     * Starts the Pull-Down Layout Animation on recycler view items
+     * @param context The context
+     * @param recyclerView The recyclerview to run the animation on
+     */
+    public static void runPullDownAnimation(Context context, RecyclerView recyclerView) {
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.pull_down_layout_animation);
         recyclerView.setLayoutAnimation(controller);
         recyclerView.scheduleLayoutAnimation();
     }

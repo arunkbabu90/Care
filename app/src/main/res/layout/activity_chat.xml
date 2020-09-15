@@ -41,17 +41,6 @@
             tools:text="Arun K Babu" />
     </com.google.android.material.appbar.MaterialToolbar>
 
-    <TextView
-        android:id="@+id/tv_chatActivity_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no_chats_yet"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!-- Messages View -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chats"
@@ -67,7 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:background="@drawable/pillbox_black_edit_text_active_drawable"
+        android:background="@drawable/pillbox_transparent_active_indigo_drawable"
         android:focusable="true"
         android:hint="@string/type_message"
         android:imeOptions="actionDone"

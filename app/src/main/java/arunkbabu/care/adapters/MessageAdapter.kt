@@ -1,10 +1,12 @@
 package arunkbabu.care.adapters
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Message
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import arunkbabu.care.inflate
 import kotlinx.android.synthetic.main.item_message_lt.view.*
 import kotlinx.android.synthetic.main.item_message_rt.view.*
@@ -15,8 +17,8 @@ class MessageAdapter(private val messages: ArrayList<Message>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            Message.TYPE_YOU -> MessageViewHolderRt(parent.inflate(R.layout.item_message_rt))
-            else -> MessageViewHolderLt(parent.inflate(R.layout.item_message_lt))
+            Message.TYPE_YOU -> MessageViewHolderRt(parent.context, parent.inflate(R.layout.item_message_rt))
+            else -> MessageViewHolderLt(parent.context, parent.inflate(R.layout.item_message_lt))
         }
     }
 
@@ -38,15 +40,17 @@ class MessageAdapter(private val messages: ArrayList<Message>,
 
     override fun getItemCount(): Int = messages.size
 
-    class MessageViewHolderRt(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MessageViewHolderRt(private val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(message: Message) {
             itemView.itemMsgRt_text.text = message.msg
+            itemView.itemMsgRt_time.text = Utils.getTimeString(context, message.msgTimestamp)
         }
     }
 
-    class MessageViewHolderLt(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MessageViewHolderLt(private val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(message: Message) {
             itemView.itemMsgLt_text.text = message.msg
+            itemView.itemMsgLt_time.text = Utils.getTimeString(context, message.msgTimestamp)
         }
     }
 }

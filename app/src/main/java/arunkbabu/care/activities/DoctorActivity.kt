@@ -2,7 +2,7 @@ package arunkbabu.care.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
+import android.net.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -42,6 +42,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var db: FirebaseFirestore
     private lateinit var cloudStore: FirebaseStorage
     private lateinit var chatRoot: DatabaseReference
+    private lateinit var connectivityManager: ConnectivityManager
     private var chatsFrag: ChatsFragment? = null
     private var isAccountAlreadyVerified = true
     private var isLaunched = false
@@ -68,15 +69,20 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         private const val PATIENT_REQUESTS_FRAGMENT_ID = 8001
         private const val DOC_PRIVATE_MESSAGE_FRAGMENT_ID = 8002
         private const val DOCTOR_PROFILE_FRAGMENT_ID = 8003
+
+        var isInternetConnected = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_doctor)
-
-        // Set flag as Patient
+        // Set flag as Doctor
         Utils.userType = Constants.USER_TYPE_DOCTOR
 
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        registerNetworkChangeCallback()
+
+        Firebase.database.setPersistenceEnabled(true)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         cloudStore = FirebaseStorage.getInstance()
@@ -350,6 +356,41 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     }
 
     /**
+     * Register a callback to be invoked when network connectivity changes
+     * @return True If internet is available; False otherwise
+     */
+    private fun registerNetworkChangeCallback(): Boolean {
+        val isAvailable = BooleanArray(1)
+        val request = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+
+        connectivityManager.registerNetworkCallback(request, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                // Internet is Available
+                runOnUiThread {
+                    isInternetConnected = true
+                    isAvailable[0] = true
+                }
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                // Internet is Unavailable
+                isAvailable[0] = false
+                runOnUiThread {
+                    isInternetConnected = false
+                }
+            }
+        })
+        return isAvailable[0]
+    }
+
+    /**
      * Checks whether the email associated with this account is verified
      */
     private fun checkAccountVerificationStatus() {
@@ -557,11 +598,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         }
     }
 
-    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-        TODO("Not yet implemented")
-    }
+    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
 
-    override fun onCancelled(error: DatabaseError) {
-        TODO("Not yet implemented")
-    }
+    override fun onCancelled(error: DatabaseError) { }
 }

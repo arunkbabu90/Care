@@ -77,6 +77,8 @@
         android:id="@+id/btn_take_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AppTheme.NormalButtonStyle"
+        android:textSize="14sp"
         android:layout_gravity="center"
         android:layout_margin="@dimen/default_margin"
         android:text="@string/take_photo"
@@ -94,6 +96,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_choose_file"
+        style="@style/AppTheme.NormalButtonStyle"
+        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

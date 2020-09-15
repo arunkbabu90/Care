@@ -34,4 +34,8 @@
         <attr name="radio1Checked" format="boolean" />
         <attr name="radio2Checked" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CustomInputTextField">
+        <attr name="android:textColor" format="color"/>
+    </declare-styleable>
 </resources>

@@ -152,7 +152,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         mAdapter = DoctorProfileAdapter(profData)
         rv_doc_profile?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         rv_doc_profile?.adapter = mAdapter
-        Utils.runLayoutAnimation(context, rv_doc_profile, true)
+        Utils.runStackedRevealAnimation(context, rv_doc_profile, true)
 
         pb_doc_profile_data?.visibility = View.GONE
     }

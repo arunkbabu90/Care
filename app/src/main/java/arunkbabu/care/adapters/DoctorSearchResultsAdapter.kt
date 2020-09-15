@@ -72,7 +72,7 @@ class DoctorSearchResultsAdapter(options: FirestorePagingOptions<Doctor>,
                     recyclerView.visibility = View.VISIBLE
                 }
 
-                Utils.runLayoutAnimation(context, recyclerView, true)
+                Utils.runStackedRevealAnimation(context, recyclerView, true)
             }
 
             else -> super.onLoadingStateChanged(state)

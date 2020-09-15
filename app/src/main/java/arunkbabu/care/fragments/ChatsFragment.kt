@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Chat
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import arunkbabu.care.activities.ChatActivity
 import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.adapters.ChatAdapter
 import com.google.android.material.transition.MaterialSharedAxis
+import kotlinx.android.synthetic.main.activity_chat.*
 import kotlinx.android.synthetic.main.fragment_chats.*
 
 class ChatsFragment : Fragment() {
@@ -101,6 +103,16 @@ class ChatsFragment : Fragment() {
         this.chats.clear()
         this.chats.addAll(chats)
         adapter.notifyDataSetChanged()
+        Utils.runStackedRevealAnimation(context, rv_messagesFrag, true)
+
+
+        if (chats.size < 1) {
+            tv_chatsFrag_error?.visibility = View.VISIBLE
+            rv_chats?.visibility = View.GONE
+        } else {
+            tv_chatsFrag_error?.visibility = View.GONE
+            rv_chats?.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

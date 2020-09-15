@@ -139,9 +139,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
                 break;
             case MotionEvent.ACTION_UP:
                 if (v.getId() == R.id.tv_forgot_password) {
-                    mForgotPasswordTextView.setTextColor(getResources().getColor(R.color.colorNextButton));
+                    mForgotPasswordTextView.setTextColor(getResources().getColor(R.color.colorLightIndigoNormal));
                 } else if (v.getId() == R.id.tv_sign_up) {
-                    mSignUpTextView.setTextColor(getResources().getColor(R.color.colorNextButton));
+                    mSignUpTextView.setTextColor(getResources().getColor(R.color.colorLightIndigoNormal));
                 }
                 v.performClick();
                 break;

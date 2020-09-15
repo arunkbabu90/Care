@@ -2,7 +2,8 @@ package arunkbabu.care.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
+import android.net.*
+import android.net.ConnectivityManager.NetworkCallback
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -38,6 +39,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var db: FirebaseFirestore
     private lateinit var cloudStore: FirebaseStorage
     private lateinit var chatRoot: DatabaseReference
+    private lateinit var connectivityManager: ConnectivityManager
     private var chatsFrag: ChatsFragment? = null
     private var reportProblemFrag: ReportProblemFragment? = null
     private var accountAlreadyVerified: Boolean? = null
@@ -72,6 +74,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         var sReportingDoctorId = ""
         var isDataLoaded = false
         var isNewDoctorSelected = false
+        var isInternetConnected = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +83,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         // Set flag as Patient
         Utils.userType = Constants.USER_TYPE_PATIENT
 
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        registerNetworkChangeCallback()
+
+        Firebase.database.setPersistenceEnabled(true)
         auth = FirebaseAuth.getInstance()
         cloudStore = FirebaseStorage.getInstance()
         db = FirebaseFirestore.getInstance()
@@ -125,7 +132,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             R.id.mnu_search -> {
                 if (fragId != DOC_SEARCH_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, DoctorSearchCategoryFragment())
+                        .replace(
+                            R.id.patient_activity_fragment_container,
+                            DoctorSearchCategoryFragment()
+                        )
                         .commit()
                     fragId = DOC_SEARCH_FRAGMENT_ID
                     reportProblemFrag = null
@@ -268,11 +278,19 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                             // Create a chat room with your reporting doctor
                             createChatRoomWithCurrentDoctor()
                         } else {
-                            Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.err_unable_to_fetch),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
                     } else {
-                        Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.err_unable_to_fetch),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         finish()
                     }
                 }
@@ -350,6 +368,41 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 }
         }
         PatientProfileFragment.mIsUpdatesAvailable = false
+    }
+
+    /**
+     * Register a callback to be invoked when network connectivity changes
+     * @return True If internet is available; False otherwise
+     */
+    private fun registerNetworkChangeCallback(): Boolean {
+        val isAvailable = BooleanArray(1)
+        val request = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+
+        connectivityManager.registerNetworkCallback(request, object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                // Internet is Available
+                runOnUiThread {
+                    isInternetConnected = true
+                    isAvailable[0] = true
+                }
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                // Internet is Unavailable
+                isAvailable[0] = false
+                runOnUiThread {
+                    isInternetConnected = false
+                }
+            }
+        })
+        return isAvailable[0]
     }
 
     /**

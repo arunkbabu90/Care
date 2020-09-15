@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.DoctorReport
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import arunkbabu.care.activities.ViewDoctorReportActivity
 import arunkbabu.care.adapters.ReportListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -29,7 +27,6 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     }
     private lateinit var mAdapter: ReportListAdapter
     private lateinit var mDocReportQuery: Query
-    private var showLayoutAnimation = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +62,7 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
             mAdapter.setClickListener(this)
             rv_doctor_reports.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_doctor_reports.adapter = mAdapter
-//            runLayoutAnimation(rv_doctor_reports)
+            Utils.runStackedRevealAnimation(context, rv_doctor_reports, true)
         }
     }
 
@@ -74,15 +71,6 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
         val viewReportIntent = Intent(context, ViewDoctorReportActivity::class.java)
         viewReportIntent.putExtra(KEY_EXTRA_REPORT_ID, report.reportId)
         startActivity(viewReportIntent)
-    }
-
-    /**
-     * Starts the layout animation
-     */
-    private fun runLayoutAnimation(recyclerView: RecyclerView) {
-        val controller: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.scale_up_layout_animation_reverse)
-        recyclerView.layoutAnimation = controller
-        recyclerView.scheduleLayoutAnimation()
     }
 
     override fun onStart() {

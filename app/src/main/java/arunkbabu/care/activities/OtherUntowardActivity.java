@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.button.MaterialButton;
@@ -41,22 +42,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class OtherUntowardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
-    @BindView(R.id.tv_otheruntoward_error)
-    TextView mErrorTextView;
-    @BindView(R.id.tv_otheruntoward_doctor_name)
-    TextView mDocNameTextView;
-    @BindView(R.id.iv_otheruntoward_doctor_dp)
-    CircularImageView mDocDpImageView;
-    @BindView(R.id.vp_otheruntoward)
-    ViewPager mPager;
-    @BindView(R.id.btn_otheruntoward_next)
-    MaterialButton mNextButton;
-    @BindView(R.id.pb_otheruntoward)
-    ProgressBar mProgressBar;
-    @BindView(R.id.pb_otheruntoward_dp)
-    ProgressBar mDpProgressBar;
-    @BindView(R.id.otheruntoward_reporting_doctor)
-    TextView mReportingDoctorTextView;
+    @BindView(R.id.tv_otheruntoward_error) TextView mErrorTextView;
+    @BindView(R.id.tv_otheruntoward_doctor_name) TextView mDocNameTextView;
+    @BindView(R.id.iv_otheruntoward_doctor_dp) CircularImageView mDocDpImageView;
+    @BindView(R.id.vp_otheruntoward) ViewPager mPager;
+    @BindView(R.id.btn_otheruntoward_next) MaterialButton mNextButton;
+    @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
+    @BindView(R.id.pb_otheruntoward_dp) ProgressBar mDpProgressBar;
+    @BindView(R.id.otheruntoward_reporting_doctor) TextView mReportingDoctorTextView;
 
     private OtherUntowardPagerAdapter mAdapter;
     private FirebaseFirestore mDb;
@@ -404,9 +397,13 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             // Change the next button to Finish/Send Button if at last page
             mNextButton.setText(getString(R.string.send));
             mNextButton.setBackgroundTintList(AppCompatResources.getColorStateList(this, R.color.send_btn_color_state_list));
+            mNextButton.setTextColor(ContextCompat.getColor(this, R.color.colorAcceptButton));
+            mNextButton.setStrokeColorResource(R.color.colorAcceptButton);
         } else {
             mNextButton.setText(getString(R.string.next));
             mNextButton.setBackgroundTintList(AppCompatResources.getColorStateList(this, R.color.next_btn_color_state_list));
+            mNextButton.setTextColor(ContextCompat.getColor(this, R.color.colorLightIndigoNormal));
+            mNextButton.setStrokeColorResource(R.color.colorLightIndigoNormal);
         }
     }
 

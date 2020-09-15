@@ -143,7 +143,7 @@ class ViewDoctorProfileActivity : AppCompatActivity(), View.OnClickListener {
         val adapter = DoctorProfileAdapter(profData)
         rv_viewProfile?.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         rv_viewProfile?.adapter = adapter
-        Utils.runLayoutAnimation(this, rv_viewProfile, false)
+        Utils.runStackedRevealAnimation(this, rv_viewProfile, false)
 
         pb_viewProfile_data_loading?.visibility = View.GONE
     }

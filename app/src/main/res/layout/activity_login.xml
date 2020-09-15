@@ -19,7 +19,7 @@
             android:fontFamily="@font/muli_extra_bold"
             android:gravity="center"
             android:text="@string/login"
-            android:textSize="60sp" />
+            android:textSize="50sp" />
 
         <TextView
             android:id="@+id/tv_login_error"
@@ -99,11 +99,11 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="@dimen/small_margin"
+            android:padding="@dimen/default_padding"
             android:elevation="5dp"
             android:onClick="onLoginClick"
             android:stateListAnimator="@null"
             android:text="@string/login"
-            android:textSize="26sp"
             android:translationZ="5dp" />
 
         <TextView
@@ -115,19 +115,19 @@
             android:onClick="onForgotPasswordClick"
             android:padding="@dimen/default_padding"
             android:text="@string/forgot_password"
-            android:textColor="@color/colorNextButton" />
+            android:textColor="@color/colorBlue" />
 
         <TextView
             android:id="@+id/tv_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginTop="@dimen/large_margin"
             android:fontFamily="@font/muli_light"
             android:onClick="onSignUpTextViewClick"
             android:padding="@dimen/default_padding"
             android:text="@string/sign_up_message"
-            android:textColor="@color/colorNextButton" />
+            android:textColor="@color/colorBlue" />
 
         <ProgressBar
             android:id="@+id/pb_login"

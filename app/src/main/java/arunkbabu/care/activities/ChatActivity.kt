@@ -1,7 +1,6 @@
 package arunkbabu.care.activities
 
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
@@ -27,6 +26,7 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
     private var receiverDpPath = ""
     private var senderName = ""
     private var senderDpPath = ""
+    private var isFirstLaunch = true
 
     companion object {
         const val RECEIVER_NAME_EXTRA_KEY = "key_chat_receiver_name_extra"
@@ -54,10 +54,12 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         toolbarChat_name.text = receiverName
         Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
-        adapter = MessageAdapter(messages, userId = senderId)
         val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        lm.stackFromEnd = true
+        adapter = MessageAdapter(messages, userId = senderId)
         rv_chats.layoutManager = lm
         rv_chats.adapter = adapter
+        Utils.runPullDownAnimation(this, rv_chats)
 
         receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(receiverId).child(senderId)
 
@@ -67,13 +69,13 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         if (Utils.userType == Constants.USER_TYPE_PATIENT) {
             msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(senderId)
                 .child(receiverId)
-            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(20)
+            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(40)
                 .addChildEventListener(this)
         } else {
             // USER is doctor
             msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(receiverId)
                 .child(senderId)
-            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(20)
+            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(40)
                 .addChildEventListener(this)
         }
 
@@ -112,16 +114,12 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         message.key = snapshot.key ?: ""
         messages.add(message)
 
+        if (isFirstLaunch) {
+            Utils.runPullDownAnimation(this, rv_chats)
+            isFirstLaunch = false
+        }
         adapter?.notifyDataSetChanged()
         rv_chats?.smoothScrollToPosition(messages.size)
-
-        if (messages.size < 1) {
-            tv_chatActivity_error?.visibility = View.VISIBLE
-            rv_chats?.visibility = View.GONE
-        } else {
-            tv_chatActivity_error?.visibility = View.GONE
-            rv_chats?.visibility = View.VISIBLE
-        }
     }
 
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
