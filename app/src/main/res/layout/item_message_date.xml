@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center|top"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_itemMsgDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/small_margin"
+        tools:text="Tue, 19 Jun 1997"
+        android:textColor="@color/colorLightIndigoNormal" />
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/huge_margin"
+        android:layout_marginEnd="@dimen/huge_margin"
+        android:background="@color/colorLightIndigoNormal" />
+</LinearLayout>

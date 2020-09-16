@@ -295,6 +295,53 @@ public class Utils {
     }
 
     /**
+     * Converts the time as UTC milliseconds from the epoch to a descriptive logical date string.
+     * Logical means the dates will be like "Today", "Yesterday", "Tue, 19 Jun 1997"
+     * @param timestamp The epoch timestamp to be converted
+     * @param currentTimeMillis The current system timestamp
+     * @return String: The date string (Ex: Tuesday, 10 June 1998)
+     */
+    public static String getLogicalDateString(long timestamp, long currentTimeMillis) {
+        String logicalDate;
+        Date date = new Date(timestamp);
+        Date currentDate = new Date(currentTimeMillis);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MM yyyy", Locale.UK);
+        SimpleDateFormat df = new SimpleDateFormat("dd", Locale.UK);
+        SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.UK);
+        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+
+        String dateStr = sdf.format(date);
+        String currentStr = sdf.format(currentDate);
+        int day = Integer.parseInt(df.format(date));
+        int currDay = Integer.parseInt(df.format(currentDate));
+        String mnthYr = myf.format(date);
+        String currMnthYr = myf.format(currentDate);
+
+        if (dateStr.equals(currentStr)) {
+            logicalDate = "Today";
+        } else if ((day == currDay - 1) && mnthYr.equals(currMnthYr)) {
+            logicalDate = "Yesterday";
+        } else {
+            logicalDate = dateStr;
+        }
+
+        return logicalDate;
+    }
+
+    /**
+     * Converts the time as UTC milliseconds from the epoch to a day
+     * @param timestamp The timestamp to convert to a day
+     * @return int: The Day
+     */
+    public static int getDay(long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.UK);
+        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+
+        return Integer.parseInt(sdf.format(date));
+    }
+
+    /**
      * Get the time in (HH:mm) or (hh:mm) format based on system preferences
      * (ie 24Hr/12Hr format based on the settings in Android System)
      * @param epoch The epoch timestamp

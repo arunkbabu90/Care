@@ -4,27 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/default_margin"
-    android:layout_marginStart="80dp"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/itemMsgRt_dateLayout"
+        layout="@layout/item_message_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/itemMsgRt_guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemMsgRt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/pillbox_transparent_active_indigo_drawable"
-        android:paddingStart="@dimen/default_padding"
-        android:paddingEnd="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:gravity="start"
         android:minEms="4"
-        android:textColor="@color/colorLightIndigoNormal"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/colorLightIndigoActivated"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintTop_toBottomOf="@id/itemMsgRt_dateLayout"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toStartOf="@id/itemMsgRt_guideline2"
+        app:layout_constraintStart_toEndOf="@id/itemMsgRt_guideline1"
         tools:text="Hi there" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -32,13 +48,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:textColor="@color/colorLightIndigoNormal"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginStart="@dimen/tiny_margin"
+        android:layout_marginTop="@dimen/tiny_margin"
+        android:textColor="@color/colorLightIndigoActivated"
         android:textSize="12sp"
-        app:layout_constraintHorizontal_bias="0.92"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/itemMsgRt_text"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/itemMsgRt_text"
         app:layout_constraintTop_toBottomOf="@id/itemMsgRt_text"
         tools:text="9:00 AM" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/itemMsgRt_guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

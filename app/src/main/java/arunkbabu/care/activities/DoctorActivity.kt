@@ -82,7 +82,6 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         registerNetworkChangeCallback()
 
-        Firebase.database.setPersistenceEnabled(true)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         cloudStore = FirebaseStorage.getInstance()

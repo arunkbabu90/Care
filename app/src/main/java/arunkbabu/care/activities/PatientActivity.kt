@@ -86,7 +86,6 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         registerNetworkChangeCallback()
 
-        Firebase.database.setPersistenceEnabled(true)
         auth = FirebaseAuth.getInstance()
         cloudStore = FirebaseStorage.getInstance()
         db = FirebaseFirestore.getInstance()

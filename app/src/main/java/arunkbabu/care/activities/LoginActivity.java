@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -56,6 +58,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
 
         // Get instances
         mAuth = FirebaseAuth.getInstance();

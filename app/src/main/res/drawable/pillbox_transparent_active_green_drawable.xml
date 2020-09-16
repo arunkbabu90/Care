@@ -7,7 +7,7 @@
                 android:startColor="@android:color/transparent"
                 android:endColor="@android:color/transparent"/>
             <stroke
-                android:color="@color/colorGreen"
+                android:color="@color/colorGreenLight"
                 android:width="2dp"/>
         </shape>
     </item>
