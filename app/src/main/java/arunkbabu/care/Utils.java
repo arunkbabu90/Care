@@ -288,8 +288,8 @@ public class Utils {
      */
     public static String convertEpochToDateString(long epoch) {
         Date date = new Date(epoch);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
-        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy", Locale.UK);
+        sdf.setTimeZone(TimeZone.getDefault());
 
         return sdf.format(date);
     }
@@ -308,7 +308,7 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MM yyyy", Locale.UK);
         SimpleDateFormat df = new SimpleDateFormat("dd", Locale.UK);
         SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.UK);
-        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        sdf.setTimeZone(TimeZone.getDefault());
 
         String dateStr = sdf.format(date);
         String currentStr = sdf.format(currentDate);
@@ -336,7 +336,7 @@ public class Utils {
     public static int getDay(long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.UK);
-        sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        sdf.setTimeZone(TimeZone.getDefault());
 
         return Integer.parseInt(sdf.format(date));
     }

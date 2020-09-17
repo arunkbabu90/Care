@@ -8,19 +8,24 @@ import arunkbabu.care.Message
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.inflate
+import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.item_message_date.view.*
 import kotlinx.android.synthetic.main.item_message_lt.view.*
 import kotlinx.android.synthetic.main.item_message_rt.view.*
+import java.util.*
 
-class MessageAdapter(private val messages: ArrayList<Message>,
-                     private val userId: String)
+class MessageAdapter(
+    private val messages: ArrayList<Message>,
+    private val userId: String
+)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private var isFirstRun = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            Message.TYPE_YOU -> MessageViewHolderRt(parent.context, parent.inflate(R.layout.item_message_rt))
+            Message.TYPE_YOU -> MessageViewHolderRt(
+                parent.context,
+                parent.inflate(R.layout.item_message_rt)
+            )
             else -> MessageViewHolderLt(parent.context, parent.inflate(R.layout.item_message_lt))
         }
     }
@@ -51,38 +56,44 @@ class MessageAdapter(private val messages: ArrayList<Message>,
     override fun getItemCount(): Int = messages.size
 
     /**
-     * Checks whether the full Long date can be added to list
-     * @param timestamp The timestamp of the current message
-     * @param futureTimestamp The timestamp of the next message
+     * Visually Groups the messages by each Day in the chat
+     * @param msgTs The current message Timestamp
+     * @param futureTs The next message Timestamp
+     * @param dtv The text view in which the date should be shown
+     * @param dl The included view group item which is holding the #dtv
+     * @param sysTs The current timestamp of the system or OS
      */
-    private fun isDateAddable(timestamp: Long, futureTimestamp: Long): Boolean {
-        val day = Utils.getDay(timestamp)
-        val previousDay = Utils.getDay(futureTimestamp)
+    private fun groupMsgByDate(msgTs: Long, futureTs: Long,
+                               dtv: MaterialTextView, dl: View,
+                               sysTs: Long) {
+        if (futureTs == 0L) {
+            dl.visibility = View.VISIBLE
+            dtv.text = Utils.getLogicalDateString(msgTs, sysTs)
+        } else {
+            val c1: Calendar = Calendar.getInstance(TimeZone.getDefault())
+            val c2: Calendar = Calendar.getInstance(TimeZone.getDefault())
+            c1.timeInMillis = msgTs
+            c2.timeInMillis = futureTs
 
-        return previousDay < day
-
-//        val day = Integer.parseInt(Utils.getDayString(timestamp))
-//        if (day < previousDay)
-//            isAlreadyAdded = false
-//
-//        return if (isFirstRun || (day < previousDay && !isAlreadyAdded)) {
-//            previousDay = day
-//            isAlreadyAdded = true
-//            isFirstRun = false
-//            true
-//        } else {
-//            false
-//        }
+            val isSameDay = c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
+                    && c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)
+                    && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)
+            if (isSameDay) {
+                dl.visibility = View.GONE
+                dtv.text = ""
+            } else {
+                dl.visibility = View.VISIBLE
+                dtv.text = Utils.getLogicalDateString(msgTs, sysTs)
+            }
+        }
     }
 
     inner class MessageViewHolderRt(private val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(message: Message, futureTimestamp: Long) {
             itemView.itemMsgRt_text.text = message.msg
             itemView.itemMsgRt_time.text = Utils.getTimeString(context, message.msgTimestamp)
-            if (isDateAddable(message.msgTimestamp, futureTimestamp)) {
-                itemView.itemMsgRt_dateLayout.visibility = View.VISIBLE
-                itemView.tv_itemMsgDate.text = Utils.getLogicalDateString(message.msgTimestamp, System.currentTimeMillis())
-            }
+            groupMsgByDate(message.msgTimestamp, futureTimestamp,
+                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout, System.currentTimeMillis())
         }
     }
 
@@ -90,10 +101,8 @@ class MessageAdapter(private val messages: ArrayList<Message>,
         fun bind(message: Message, futureTimestamp: Long) {
             itemView.itemMsgLt_text.text = message.msg
             itemView.itemMsgLt_time.text = Utils.getTimeString(context, message.msgTimestamp)
-            if (isDateAddable(message.msgTimestamp, futureTimestamp)) {
-                itemView.itemMsgLt_dateLayout.visibility = View.VISIBLE
-                itemView.tv_itemMsgDate.text = Utils.getLogicalDateString(message.msgTimestamp, System.currentTimeMillis())
-            }
+            groupMsgByDate(message.msgTimestamp, futureTimestamp,
+                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout, System.currentTimeMillis())
         }
     }
 }
