@@ -288,16 +288,15 @@ public class Utils {
     }
 
     /**
-     * Converts the time as UTC milliseconds from the epoch to a descriptive logical date string.
-     * Logical means the dates will be like "Today", "Yesterday", "Tue, 19 Jun 1997"
+     * Converts the timestamp to a descriptive logical date string. Logical means the dates will
+     * be like "Today", "Yesterday", "Tue, 19 Jun 1997" depending on the current date
      * @param timestamp The epoch timestamp to be converted
-     * @param currentTimeMillis The current system timestamp
      * @return String: The date string (Ex: Tuesday, 10 June 1998)
      */
-    public static String getLogicalDateString(long timestamp, long currentTimeMillis) {
+    public static String getLogicalDateString(long timestamp) {
         String logicalDate;
         Date date = new Date(timestamp);
-        Date currentDate = new Date(currentTimeMillis);
+        Date currentDate = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MM yyyy", Locale.UK);
         SimpleDateFormat df = new SimpleDateFormat("dd", Locale.UK);
         SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.UK);
@@ -319,6 +318,32 @@ public class Utils {
         }
 
         return logicalDate;
+    }
+
+    /**
+     * Converts the timestamp to a descriptive logical short date string. Logical means the dates
+     * will be like "Tue", "18 Mar" depending on the current date
+     * @param timestamp The epoch timestamp to be converted
+     * @return String: The date string
+     */
+    public static String getLogicalShortDate(long timestamp) {
+        Date date = new Date(timestamp);
+        Calendar c1 = Calendar.getInstance(TimeZone.getDefault());
+        Calendar c2 = Calendar.getInstance(TimeZone.getDefault());
+        c1.setTimeInMillis(timestamp);
+        c2.setTimeInMillis(System.currentTimeMillis());
+
+        SimpleDateFormat sdf;
+        if (c1.get(Calendar.WEEK_OF_YEAR) == c2.get(Calendar.WEEK_OF_YEAR)) {
+            // If same week then show only the day name (Ex: Mon, Tue)
+            sdf = new SimpleDateFormat("EEE", Locale.UK);
+        } else {
+            // Else show Date & Month (Ex: 10 Sep)
+            sdf = new SimpleDateFormat("dd MMM", Locale.UK);
+        }
+        sdf.setTimeZone(TimeZone.getDefault());
+
+        return sdf.format(date);
     }
 
     /**

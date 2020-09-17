@@ -64,11 +64,10 @@ class MessageAdapter(
      * @param sysTs The current timestamp of the system or OS
      */
     private fun groupMsgByDate(msgTs: Long, futureTs: Long,
-                               dtv: MaterialTextView, dl: View,
-                               sysTs: Long) {
+                               dtv: MaterialTextView, dl: View) {
         if (futureTs == 0L) {
             dl.visibility = View.VISIBLE
-            dtv.text = Utils.getLogicalDateString(msgTs, sysTs)
+            dtv.text = Utils.getLogicalDateString(msgTs)
         } else {
             val c1: Calendar = Calendar.getInstance(TimeZone.getDefault())
             val c2: Calendar = Calendar.getInstance(TimeZone.getDefault())
@@ -83,7 +82,7 @@ class MessageAdapter(
                 dtv.text = ""
             } else {
                 dl.visibility = View.VISIBLE
-                dtv.text = Utils.getLogicalDateString(msgTs, sysTs)
+                dtv.text = Utils.getLogicalDateString(msgTs)
             }
         }
     }
@@ -100,8 +99,7 @@ class MessageAdapter(
                 itemView.itemMsgRt_time.text = time
 
             groupMsgByDate(message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout,
-                System.currentTimeMillis())
+                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout)
         }
     }
 
@@ -117,8 +115,7 @@ class MessageAdapter(
                 itemView.itemMsgLt_time.text = time
             
             groupMsgByDate(message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout,
-                System.currentTimeMillis())
+                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout)
         }
     }
 }

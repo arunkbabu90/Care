@@ -32,6 +32,7 @@ class ChatAdapter(private val chats: ArrayList<Chat>,
             }
             itemView.itemChat_name.text = chat.full_name
             itemView.itemChat_lastMsg.text = if (chat.lastMessage.isBlank()) "No Messages" else chat.lastMessage
+            itemView.itemChat_date.text = Utils.getLogicalShortDate(chat.chatTimestamp)
             itemView.setOnClickListener { itemClickListener(chat) }
         }
     }
