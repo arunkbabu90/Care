@@ -52,7 +52,7 @@ class DoctorSearchResultsAdapter(options: FirestorePagingOptions<Doctor>,
             }
 
             LoadingState.LOADED -> {
-                swipeRefreshLayout.isRefreshing = false
+//                swipeRefreshLayout.isRefreshing = false
             }
 
             LoadingState.ERROR -> {

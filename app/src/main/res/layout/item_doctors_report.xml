@@ -2,10 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/doctor_report_item_layout"
+    android:layout_marginTop="@dimen/small_margin"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/tv_doctor_report_doc_name"
@@ -17,6 +18,7 @@
         android:paddingStart="@dimen/default_padding"
         android:paddingEnd="@dimen/default_padding"
         android:textStyle="bold"
+        android:textColor="@color/colorTextLightGrey"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Joe Doe"/>
 
@@ -29,13 +31,7 @@
         android:paddingStart="@dimen/default_padding"
         android:paddingEnd="@dimen/default_padding"
         android:textStyle="italic"
+        android:textColor="@color/colorTextGrey"
         tools:text="Report on Pain you sent on 2018-06-12 12:48 PM"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_line_separator_height"
-        android:background="@color/colorTextGrey"
-        android:layout_marginStart="@dimen/default_margin"
-        android:layout_marginEnd="@dimen/medium_margin"/>
 
 </LinearLayout>

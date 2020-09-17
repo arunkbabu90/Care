@@ -178,8 +178,8 @@
 
     <!--  Chat Activity -->
     <string name="type_message">Type a message</string>
-    <string name="no_chats">No Chats. You need to select a doctor to chat with them</string>
+    <string name="no_chats">No Chats</string>
     <string name="err_create_chat_room">Creating chat room failed. Please quit the app check the internet and reopen to try again</string>
-    <string name="no_chats_yet">No Chats Yet</string>
+    <string name="no_chats_yet">No Chats Yet!\nSelect a doctor from Search to start chatting</string>
     <string name="msg_sent">%1$s</string>
 </resources>

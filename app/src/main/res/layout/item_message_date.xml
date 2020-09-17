@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/small_margin"
         tools:text="Tue, 19 Jun 1997"
-        android:textColor="@color/colorLightIndigoNormal" />
+        android:textColor="@color/colorOrangeLight" />
 
     <View
         android:layout_width="50dp"
@@ -22,5 +22,5 @@
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/huge_margin"
         android:layout_marginEnd="@dimen/huge_margin"
-        android:background="@color/colorLightIndigoNormal" />
+        android:background="@color/colorOrangeLight" />
 </LinearLayout>

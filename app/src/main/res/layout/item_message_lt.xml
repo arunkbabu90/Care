@@ -22,32 +22,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05"/>
+        app:layout_constraintGuide_percent="0.0"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemMsgLt_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/pillbox_transparent_active_green_drawable"
-        android:minEms="4"
-        android:paddingStart="@dimen/default_padding"
+        android:background="@drawable/pillbox_msg_lt_drawable"
+        android:minEms="3"
         android:paddingTop="10dp"
-        android:paddingEnd="20dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/colorGreenLight"
+        android:paddingEnd="@dimen/default_padding"
+        android:paddingStart="@dimen/default_padding"
+        app:lineHeight="18dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toBottomOf="@id/itemMsgLt_dateLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toStartOf="@id/itemMsgLt_guideline2"
         app:layout_constraintStart_toEndOf="@id/itemMsgLt_guideline1"
-        tools:text="Hi there" />
+        tools:text="Hi" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemMsgLt_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        android:layout_gravity="end"
         android:layout_marginTop="@dimen/tiny_margin"
         android:textColor="@color/colorGreenLight"
         android:textSize="12sp"
@@ -57,13 +57,13 @@
         app:layout_constraintStart_toStartOf="@id/itemMsgLt_text"
         app:layout_constraintTop_toBottomOf="@id/itemMsgLt_text"
         app:layout_constraintVertical_bias="0.0"
-        tools:text="9:00 AM ✓" />
+        tools:text="10:00 AM" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/itemMsgLt_guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.85"/>
+        app:layout_constraintGuide_percent="0.9"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
