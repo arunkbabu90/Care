@@ -80,12 +80,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        app:backgroundTint="@android:color/transparent"
+        app:backgroundTint="@color/colorGreenDark1"
         app:icon="@drawable/ic_send"
-        app:iconTint="@color/colorOrange"
+        app:iconTint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:strokeColor="@color/colorOrange"
-        app:strokeWidth="2dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

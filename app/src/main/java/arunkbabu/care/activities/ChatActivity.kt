@@ -79,9 +79,16 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
                 .addChildEventListener(this)
         }
 
+        rv_chats.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, prevBottom ->
+            // Scroll to the end of list when keyboard pop
+            if (bottom < prevBottom)
+                rv_chats.smoothScrollToPosition(messages.size)
+        }
         toolbarChat_backBtn.setOnClickListener { finish() }
         fab_sendMessage.setOnClickListener {
             val message: String = et_typeMessage.text.toString()
+            val newMsgRoot = msgRoot.push()
+            val newMsgKey = newMsgRoot.key
             if (message.isNotBlank()) {
                 val msgMap = hashMapOf(
                     Constants.FIELD_MESSAGE to message,
@@ -89,7 +96,7 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
                     Constants.FIELD_RECEIVER_ID to receiverId,
                     Constants.FIELD_MSG_TIMESTAMP to ServerValue.TIMESTAMP
                 )
-                msgRoot.push().updateChildren(msgMap)
+                newMsgRoot.updateChildren(msgMap)
                 lastMsgRoot.setValue(message)
                 // Also push your id to doctor's chat index in "Chats". So that the receiver can
                 // connect with you

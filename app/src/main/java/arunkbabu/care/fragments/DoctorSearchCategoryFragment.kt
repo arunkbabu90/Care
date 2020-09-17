@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Speciality
 import arunkbabu.care.activities.PatientActivity
@@ -37,10 +36,11 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mSpecialities.add(Speciality(Constants.SPECIALITY_CARDIOLOGIST, R.drawable.ic_heart, getString(R.string.cardiologist), getString(R.string.cardiologist_desc), R.color.colorCatRed))
-        mSpecialities.add(Speciality(Constants.SPECIALITY_PEDIATRICIAN, R.drawable.ic_pediatrician, getString(R.string.pediatrician), getString(R.string.pediatrician_desc), R.color.colorCatBlue))
-        mSpecialities.add(Speciality(Constants.SPECIALITY_GENERAL, R.drawable.ic_general_medicine, getString(R.string.general), getString(R.string.general_desc), R.color.colorGreen))
-        mSpecialities.add(Speciality(Constants.SPECIALITY_ONCOLOGIST, R.drawable.ic_cancer, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
+        mSpecialities.add(Speciality(Speciality.CARDIOLOGIST, R.drawable.ic_heart, getString(R.string.cardiologist), getString(R.string.cardiologist_desc), R.color.colorCatRed))
+        mSpecialities.add(Speciality(Speciality.PEDIATRICIAN, R.drawable.ic_pediatrician, getString(R.string.pediatrician), getString(R.string.pediatrician_desc), R.color.colorCatBlue))
+        mSpecialities.add(Speciality(Speciality.GENERAL, R.drawable.ic_general_medicine, getString(R.string.general), getString(R.string.general_desc), R.color.colorGreen))
+        mSpecialities.add(Speciality(Speciality.ONCOLOGIST, R.drawable.ic_cancer, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
+        mSpecialities.add(Speciality(Speciality.OTHER, R.drawable.ic_other, getString(R.string.other), getString(R.string.other_desc), R.color.colorCatIndigo))
 
         mAdapter = DoctorCategoryAdapter(mSpecialities)
         mAdapter.setOnClickListener(this)

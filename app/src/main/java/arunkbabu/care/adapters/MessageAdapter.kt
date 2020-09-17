@@ -91,18 +91,34 @@ class MessageAdapter(
     inner class MessageViewHolderRt(private val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(message: Message, futureTimestamp: Long) {
             itemView.itemMsgRt_text.text = message.msg
-            itemView.itemMsgRt_time.text = Utils.getTimeString(context, message.msgTimestamp)
+
+            val time = Utils.getTimeString(context, message.msgTimestamp)
+            // Set a tick if message is sent successfully
+            if (message.status == Message.STATUS_SEND)
+                itemView.itemMsgRt_time.text =  context.getString(R.string.msg_sent, time)
+            else
+                itemView.itemMsgRt_time.text = time
+
             groupMsgByDate(message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout, System.currentTimeMillis())
+                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout,
+                System.currentTimeMillis())
         }
     }
 
     inner class MessageViewHolderLt(private val context: Context, itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(message: Message, futureTimestamp: Long) {
             itemView.itemMsgLt_text.text = message.msg
-            itemView.itemMsgLt_time.text = Utils.getTimeString(context, message.msgTimestamp)
+
+            val time = Utils.getTimeString(context, message.msgTimestamp)
+            // Set a tick if message is sent successfully
+            if (message.status == Message.STATUS_SEND)
+                itemView.itemMsgLt_text.text =  context.getString(R.string.msg_sent, time)
+            else
+                itemView.itemMsgLt_time.text = time
+            
             groupMsgByDate(message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout, System.currentTimeMillis())
+                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout,
+                System.currentTimeMillis())
         }
     }
 }

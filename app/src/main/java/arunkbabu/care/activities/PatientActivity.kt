@@ -529,10 +529,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     fun onDocCategoryClick(speciality: Speciality) {
         supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.patient_activity_fragment_container,
-                DocSearchResultsFragment(speciality.id)
-            )
+            .replace(R.id.patient_activity_fragment_container, DocSearchResultsFragment(speciality.id))
             .commit()
     }
 

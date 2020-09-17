@@ -33,6 +33,7 @@ public class Constants {
     public static final String FIELD_MSG_TIMESTAMP = "msgTimestamp";
     public static final String FIELD_CHAT_TIMESTAMP = "chatTimestamp";
     public static final String FIELD_LAST_MESSAGE = "lastMessage";
+    public static final String FIELD_STATUS = "status";
 
     public static final String FIELD_USER_TYPE = "user_type";
     public static final String FIELD_FULL_NAME = "full_name";
@@ -79,24 +80,6 @@ public class Constants {
 
     public static final int USER_TYPE_PATIENT = 50;
     public static final int USER_TYPE_DOCTOR = 51;
-
-    // Doctor Speciality codes
-    public static final int SPECIALITY_GENERAL = 0;
-    public static final int SPECIALITY_ONCOLOGIST = 1;
-    public static final int SPECIALITY_PEDIATRICIAN = 2;
-    public static final int SPECIALITY_ENDOCRINOLOGIST = 3;
-    public static final int SPECIALITY_HEPATOLOGIST = 4;
-    public static final int SPECIALITY_ENT = 5;
-    public static final int SPECIALITY_UROLOGIST = 6;
-    public static final int SPECIALITY_NEPHROLOGIST = 7;
-    public static final int SPECIALITY_NEUROLOGIST = 8;
-    public static final int SPECIALITY_CARDIOLOGIST = 9;
-    public static final int SPECIALITY_PULMONOLOGIST = 10;
-    public static final int SPECIALITY_PSYCHOLOGIST = 11;
-    public static final int SPECIALITY_OPHTHALMOLOGIST = 12;
-    public static final int SPECIALITY_DENTIST = 13;
-    public static final int SPECIALITY_RHEUMATOLOGIST = 14;
-    public static final int SPECIALITY_OTHER = 15;
 
     public static final String FIELD_ACCOUNT_VERIFIED = "activated";
 }

@@ -163,6 +163,8 @@
     <string name="general_desc">Specialized in diagnosing and nonsurgical treatment of diseases of the internal organs</string>
     <string name="oncologist">Oncologist</string>
     <string name="oncologist_desc">Doctor who treats cancer</string>
+    <string name="other">Other</string>
+    <string name="other_desc">Doctors in all specialities</string>
     <string name="search_res_for">"Search Results for: %1$s"</string>
     <string name="registered_id">Registered ID</string>
     <string name="consultations">Consultations</string>
@@ -176,7 +178,8 @@
 
     <!--  Chat Activity -->
     <string name="type_message">Type a message</string>
-    <string name="no_chats">No Chats</string>
+    <string name="no_chats">No Chats. You need to select a doctor to chat with them</string>
     <string name="err_create_chat_room">Creating chat room failed. Please quit the app check the internet and reopen to try again</string>
     <string name="no_chats_yet">No Chats Yet</string>
+    <string name="msg_sent">%1$s</string>
 </resources>

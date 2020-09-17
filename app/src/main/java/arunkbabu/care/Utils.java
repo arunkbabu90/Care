@@ -179,65 +179,58 @@ public class Utils {
     /**
      * Converts the given specialityId to the corresponding Speciality Name
      * @param specialityId The speciality id integer
-     * One of: {@link Constants#SPECIALITY_GENERAL}, {@link Constants#SPECIALITY_CARDIOLOGIST},
-     * {@link Constants#SPECIALITY_DENTIST}, {@link Constants#SPECIALITY_ENDOCRINOLOGIST},
-     * {@link Constants#SPECIALITY_ENT}, {@link Constants#SPECIALITY_NEUROLOGIST},
-     * {@link Constants#SPECIALITY_HEPATOLOGIST}, {@link Constants#SPECIALITY_NEPHROLOGIST},
-     * {@link Constants#SPECIALITY_ONCOLOGIST}, {@link Constants#SPECIALITY_OPHTHALMOLOGIST},
-     * {@link Constants#SPECIALITY_PSYCHOLOGIST}, {@link Constants#SPECIALITY_PULMONOLOGIST},
-     * {@link Constants#SPECIALITY_RHEUMATOLOGIST}, {@link Constants#SPECIALITY_UROLOGIST},
-     * {@link Constants#SPECIALITY_PEDIATRICIAN}, {@link Constants#SPECIALITY_OTHER}
+     * One of: Constants in {@link Speciality}
      * @return String  The human readable form of report type
      */
     public static String toSpecialityName(int specialityId) {
         String specialityString;
         switch (specialityId) {
-            case Constants.SPECIALITY_GENERAL:
+            case Speciality.GENERAL:
                 specialityString = "General Medicine";
                 break;
-            case Constants.SPECIALITY_ONCOLOGIST:
+            case Speciality.ONCOLOGIST:
                 specialityString = "Oncologist";
                 break;
-            case Constants.SPECIALITY_PEDIATRICIAN:
+            case Speciality.PEDIATRICIAN:
                 specialityString = "Pediatrician";
                 break;
-            case Constants.SPECIALITY_ENDOCRINOLOGIST:
+            case Speciality.ENDOCRINOLOGIST:
                 specialityString = "Endocrinologist";
                 break;
-            case Constants.SPECIALITY_HEPATOLOGIST:
+            case Speciality.HEPATOLOGIST:
                 specialityString = "Hepatologist";
                 break;
-            case Constants.SPECIALITY_ENT:
+            case Speciality.ENT:
                 specialityString = "ENT";
                 break;
-            case Constants.SPECIALITY_UROLOGIST:
+            case Speciality.UROLOGIST:
                 specialityString = "Urologist";
                 break;
-            case Constants.SPECIALITY_NEPHROLOGIST:
+            case Speciality.NEPHROLOGIST:
                 specialityString = "Nephrologist";
                 break;
-            case Constants.SPECIALITY_NEUROLOGIST:
+            case Speciality.NEUROLOGIST:
                 specialityString = "Neurologist";
                 break;
-            case Constants.SPECIALITY_CARDIOLOGIST:
+            case Speciality.CARDIOLOGIST:
                 specialityString = "Cardiologist";
                 break;
-            case Constants.SPECIALITY_PULMONOLOGIST:
+            case Speciality.PULMONOLOGIST:
                 specialityString = "Pulmonologist";
                 break;
-            case Constants.SPECIALITY_PSYCHOLOGIST:
+            case Speciality.PSYCHOLOGIST:
                 specialityString = "Psychologist";
                 break;
-            case Constants.SPECIALITY_OPHTHALMOLOGIST:
+            case Speciality.OPHTHALMOLOGIST:
                 specialityString = "Ophthalmologist";
                 break;
-            case Constants.SPECIALITY_DENTIST:
+            case Speciality.DENTIST:
                 specialityString = "Dentist";
                 break;
-            case Constants.SPECIALITY_RHEUMATOLOGIST:
+            case Speciality.RHEUMATOLOGIST:
                 specialityString = "Rheumatologist";
                 break;
-            case Constants.SPECIALITY_OTHER:
+            case Speciality.OTHER:
                 specialityString = "Other";
                 break;
             default:

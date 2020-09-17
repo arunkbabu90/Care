@@ -58,7 +58,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/itemMsgRt_text"
         app:layout_constraintTop_toBottomOf="@id/itemMsgRt_text"
-        tools:text="9:00 AM" />
+        tools:text="9:00 AM ✓" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/itemMsgRt_guideline2"

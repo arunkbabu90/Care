@@ -9,10 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
-import arunkbabu.care.Constants
-import arunkbabu.care.Doctor
-import arunkbabu.care.R
-import arunkbabu.care.Utils
+import arunkbabu.care.*
 import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.activities.ViewDoctorProfileActivity
 import arunkbabu.care.adapters.DoctorSearchResultsAdapter
@@ -69,10 +66,16 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
                 .setPageSize(10)
                 .build()
 
-            mSearchQuery = mDb.collection(Constants.COLLECTION_DOCTORS_LIST)
-                .whereEqualTo(Constants.FIELD_DOCTOR_SPECIALITY, Utils.toSpecialityName(specialityId))
-                .whereEqualTo(Constants.FIELD_ACCOUNT_VERIFIED, true)
-                .orderBy(Constants.FIELD_FULL_NAME, Query.Direction.ASCENDING)
+            mSearchQuery = if (specialityId == Speciality.OTHER) {
+                mDb.collection(Constants.COLLECTION_DOCTORS_LIST)
+                    .whereEqualTo(Constants.FIELD_ACCOUNT_VERIFIED, true)
+                    .orderBy(Constants.FIELD_FULL_NAME, Query.Direction.ASCENDING)
+            } else {
+                mDb.collection(Constants.COLLECTION_DOCTORS_LIST)
+                    .whereEqualTo(Constants.FIELD_DOCTOR_SPECIALITY, Utils.toSpecialityName(specialityId))
+                    .whereEqualTo(Constants.FIELD_ACCOUNT_VERIFIED, true)
+                    .orderBy(Constants.FIELD_FULL_NAME, Query.Direction.ASCENDING)
+            }
 
             val options = FirestorePagingOptions.Builder<Doctor>()
                 .setLifecycleOwner(this)
