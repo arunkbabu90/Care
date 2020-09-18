@@ -2,4 +2,4 @@
 <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
     android:animation="@anim/pull_down_item_animation"
     android:delay="15%"
-    android:animationOrder="normal"/>
+    android:animationOrder="reverse"/>

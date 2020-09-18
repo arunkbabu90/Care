@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import arunkbabu.care.Chat
-import arunkbabu.care.R
-import arunkbabu.care.Utils
-import arunkbabu.care.inflate
+import arunkbabu.care.*
 import kotlinx.android.synthetic.main.item_chats.view.*
 
 class ChatAdapter(private val chats: ArrayList<Chat>,
@@ -30,7 +27,12 @@ class ChatAdapter(private val chats: ArrayList<Chat>,
             if (chat.profilePicture.isNotBlank()) {
                 Utils.loadDpToView(context, chat.profilePicture, itemView.itemChat_dp)
             }
-            itemView.itemChat_name.text = chat.full_name
+            if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+                // User is a patient so chats are doctors; Show a Dr. prefix in names
+                itemView.itemChat_name.text = context.getString(R.string.doc_name, chat.full_name)
+            } else {
+                itemView.itemChat_name.text = chat.full_name
+            }
             itemView.itemChat_lastMsg.text = if (chat.lastMessage.isBlank()) "No Messages" else chat.lastMessage
             itemView.itemChat_date.text = Utils.getLogicalShortDate(chat.chatTimestamp)
             itemView.setOnClickListener { itemClickListener(chat) }

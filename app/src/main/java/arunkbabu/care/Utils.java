@@ -452,7 +452,7 @@ public class Utils {
      * @param recyclerView The recyclerview to run the animation on
      */
     public static void runPullDownAnimation(Context context, RecyclerView recyclerView) {
-        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.pull_down_layout_animation);
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.pull_down_layout_animation_reverse);
         recyclerView.setLayoutAnimation(controller);
         recyclerView.scheduleLayoutAnimation();
     }

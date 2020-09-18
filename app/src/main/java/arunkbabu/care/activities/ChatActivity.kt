@@ -51,7 +51,12 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         setSupportActionBar(toolbar_chatActivity)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        toolbarChat_name.text = receiverName
+        if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+            // User is a patient so chats are doctors; Show a Dr. prefix in names
+            toolbarChat_name.text = getString(R.string.doc_name, receiverName)
+        } else {
+            toolbarChat_name.text = receiverName
+        }
         Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
         val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
