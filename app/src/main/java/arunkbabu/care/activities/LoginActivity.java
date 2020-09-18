@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements View.OnFocusChangeListener,
-        View.OnTouchListener, OnCompleteListener<DocumentSnapshot> {
+        OnCompleteListener<DocumentSnapshot> {
     @BindView(R.id.tv_login_error) TextView mErrorTextView;
     @BindView(R.id.et_email) CustomInputTextField mEmailField;
     @BindView(R.id.et_password) CustomInputTextField mPasswordField;
@@ -117,9 +116,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
             mPasswordField.setTypeface(mEmailField.getTypeface());
             mPasswordField.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mPasswordField.setOnFocusChangeListener(this);
-
-            mForgotPasswordTextView.setOnTouchListener(this);
-            mSignUpTextView.setOnTouchListener(this);
         }
     }
 
@@ -134,29 +130,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnFocusChan
             }
         }
     }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (v.getId() == R.id.tv_forgot_password) {
-                    mForgotPasswordTextView.setTextColor(getResources().getColor(R.color.colorViolet));
-                } else if (v.getId() == R.id.tv_sign_up) {
-                    mSignUpTextView.setTextColor(getResources().getColor(R.color.colorViolet));
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (v.getId() == R.id.tv_forgot_password) {
-                    mForgotPasswordTextView.setTextColor(getResources().getColor(R.color.colorLightIndigoNormal));
-                } else if (v.getId() == R.id.tv_sign_up) {
-                    mSignUpTextView.setTextColor(getResources().getColor(R.color.colorLightIndigoNormal));
-                }
-                v.performClick();
-                break;
-        }
-        return false;
-    }
-
 
     /**
      * Login Button click

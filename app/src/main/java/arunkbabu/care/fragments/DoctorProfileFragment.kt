@@ -72,6 +72,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isViewsLoaded = true
+        DoctorEditProfileFragment.editProfileFragmentActive = false
         pb_doc_profile_data.visibility = View.VISIBLE
 
         mAuth = FirebaseAuth.getInstance()
