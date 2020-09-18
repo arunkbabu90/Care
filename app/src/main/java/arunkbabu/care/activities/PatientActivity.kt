@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_patient.*
 import kotlinx.android.synthetic.main.fragment_patient_profile.*
 import java.io.ByteArrayInputStream
@@ -37,7 +38,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     BottomNavigationView.OnNavigationItemSelectedListener, ChildEventListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var cloudStore: FirebaseStorage
+    private lateinit var storage: FirebaseStorage
     private lateinit var chatRoot: DatabaseReference
     private lateinit var connectivityManager: ConnectivityManager
     private var chatsFrag: ChatsFragment? = null
@@ -87,7 +88,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         registerNetworkChangeCallback()
 
         auth = FirebaseAuth.getInstance()
-        cloudStore = FirebaseStorage.getInstance()
+        storage = Firebase.storage
         db = FirebaseFirestore.getInstance()
         // Add auth state listener for listening User Authentication changes like user sign-outs
         auth.addAuthStateListener(this)
@@ -102,9 +103,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         }
 
         // Load the ReportProblemFragment as default "home"
-        reportProblemFrag = ReportProblemFragment()
         supportFragmentManager.beginTransaction()
-            .add(R.id.patient_activity_fragment_container, reportProblemFrag!!)
+            .add(R.id.patient_activity_fragment_container, DoctorSearchCategoryFragment())
             .commit()
 
         fetchPatientData()
@@ -117,17 +117,6 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.mnu_home -> {
-                if (fragId != REPORT_PROBLEM_FRAGMENT_ID) {
-                    reportProblemFrag = ReportProblemFragment()
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, reportProblemFrag!!)
-                        .commit()
-                    fragId = REPORT_PROBLEM_FRAGMENT_ID
-                    chatsFrag = null
-                }
-                true
-            }
             R.id.mnu_search -> {
                 if (fragId != DOC_SEARCH_FRAGMENT_ID) {
                     supportFragmentManager.beginTransaction()
@@ -138,6 +127,17 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = DOC_SEARCH_FRAGMENT_ID
                     reportProblemFrag = null
+                    chatsFrag = null
+                }
+                true
+            }
+            R.id.mnu_home -> {
+                if (fragId != REPORT_PROBLEM_FRAGMENT_ID) {
+                    reportProblemFrag = ReportProblemFragment()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.patient_activity_fragment_container, reportProblemFrag!!)
+                        .commit()
+                    fragId = REPORT_PROBLEM_FRAGMENT_ID
                     chatsFrag = null
                 }
                 true
@@ -326,45 +326,47 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         val user: FirebaseUser? = auth.currentUser
         if (user != null) {
             // Upload the image file
-            val uploadPath = "${user.uid}/${Constants.DIRECTORY_PROFILE_PICTURE}/${Constants.PROFILE_PICTURE_FILE_NAME}${Constants.IMG_FORMAT_JPG}"
-            val storageReference = cloudStore.getReference(uploadPath)
-            storageReference.putStream(bs)
-                .continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
-                    if (!task.isSuccessful) {
-                        // Upload failed
-                        Toast.makeText(
-                            this,
-                            getString(R.string.err_get_download_image_url),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return@continueWithTask null
-                    }
-                    storageReference.downloadUrl
+            val uploadPath =
+                "${user.uid}/${Constants.DIRECTORY_PROFILE_PICTURE}/${Constants.PROFILE_PICTURE_FILE_NAME}${Constants.IMG_FORMAT_JPG}"
+            val storageReference = storage.getReference(uploadPath)
+            val uploadTask = storageReference.putStream(bs)
+            uploadTask.continueWithTask { task: Task<UploadTask.TaskSnapshot?> ->
+                if (!task.isSuccessful) {
+                    // Upload failed
+                    Toast.makeText(
+                        this,
+                        getString(R.string.err_get_download_image_url),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@continueWithTask null
                 }
-                .addOnCompleteListener { task: Task<Uri?> ->
-                    if (task.isSuccessful && task.result != null) {
-                        // Upload success; push the download URL to the database
-                        val imagePath = task.result.toString()
-                        db.collection(Constants.COLLECTION_USERS).document(user.uid)
-                            .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
-                                patientDpPath = imagePath
-                            }
-                            .addOnFailureListener { Toast.makeText(
+                storageReference.downloadUrl
+            }.addOnCompleteListener { task: Task<Uri?> ->
+                if (task.isSuccessful && task.result != null) {
+                    // Upload success; push the download URL to the database
+                    val imagePath = task.result.toString()
+                    db.collection(Constants.COLLECTION_USERS).document(user.uid)
+                        .update(Constants.FIELD_PROFILE_PICTURE, imagePath)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
+                            patientDpPath = imagePath
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
                                 this,
                                 R.string.err_upload_failed,
                                 Toast.LENGTH_SHORT
-                            ).show() }
-                    } else {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.err_get_download_image_url),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    iv_profile_photo?.hideProgressBar()
+                            ).show()
+                        }
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.err_get_download_image_url),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+                iv_profile_photo?.hideProgressBar()
+            }
         }
         PatientProfileFragment.mIsUpdatesAvailable = false
     }

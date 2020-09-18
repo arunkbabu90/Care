@@ -72,6 +72,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
     private String cUndoFileNameCache;
     private Uri cUndoPathCache;
     private int cPosition;
+    private CustomTarget<Drawable> mTarget;
 
     public UploadFileFragment() {
         // Required empty public constructor
@@ -263,7 +264,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             mSelectedPhotoImageView.setVisibility(View.VISIBLE);
         }
 
-        Glide.with(this).load(imageUri).into(new CustomTarget<Drawable>() {
+        mTarget = new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 mProgressCircle.setVisibility(View.VISIBLE);
@@ -284,7 +285,9 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             public void onLoadCleared(@Nullable Drawable placeholder) {
                 mSelectedPhotoImageView.setImageDrawable(null);
             }
-        });
+        };
+
+        Glide.with(this).load(imageUri).into(mTarget);
     }
 
     /**

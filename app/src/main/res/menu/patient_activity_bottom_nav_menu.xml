@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/mnu_home"
-        android:enabled="true"
-        android:icon="@drawable/ic_action_home"
-        android:title="@string/home" />
-
     <item android:id="@+id/mnu_search"
         android:enabled="true"
         android:icon="@drawable/ic_action_search"
         android:title="@string/search" />
+
+    <item android:id="@+id/mnu_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_home"
+        android:title="@string/home" />
 
     <item android:id="@+id/mnu_doctors_report"
         android:enabled="true"

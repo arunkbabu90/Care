@@ -56,8 +56,15 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
      * Enable the views in this fragment
      */
     fun activateViews() {
-        btn_report_problem.isEnabled = true
-        pb_report_problem_loading.visibility = View.GONE
+        if (PatientActivity.sReportingDoctorId.isBlank()) {
+            btn_report_problem.isEnabled = false
+            pb_report_problem_loading.visibility = View.GONE
+            tv_report_problem_error.visibility = View.VISIBLE
+        } else {
+            btn_report_problem.isEnabled = true
+            pb_report_problem_loading.visibility = View.GONE
+            tv_report_problem_error.visibility = View.GONE
+        }
     }
 
     /**

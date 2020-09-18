@@ -36,6 +36,8 @@ import arunkbabu.care.dialogs.ErrorDialog;
 import arunkbabu.care.views.CircularImageView;
 
 public class Utils {
+    private static CustomTarget<Drawable> mTarget;
+
     /**
      * App lvl variable used to indicate the User Type
      */
@@ -462,7 +464,7 @@ public class Utils {
      * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
      */
     public static void loadDpToView(Context context, String imageURL, CircularImageView circularImageView) {
-        Glide.with(context).load(imageURL).into(new CustomTarget<Drawable>() {
+        mTarget = new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 circularImageView.showProgressBar();
@@ -483,7 +485,9 @@ public class Utils {
             public void onLoadCleared(@Nullable Drawable placeholder) {
                 circularImageView.setImageDrawable(null);
             }
-        });
+        };
+
+        Glide.with(context).load(imageURL).into(mTarget);
     }
 
     /**
@@ -493,7 +497,7 @@ public class Utils {
      * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
      */
     public static void loadDpToView(Context context, Uri imageUri, CircularImageView circularImageView) {
-        Glide.with(context).load(imageUri).into(new CustomTarget<Drawable>() {
+        mTarget = new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 circularImageView.showProgressBar();
@@ -514,6 +518,8 @@ public class Utils {
             public void onLoadCleared(@Nullable Drawable placeholder) {
                 circularImageView.setImageDrawable(null);
             }
-        });
+        };
+
+        Glide.with(context).load(imageUri).into(mTarget);
     }
 }

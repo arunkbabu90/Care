@@ -11,7 +11,7 @@
     <string name="save_profile_data">Save Profile Data</string>
     <string name="err_invalid_value">Please choose or enter a valid value from the dropdown</string>
     <string name="err_unable_to_fetch">Error! Unable to fetch details from database. Please check your internet connection and try again</string>
-    <string name="info_select_doctor">Go back and select a doctor first from the Search tab!</string>
+    <string name="info_select_doctor">Please select a doctor first from the Search tab</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="chats">Chats</string>
     <string name="back_button">Back button</string>

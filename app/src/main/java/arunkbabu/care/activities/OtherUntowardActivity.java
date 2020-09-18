@@ -25,6 +25,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,14 +49,16 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     @BindView(R.id.iv_otheruntoward_doctor_dp) CircularImageView mDocDpImageView;
     @BindView(R.id.vp_otheruntoward) ViewPager mPager;
     @BindView(R.id.btn_otheruntoward_next) MaterialButton mNextButton;
-    @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
+    //    @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
+    @BindView(R.id.tv_otheruntoward_progress) TextView mProgressValue;
+    @BindView(R.id.pb_otheruntoward) CircularProgressBar mProgressBar;
     @BindView(R.id.pb_otheruntoward_dp) ProgressBar mDpProgressBar;
     @BindView(R.id.otheruntoward_reporting_doctor) TextView mReportingDoctorTextView;
 
     private OtherUntowardPagerAdapter mAdapter;
     private FirebaseFirestore mDb;
     private FirebaseAuth mAuth;
-    private FirebaseStorage mCloudStore;
+    private FirebaseStorage mStorage;
     private FirebaseUser mUser;
 
     private String mReportingDoctorId;
@@ -64,6 +68,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private int mPatientSex;
     private String mPatientName;
 
+    private int mFileCount = 0;
     private ArrayList<Uri> mDownloadURIs;
     private boolean mIsNetworkConnected;
     private boolean mIsAccountAlreadyVerified;
@@ -76,7 +81,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
 
         mDb = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        mCloudStore = FirebaseStorage.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         mUser = mAuth.getCurrentUser();
 
         mDownloadURIs = new ArrayList<>();
@@ -171,7 +176,9 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      */
     private void uploadImageFiles() {
         mNextButton.setEnabled(false);
+        mProgressBar.setIndeterminateMode(true);
         mProgressBar.setVisibility(View.VISIBLE);
+        mProgressValue.setVisibility(View.VISIBLE);
 
         if (mUser != null) {
             Toast.makeText(this, getString(R.string.uploading_files), Toast.LENGTH_SHORT).show();
@@ -179,33 +186,47 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             ArrayList<Uri> imgPaths = UploadFileFragment.sPathList;
             ArrayList<String> fileNames = UploadFileFragment.sFileNameList;
 
+            mFileCount = imgPaths.size();
+            mProgressValue.setText(String.valueOf(mFileCount));
             for (int i = 0; i < imgPaths.size(); i++) {
                 // Upload all file one by one
                 String uploadPath = mUser.getUid() + "/" + Constants.DIRECTORY_SENT_IMAGES + fileNames.get(i);
 
-                StorageReference storageReference = mCloudStore.getReference(uploadPath);
-                storageReference.putFile(imgPaths.get(i))
-                        .continueWithTask(task -> {
-                            if (!task.isSuccessful()) {
-                                // Upload failed
-                                Toast.makeText(this,
-                                        getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
-                                return null;
-                            }
-                            return storageReference.getDownloadUrl();
-                        })
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                mDownloadURIs.add(task.getResult());
-                                if (mDownloadURIs.size() == UploadFileFragment.sPathList.size()) {
-                                    // All files successfully uploaded; so start creating report
-                                    createReport();
-                                }
-                            } else {
-                                Toast.makeText(this,
-                                        getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
-                            }
-                        });
+                StorageReference storageReference = mStorage.getReference(uploadPath);
+                UploadTask uploadTask = storageReference.putFile(imgPaths.get(i));
+                uploadTask.continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        // Upload failed
+                        Toast.makeText(this,
+                                getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
+                        return null;
+                    }
+                    return storageReference.getDownloadUrl();
+                }).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        mDownloadURIs.add(task.getResult());
+                        if (mDownloadURIs.size() == UploadFileFragment.sPathList.size()) {
+                            // All files successfully uploaded; so start creating report
+                            createReport();
+                        }
+                    } else {
+                        Toast.makeText(this,
+                                getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
+                    }
+                });
+                uploadTask.addOnProgressListener(snapshot -> {
+                    float progress = (float) (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                    if ((int) progress > 5) {
+                        mProgressBar.setIndeterminateMode(false);
+                    }
+                    mProgressBar.setProgressWithAnimation(progress);
+                    mProgressValue.setText(String.valueOf(mFileCount));
+
+                    if ((int) progress >= 100) {
+                        mProgressBar.setIndeterminateMode(true);
+                        mFileCount--;
+                    }
+                });
             }
         }
     }
@@ -214,6 +235,8 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * Pushes the report to database
      */
     private void createReport() {
+        mProgressBar.setIndeterminateMode(true);
+        mProgressValue.setVisibility(View.GONE);
         if (mUser != null) {
             Toast.makeText(this, getString(R.string.creating_report), Toast.LENGTH_SHORT).show();
             String problemReportPath = Constants.COLLECTION_USERS + "/" + mUser.getUid() + "/" + Constants.COLLECTION_PROBLEM_REPORT;
@@ -361,6 +384,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                         // No files to upload; so start creating report immediately
                         createReport();
                         mNextButton.setEnabled(false);
+                        mProgressBar.setIndeterminateMode(true);
                         mProgressBar.setVisibility(View.VISIBLE);
                     }
                 } else {
