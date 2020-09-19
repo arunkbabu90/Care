@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Chat
+import arunkbabu.care.Constants
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import arunkbabu.care.activities.ChatActivity
 import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.PatientActivity
@@ -84,6 +86,8 @@ class ChatsFragment : Fragment() {
     }
 
     private fun startChatActivity(chat: Chat) {
+        val rut = if (Utils.userType == Constants.USER_TYPE_DOCTOR) Constants.USER_TYPE_PATIENT else Constants.USER_TYPE_DOCTOR
+
         val i = Intent(context, ChatActivity::class.java)
         i.putExtra(ChatActivity.RECEIVER_NAME_EXTRA_KEY, chat.full_name)
         i.putExtra(ChatActivity.RECEIVER_DP_EXTRA_KEY, chat.profilePicture)
@@ -91,6 +95,7 @@ class ChatsFragment : Fragment() {
         i.putExtra(ChatActivity.SENDER_NAME_EXTRA_KEY, senderName)
         i.putExtra(ChatActivity.SENDER_DP_EXTRA_KEY, senderDpPath)
         i.putExtra(ChatActivity.SENDER_ID_EXTRA_KEY, senderId)
+        i.putExtra(ChatActivity.RECEIVER_USER_TYPE_EXTRA_KEY, rut)
         startActivity(i)
     }
 

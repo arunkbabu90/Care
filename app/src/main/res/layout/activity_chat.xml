@@ -35,7 +35,10 @@
         <TextView
             android:id="@+id/toolbarChat_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:paddingEnd="@dimen/huge_padding"
+            android:paddingStart="0dp"
             android:gravity="center"
             android:textSize="18sp"
             tools:text="Arun K Babu" />

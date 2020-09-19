@@ -11,6 +11,7 @@
     <dimen name="default_padding">16dp</dimen>
     <dimen name="medium_padding">26dp</dimen>
     <dimen name="large_padding">32dp</dimen>
+    <dimen name="huge_padding">70dp</dimen>
 
     <dimen name="stacked_button_margin_top">20dp</dimen>
     <dimen name="stacked_button_margin_horizontal">48dp</dimen>

@@ -37,13 +37,14 @@
     <string name="uploading_photo">Uploading Photo…!</string>
     <string name="err_report_create_fail">Report Creation Failure!</string>
     <string name="doc_speciality_qualification">%1$s (%2$s)</string>
-    <string name="select">Select</string>
     <string name="err_no_doctors_found">No doctors found matching your search</string>
     <string name="doctor_selected">Dr. %1$s selected as your preferred Doctor</string>
     <string name="err_failed_set_preferred_doctor">Error! Unable to set as preferred doctor. Please try again</string>
     <string name="err_no_doc_selected">Error! Please select a doctor to send this report to</string>
     <string name="select_as_preferred_doctor">Select as your preferred doctor</string>
-    <string name="select_doctor">Select Doctor</string>
+    <string name="select">Select</string>
+    <string name="consult">Consult</string>
+    <string name="consult_doctor">Consult Doctor</string>
 
     <!-- Login Activity -->
     <string name="email">Email</string>

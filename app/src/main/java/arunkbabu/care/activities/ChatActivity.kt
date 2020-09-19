@@ -1,6 +1,8 @@
 package arunkbabu.care.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
@@ -13,7 +15,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_chat.*
 
-class ChatActivity : AppCompatActivity(), ChildEventListener {
+class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListener {
     private lateinit var msgRoot: DatabaseReference
     private lateinit var receiverChatRoot: DatabaseReference
     private lateinit var lastMsgRoot: DatabaseReference
@@ -26,6 +28,8 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
     private var receiverDpPath = ""
     private var senderName = ""
     private var senderDpPath = ""
+    private var receiverUserType: Int = -1
+
     private var isFirstLaunch = true
 
     companion object {
@@ -35,12 +39,14 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
         const val SENDER_NAME_EXTRA_KEY = "key_chat_sender_name_extra"
         const val SENDER_DP_EXTRA_KEY = "key_chat_sender_dp_extra"
         const val SENDER_ID_EXTRA_KEY = "key_chat_sender_id_extra"
+        const val RECEIVER_USER_TYPE_EXTRA_KEY = "key_user_type_receiver_extra"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+        receiverUserType = intent.getIntExtra(RECEIVER_USER_TYPE_EXTRA_KEY, -1)
         receiverName = intent.getStringExtra(RECEIVER_NAME_EXTRA_KEY) ?: ""
         receiverDpPath = intent.getStringExtra(RECEIVER_DP_EXTRA_KEY) ?: ""
         receiverId = intent.getStringExtra(RECEIVER_ID_EXTRA_KEY) ?: ""
@@ -89,31 +95,51 @@ class ChatActivity : AppCompatActivity(), ChildEventListener {
             if (bottom < prevBottom)
                 rv_chats.smoothScrollToPosition(messages.size)
         }
-        toolbarChat_backBtn.setOnClickListener { finish() }
-        fab_sendMessage.setOnClickListener {
-            val message: String = et_typeMessage.text.toString()
-            val newMsgRoot = msgRoot.push()
-            val newMsgKey = newMsgRoot.key
-            if (message.isNotBlank()) {
-                val msgMap = hashMapOf(
-                    Constants.FIELD_MESSAGE to message,
-                    Constants.FIELD_SENDER_ID to senderId,
-                    Constants.FIELD_RECEIVER_ID to receiverId,
-                    Constants.FIELD_MSG_TIMESTAMP to ServerValue.TIMESTAMP
-                )
-                newMsgRoot.updateChildren(msgMap)
-                lastMsgRoot.setValue(message)
-                // Also push your id to doctor's chat index in "Chats". So that the receiver can
-                // connect with you
-                val senderMap = hashMapOf(
-                    Constants.FIELD_FULL_NAME to senderName,
-                    Constants.FIELD_PROFILE_PICTURE to senderDpPath,
-                    Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP,
-                    Constants.FIELD_LAST_MESSAGE to message
-                )
-                receiverChatRoot.updateChildren(senderMap)
 
-                et_typeMessage.setText("")
+        toolbarChat_backBtn.setOnClickListener(this)
+        toolbarChat_name.setOnClickListener(this)
+        fab_sendMessage.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        when (p0?.id) {
+            R.id.toolbarChat_backBtn -> {
+                finish()
+            }
+            R.id.fab_sendMessage -> {
+                val message: String = et_typeMessage.text.toString()
+                val newMsgRoot = msgRoot.push()
+                val newMsgKey = newMsgRoot.key
+                if (message.isNotBlank()) {
+                    val msgMap = hashMapOf(
+                        Constants.FIELD_MESSAGE to message,
+                        Constants.FIELD_SENDER_ID to senderId,
+                        Constants.FIELD_RECEIVER_ID to receiverId,
+                        Constants.FIELD_MSG_TIMESTAMP to ServerValue.TIMESTAMP
+                    )
+                    newMsgRoot.updateChildren(msgMap)
+                    lastMsgRoot.setValue(message)
+                    // Also push your id to doctor's chat index in "Chats". So that the receiver can
+                    // connect with you
+                    val senderMap = hashMapOf(
+                        Constants.FIELD_FULL_NAME to senderName,
+                        Constants.FIELD_PROFILE_PICTURE to senderDpPath,
+                        Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP,
+                        Constants.FIELD_LAST_MESSAGE to message
+                    )
+                    receiverChatRoot.updateChildren(senderMap)
+
+                    et_typeMessage.setText("")
+                }
+            }
+            R.id.toolbarChat_name -> {
+                val vpIntent = Intent(this, ViewProfileActivity::class.java)
+                vpIntent.putExtra(ViewProfileActivity.USER_ID_EXTRAS_KEY, receiverId)
+                vpIntent.putExtra(ViewProfileActivity.NAME_EXTRAS_KEY, receiverName)
+                vpIntent.putExtra(ViewProfileActivity.DP_EXTRAS_KEY, receiverDpPath)
+                vpIntent.putExtra(ViewProfileActivity.USER_TYPE_EXTRAS_KEY, receiverUserType)
+                vpIntent.putExtra(ViewProfileActivity.IS_VIEW_MODE_EXTRAS_KEY, true)
+                startActivity(vpIntent)
             }
         }
     }

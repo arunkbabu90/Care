@@ -11,7 +11,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.*
 import arunkbabu.care.activities.PatientActivity
-import arunkbabu.care.activities.ViewDoctorProfileActivity
+import arunkbabu.care.activities.ViewProfileActivity
 import arunkbabu.care.adapters.DoctorSearchResultsAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.transition.MaterialSharedAxis
@@ -32,10 +32,6 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
     private lateinit var mDb: FirebaseFirestore
 
     companion object {
-        const val USER_ID_EXTRAS_KEY = "key_intent_extras_document_id"
-        const val DOCTOR_NAME_EXTRAS_KEY = "key_intent_extras_doctor_name"
-        const val DOCTOR_DP_EXTRAS_KEY = "key_intent_extras_doctor_profile_picture"
-
         var docSearchResultsFragmentActive = false
     }
 
@@ -104,10 +100,11 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
      * @param doctor The selected Doctor
      */
     private fun onItemClick(doctor: Doctor) {
-        val viewProfileIntent = Intent(context, ViewDoctorProfileActivity::class.java)
-        viewProfileIntent.putExtra(USER_ID_EXTRAS_KEY, doctor.documentId)
-        viewProfileIntent.putExtra(DOCTOR_NAME_EXTRAS_KEY, doctor.full_name)
-        viewProfileIntent.putExtra(DOCTOR_DP_EXTRAS_KEY, doctor.profilePicture)
+        val viewProfileIntent = Intent(context, ViewProfileActivity::class.java)
+        viewProfileIntent.putExtra(ViewProfileActivity.USER_ID_EXTRAS_KEY, doctor.documentId)
+        viewProfileIntent.putExtra(ViewProfileActivity.NAME_EXTRAS_KEY, doctor.full_name)
+        viewProfileIntent.putExtra(ViewProfileActivity.DP_EXTRAS_KEY, doctor.profilePicture)
+        viewProfileIntent.putExtra(ViewProfileActivity.USER_TYPE_EXTRAS_KEY, Constants.USER_TYPE_DOCTOR)
         startActivity(viewProfileIntent)
     }
 

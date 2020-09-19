@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ViewDoctorProfileActivity">
+    tools:context=".activities.ViewProfileActivity">
 
     <arunkbabu.care.views.CircularImageView
         android:id="@+id/iv_viewProfile_dp"
         android:layout_width="@dimen/dp_image_view_size_large"
         android:layout_height="@dimen/dp_image_view_size_large"
         android:layout_margin="@dimen/large_margin"
-        app:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:scaleType="centerCrop"
         app:src="@drawable/default_dp" />
 
     <TextView
@@ -22,48 +22,81 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:fontFamily="@font/muli_bold"
-        tools:text="Dr. Aaron George"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_viewProfile_dp" />
+        app:layout_constraintTop_toBottomOf="@id/iv_viewProfile_dp"
+        tools:text="Dr. Aaron George" />
 
     <TextView
         android:id="@+id/tv_viewProfile_speciality"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
-        tools:text="Cardiologist"
         android:textColor="@color/colorTextLightGrey"
+        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_name" />
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_name"
+        tools:text="Cardiologist" />
 
+    <!-- Select Doctor Button -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_viewProfile_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/medium_margin"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
         android:contentDescription="@string/select_as_preferred_doctor"
-        android:text="@string/select_doctor"
+        android:text="@string/select"
         android:textColor="@color/colorGreen"
         android:transitionName="doc_profile_edit_transition_container"
+        android:visibility="gone"
         app:backgroundTint="@android:color/transparent"
         app:icon="@drawable/ic_select"
         app:iconTint="@color/colorGreen"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/viewProfile_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality"
         app:strokeColor="@color/colorGreen"
+        app:strokeWidth="2dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/viewProfile_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!-- Consult Button -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_viewProfile_consult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:contentDescription="@string/select_as_preferred_doctor"
+        android:text="@string/consult"
+        android:textColor="@color/colorOrange"
+        android:transitionName="doc_profile_edit_transition_container"
+        android:visibility="gone"
+        app:backgroundTint="@android:color/transparent"
+        app:icon="@drawable/ic_consult"
+        app:iconTint="@color/colorOrange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/viewProfile_guideline"
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality"
+        app:strokeColor="@color/colorOrange"
         app:strokeWidth="2dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_viewProfile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/medium_margin"
         android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         android:layout_marginEnd="@dimen/default_margin"
         android:layout_marginBottom="@dimen/medium_margin"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -88,11 +121,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
         android:gravity="center"
+        android:text="@string/err_load_failed_default"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality"
-        android:text="@string/err_load_failed_default" />
+        app:layout_constraintTop_toBottomOf="@id/tv_viewProfile_speciality" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
