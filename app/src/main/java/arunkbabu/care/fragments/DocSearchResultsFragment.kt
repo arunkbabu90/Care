@@ -11,6 +11,7 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.*
 import arunkbabu.care.activities.PatientActivity
+import arunkbabu.care.activities.SearchDoctorActivity
 import arunkbabu.care.activities.ViewProfileActivity
 import arunkbabu.care.adapters.DoctorSearchResultsAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
@@ -120,10 +121,16 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
             mDb.collection(Constants.COLLECTION_USERS).document(user.uid)
                 .set(preferredDoc, SetOptions.merge())
                 .addOnSuccessListener {
-                    PatientActivity.sReportingDoctorId = doctor.documentId
-                    (activity as PatientActivity).fetchDoctorDetails()
-
                     Toast.makeText(context, getString(R.string.doctor_selected, doctor.full_name), Toast.LENGTH_SHORT).show()
+
+                    PatientActivity.sReportingDoctorId = doctor.documentId
+
+                    if (SearchDoctorActivity.searchDoctorActivityActive) {
+                        SearchDoctorActivity.reportingDoctorId = doctor.documentId
+                        (activity as SearchDoctorActivity).finish()
+                    } else {
+                        (activity as PatientActivity).fetchDoctorDetails()
+                    }
                 }
                 .addOnFailureListener { Toast.makeText(context, getString(R.string.err_failed_set_preferred_doctor), Toast.LENGTH_SHORT).show() }
         } else {

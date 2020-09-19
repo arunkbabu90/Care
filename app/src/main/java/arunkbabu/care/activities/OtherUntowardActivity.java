@@ -1,5 +1,6 @@
 package arunkbabu.care.activities;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -43,13 +44,12 @@ import arunkbabu.care.views.CircularImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OtherUntowardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class OtherUntowardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
     @BindView(R.id.tv_otheruntoward_error) TextView mErrorTextView;
     @BindView(R.id.tv_otheruntoward_doctor_name) TextView mDocNameTextView;
     @BindView(R.id.iv_otheruntoward_doctor_dp) CircularImageView mDocDpImageView;
     @BindView(R.id.vp_otheruntoward) ViewPager mPager;
     @BindView(R.id.btn_otheruntoward_next) MaterialButton mNextButton;
-    //    @BindView(R.id.pb_otheruntoward) ProgressBar mProgressBar;
     @BindView(R.id.tv_otheruntoward_progress) TextView mProgressValue;
     @BindView(R.id.pb_otheruntoward) CircularProgressBar mProgressBar;
     @BindView(R.id.pb_otheruntoward_dp) ProgressBar mDpProgressBar;
@@ -61,17 +61,19 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     private FirebaseStorage mStorage;
     private FirebaseUser mUser;
 
-    private String mReportingDoctorId;
     private String mDocName;
     private String mDocDpPath;
     private String mPatientDpPath;
-    private int mPatientSex;
     private String mPatientName;
 
     private int mFileCount = 0;
     private ArrayList<Uri> mDownloadURIs;
     private boolean mIsNetworkConnected;
     private boolean mIsAccountAlreadyVerified;
+
+    public static String sReportingDoctorId;
+    public static boolean sIsNewDoctorSelected = false;
+    public static boolean isOtherUntowardActivityActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,15 +108,14 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         }
 
         // Get patient data from intent
-        mReportingDoctorId = getIntent().getStringExtra(ReportProblemFragment.REPORTING_DOCTOR_ID_EXTRAS_KEY);
+        sReportingDoctorId = getIntent().getStringExtra(ReportProblemFragment.REPORTING_DOCTOR_ID_EXTRAS_KEY);
         mPatientName = getIntent().getStringExtra(ReportProblemFragment.PATIENT_NAME_EXTRAS_KEY);
-        mPatientSex = getIntent().getIntExtra(ReportProblemFragment.PATIENT_SEX_EXTRAS_KEY, Constants.NULL_INT);
         mPatientDpPath = getIntent().getStringExtra(ReportProblemFragment.PATIENT_DP_EXTRAS_KEY);
         mDocDpPath = getIntent().getStringExtra(ReportProblemFragment.DOCTOR_DP_EXTRAS_KEY);
         mDocName = getIntent().getStringExtra(ReportProblemFragment.DOCTOR_NAME_EXTRAS_KEY);
 
-        if (mReportingDoctorId == null)
-            mReportingDoctorId = "";
+        if (sReportingDoctorId == null)
+            sReportingDoctorId = "";
 
         if (mPatientName == null)
             mPatientName = "";
@@ -128,23 +129,43 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         if (mDocDpPath == null)
             mDocDpPath = "";
 
-        if (mReportingDoctorId.equals(""))
+        if (sReportingDoctorId.equals(""))
             Utils.showErrorDialog(this, getString(R.string.info_select_doctor), "", getString(R.string.close));
 
         if (mDocName.equals(""))
-            fetchDoctorDetails();
+            fetchDoctorDetails(false);
         else
-            loadViews();
+            loadViews(false);
+
+        mDocNameTextView.setOnClickListener(this);
+        mDocDpImageView.setOnClickListener(this);
+
+        isOtherUntowardActivityActive = true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_otheruntoward_doctor_name:
+                startActivity(new Intent(this, SearchDoctorActivity.class));
+                break;
+            case R.id.iv_otheruntoward_doctor_dp:
+                Intent dpIntent = new Intent(this, ViewPictureActivity.class);
+                dpIntent.putExtra(ViewPictureActivity.PROFILE_PICTURE_PATH_EXTRA_KEY, mDocDpPath);
+                startActivity(dpIntent);
+                break;
+        }
     }
 
     /**
      * Fetches the name, dp of the doctor from database
      * Includes Doctor Name: sDocName
      * Doctor DP: sDocDpPath
+     * @param reload Clears all the data in fragments
      */
-    private void fetchDoctorDetails() {
-        if (!mReportingDoctorId.isEmpty()) {
-            mDb.collection(Constants.COLLECTION_USERS).document(mReportingDoctorId).get()
+    private void fetchDoctorDetails(boolean reload) {
+        if (!sReportingDoctorId.isEmpty()) {
+            mDb.collection(Constants.COLLECTION_USERS).document(sReportingDoctorId).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot s = task.getResult();
@@ -155,7 +176,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                                 mDocNameTextView.setText((mDocName == null || mDocName.equals("")) ? getString(R.string.not_set) : mDocName);
 
                                 // Hide the Loading message & Show the Constipation layout
-                                loadViews();
+                                loadViews(reload);
                             } else {
                                 Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show();
                                 finish();
@@ -167,7 +188,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                     });
         } else {
             mDocNameTextView.setText(R.string.not_set);
-            loadViews();
+            loadViews(reload);
         }
     }
 
@@ -268,7 +289,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
      * @param reportId The String id of the report
      */
     private void sendRequestToDoctor(String reportId) {
-        String docRequestListPath = Constants.COLLECTION_USERS + "/" + mReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
+        String docRequestListPath = Constants.COLLECTION_USERS + "/" + sReportingDoctorId + "/" + Constants.COLLECTION_PATIENT_REQUEST;
         if (mUser != null) {
             // Get the user's id
             String userId = mUser.getUid();
@@ -303,16 +324,19 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
 
     /**
      * Make the views visible & hide the ErrorTextView
+     * @param reload True Clears all the fragments data
      */
-    private void loadViews() {
+    private void loadViews(boolean reload) {
         if (mDocDpPath != null)
             Utils.loadDpToView(this, mDocDpPath, mDocDpImageView);
 
         mDocNameTextView.setText(mDocName.equals("") ? getString(R.string.not_set) : mDocName);
 
-        mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mAdapter);
-        mPager.addOnPageChangeListener(this);
+        if (!reload) {
+            mAdapter = new OtherUntowardPagerAdapter(getSupportFragmentManager());
+            mPager.setAdapter(mAdapter);
+            mPager.addOnPageChangeListener(this);
+        }
 
         mNextButton.setVisibility(View.VISIBLE);
         mDocNameTextView.setVisibility(View.VISIBLE);
@@ -368,7 +392,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         } else {
             // Document is at last page. So create a report and send it to the doctor
             // SEND button
-            if (mReportingDoctorId == null || mReportingDoctorId.isEmpty()) {
+            if (sReportingDoctorId == null || sReportingDoctorId.isEmpty()) {
                 Toast.makeText(this, R.string.err_no_doc_selected, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -432,8 +456,20 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (sIsNewDoctorSelected) {
+            fetchDoctorDetails(true);
+            PatientActivity.isNewDoctorSelected = true;
+            sIsNewDoctorSelected = false;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        isOtherUntowardActivityActive = false;
 
         UploadFileFragment.sPathList = null;
         UploadFileFragment.sFileNameList = null;

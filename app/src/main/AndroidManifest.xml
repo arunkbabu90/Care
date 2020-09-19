@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.ChatActivity"/>
+        <activity android:name=".activities.SearchDoctorActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name=".activities.ChatActivity" />
         <activity android:name=".activities.ViewPictureActivity" />
         <activity android:name=".activities.ViewProfileActivity" />
         <activity android:name=".activities.ViewPatientReportActivity" />
@@ -17,11 +19,13 @@
         <activity android:name=".activities.SignUpActivity" />
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.ViewDoctorReportActivity" />
-        <activity android:name=".activities.OtherUntowardActivity" />
+        <activity android:name=".activities.OtherUntowardActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activities.PatientActivity" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,4 +41,5 @@
                 android:resource="@xml/photo_path" />
         </provider>
     </application>
+
 </manifest>

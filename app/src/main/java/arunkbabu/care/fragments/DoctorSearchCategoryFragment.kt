@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.R
 import arunkbabu.care.Speciality
 import arunkbabu.care.activities.PatientActivity
+import arunkbabu.care.activities.SearchDoctorActivity
 import arunkbabu.care.adapters.DoctorCategoryAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.android.synthetic.main.fragment_doctor_search_category.*
@@ -18,8 +19,9 @@ import kotlinx.android.synthetic.main.fragment_doctor_search_category.*
  * A simple [Fragment] subclass.
  */
 class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClickListener {
-    private lateinit var mAdapter: DoctorCategoryAdapter
-    private val mSpecialities: ArrayList<Speciality> = ArrayList()
+
+    private lateinit var adapter: DoctorCategoryAdapter
+    private val specialities: ArrayList<Speciality> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,21 +38,25 @@ class DoctorSearchCategoryFragment : Fragment(), DoctorCategoryAdapter.ItemClick
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mSpecialities.add(Speciality(Speciality.CARDIOLOGIST, R.drawable.ic_heart, getString(R.string.cardiologist), getString(R.string.cardiologist_desc), R.color.colorCatRed))
-        mSpecialities.add(Speciality(Speciality.PEDIATRICIAN, R.drawable.ic_pediatrician, getString(R.string.pediatrician), getString(R.string.pediatrician_desc), R.color.colorCatBlue))
-        mSpecialities.add(Speciality(Speciality.GENERAL, R.drawable.ic_general_medicine, getString(R.string.general), getString(R.string.general_desc), R.color.colorGreen))
-        mSpecialities.add(Speciality(Speciality.ONCOLOGIST, R.drawable.ic_cancer, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
-        mSpecialities.add(Speciality(Speciality.OTHER, R.drawable.ic_other, getString(R.string.other), getString(R.string.other_desc), R.color.colorCatIndigo))
+        specialities.add(Speciality(Speciality.CARDIOLOGIST, R.drawable.ic_heart, getString(R.string.cardiologist), getString(R.string.cardiologist_desc), R.color.colorCatRed))
+        specialities.add(Speciality(Speciality.PEDIATRICIAN, R.drawable.ic_pediatrician, getString(R.string.pediatrician), getString(R.string.pediatrician_desc), R.color.colorCatBlue))
+        specialities.add(Speciality(Speciality.GENERAL, R.drawable.ic_general_medicine, getString(R.string.general), getString(R.string.general_desc), R.color.colorGreen))
+        specialities.add(Speciality(Speciality.ONCOLOGIST, R.drawable.ic_cancer, getString(R.string.oncologist), getString(R.string.oncologist_desc), R.color.colorCatYellow))
+        specialities.add(Speciality(Speciality.OTHER, R.drawable.ic_other, getString(R.string.other), getString(R.string.other_desc), R.color.colorCatIndigo))
 
-        mAdapter = DoctorCategoryAdapter(mSpecialities)
-        mAdapter.setOnClickListener(this)
+        adapter = DoctorCategoryAdapter(specialities)
+        adapter.setOnClickListener(this)
         rv_doc_category.layoutManager = LinearLayoutManager(context)
-        rv_doc_category.adapter = mAdapter
+        rv_doc_category.adapter = adapter
     }
 
     override fun onItemClick(v: View, position: Int) {
-        if (mSpecialities.isNotEmpty()) {
-            (activity as PatientActivity).onDocCategoryClick(mSpecialities[position])
+        if (specialities.isNotEmpty()) {
+            if (SearchDoctorActivity.searchDoctorActivityActive) {
+                (activity as SearchDoctorActivity).onDocCategoryClick(specialities[position])
+            } else {
+                (activity as PatientActivity).onDocCategoryClick(specialities[position])
+            }
         } else {
             Toast.makeText(context, R.string.err_default, Toast.LENGTH_LONG).show()
         }

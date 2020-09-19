@@ -103,6 +103,7 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
                 reportProblemIntent.putExtra(ReportProblemFragment.DOCTOR_DP_EXTRAS_KEY, profilePicturePath)
                 reportProblemIntent.putExtra(ReportProblemFragment.DOCTOR_NAME_EXTRAS_KEY, fullName)
                 startActivity(reportProblemIntent)
+                finish()
             }
         }
     }
@@ -120,6 +121,13 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
                 .addOnSuccessListener {
                     PatientActivity.sReportingDoctorId = userId
                     PatientActivity.isNewDoctorSelected = true
+
+                    if (SearchDoctorActivity.searchDoctorActivityActive) {
+                        OtherUntowardActivity.sReportingDoctorId = userId
+                        OtherUntowardActivity.sIsNewDoctorSelected = true
+                        SearchDoctorActivity.instance?.finish()
+                        finish()
+                    }
 
                     // Update button state as Selected
                     fab_viewProfile_select.setIconResource(R.drawable.ic_select_filled)
@@ -188,9 +196,13 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
             // Doctor
             if (!isViewOnlyMode) {
                 fab_viewProfile_select.visibility = View.VISIBLE
-                fab_viewProfile_consult.visibility = View.VISIBLE
-
-                fab_viewProfile_consult.setOnClickListener(this)
+                if (SearchDoctorActivity.searchDoctorActivityActive) {
+                    fab_viewProfile_consult.visibility = View.GONE
+                    viewProfile_guideline.setGuidelinePercent(1f)
+                } else {
+                    fab_viewProfile_consult.visibility = View.VISIBLE
+                    fab_viewProfile_consult.setOnClickListener(this)
+                }
 
                 if (PatientActivity.sReportingDoctorId == userId) {
                     // This doctor is already the Preferred doctor. So Update button state as Selected

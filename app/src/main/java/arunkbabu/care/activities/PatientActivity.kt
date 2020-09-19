@@ -72,9 +72,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         private const val PATIENT_PROFILE_FRAGMENT_ID = 9003
         private const val PATIENT_MESSAGES_FRAGMENT_ID = 9004
 
+        var patientActivityActive = false
         var sReportingDoctorId = ""
         var isDataLoaded = false
-        var isNewDoctorSelected = false
+        @JvmField var isNewDoctorSelected = false
         var isInternetConnected = false
     }
 
@@ -110,6 +111,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         fetchPatientData()
 
         bnv_patient.setOnNavigationItemSelectedListener(this)
+
+        patientActivityActive = true
     }
 
     /**
@@ -301,10 +304,9 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
      */
     private fun createChatRoomWithCurrentDoctor() {
         if (sReportingDoctorId.isNotBlank()) {
-            val senderMap = hashMapOf(
+            val senderMap = hashMapOf<String, Any>(
                 Constants.FIELD_FULL_NAME to docName,
-                Constants.FIELD_PROFILE_PICTURE to docDpPath,
-                Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP
+                Constants.FIELD_PROFILE_PICTURE to docDpPath
             )
             chatRoot.child(sReportingDoctorId).updateChildren(senderMap)
         }
@@ -601,8 +603,15 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
             checkAccountVerificationStatus()
         }
 
-        if (isNewDoctorSelected)
+        if (isNewDoctorSelected) {
             fetchDoctorDetails()
+            isNewDoctorSelected = false
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        patientActivityActive = false
     }
 
     /**

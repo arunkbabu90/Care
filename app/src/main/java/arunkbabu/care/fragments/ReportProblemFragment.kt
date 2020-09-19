@@ -85,6 +85,8 @@ class ReportProblemFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
             R.id.btn_report_problem -> {
                 val pa = (activity as PatientActivity)
+                OtherUntowardActivity.sIsNewDoctorSelected = false
+                
                 val reportProblemIntent = Intent(context, OtherUntowardActivity::class.java)
                 reportProblemIntent.putExtra(REPORTING_DOCTOR_ID_EXTRAS_KEY, PatientActivity.sReportingDoctorId)
                 reportProblemIntent.putExtra(PATIENT_NAME_EXTRAS_KEY, pa.fullName)

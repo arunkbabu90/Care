@@ -283,7 +283,7 @@ public class Utils {
      */
     public static String convertEpochToDateString(long epoch) {
         Date date = new Date(epoch);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM yyyy", Locale.UK);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
         sdf.setTimeZone(TimeZone.getDefault());
 
         return sdf.format(date);
@@ -299,7 +299,7 @@ public class Utils {
         String logicalDate;
         Date date = new Date(timestamp);
         Date currentDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MM yyyy", Locale.UK);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.UK);
         SimpleDateFormat df = new SimpleDateFormat("dd", Locale.UK);
         SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.UK);
         sdf.setTimeZone(TimeZone.getDefault());
@@ -346,19 +346,6 @@ public class Utils {
         sdf.setTimeZone(TimeZone.getDefault());
 
         return sdf.format(date);
-    }
-
-    /**
-     * Converts the time as UTC milliseconds from the epoch to a day
-     * @param timestamp The timestamp to convert to a day
-     * @return int: The Day
-     */
-    public static int getDay(long timestamp) {
-        Date date = new Date(timestamp);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd", Locale.UK);
-        sdf.setTimeZone(TimeZone.getDefault());
-
-        return Integer.parseInt(sdf.format(date));
     }
 
     /**

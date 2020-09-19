@@ -24,7 +24,7 @@ class ViewPictureActivity : AppCompatActivity(),  GestureDetector.OnGestureListe
     private var mPosY: Float = 0f
 
     companion object {
-        val PROFILE_PICTURE_PATH_EXTRA_KEY = "key_profile_picture_path_extra"
+        const val PROFILE_PICTURE_PATH_EXTRA_KEY = "key_profile_picture_path_extra"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
