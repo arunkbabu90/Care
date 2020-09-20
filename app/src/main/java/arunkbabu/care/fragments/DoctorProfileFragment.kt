@@ -127,7 +127,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
     /**
      * Loads all the data to the views
      */
-    private fun loadToViews() {
+    fun loadToViews() {
         if (mDpPath.isNotBlank()) {
             // Load profile picture
             loadDpToView(Uri.parse(mDpPath))
@@ -162,7 +162,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
      * Helper method to get the profile data from the DoctorActivity
      * @return True if all fields has data
      */
-    private fun getProfileData(): Boolean {
+    fun getProfileData(): Boolean {
         if (activity != null) {
             val da: DoctorActivity = activity as DoctorActivity
             mName = da.doctorFullName

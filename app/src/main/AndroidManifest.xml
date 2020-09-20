@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.SearchDoctorActivity"
             android:launchMode="singleTop"/>
-        <activity android:name=".activities.ChatActivity" />
+        <activity android:name=".activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.ViewPictureActivity" />
         <activity android:name=".activities.ViewProfileActivity" />
         <activity android:name=".activities.ViewPatientReportActivity" />

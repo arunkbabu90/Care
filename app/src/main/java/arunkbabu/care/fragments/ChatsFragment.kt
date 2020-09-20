@@ -111,10 +111,10 @@ class ChatsFragment : Fragment() {
 
         if (chats.size < 1) {
             tv_chatsFrag_error?.visibility = View.VISIBLE
-            rv_chats?.visibility = View.GONE
+            rv_messages?.visibility = View.GONE
         } else {
             tv_chatsFrag_error?.visibility = View.GONE
-            rv_chats?.visibility = View.VISIBLE
+            rv_messages?.visibility = View.VISIBLE
         }
     }
 

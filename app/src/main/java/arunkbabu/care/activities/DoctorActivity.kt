@@ -44,6 +44,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var chatRoot: DatabaseReference
     private lateinit var connectivityManager: ConnectivityManager
     private var chatsFrag: ChatsFragment? = null
+    private var profileFrag: DoctorProfileFragment? = null
     private var isAccountAlreadyVerified = true
     private var isLaunched = false
     private var fragId = Constants.NULL_INT
@@ -71,6 +72,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
         private const val DOCTOR_PROFILE_FRAGMENT_ID = 8003
 
         var isInternetConnected = false
+        var isDataLoaded = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +140,7 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = PATIENT_REQUESTS_FRAGMENT_ID
                     chatsFrag = null
+                    profileFrag = null
                 }
                 true
             }
@@ -148,13 +151,15 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .replace(R.id.doctor_activity_fragment_container, chatsFrag!!)
                         .commit()
                     fragId = DOC_PRIVATE_MESSAGE_FRAGMENT_ID
+                    profileFrag = null
                 }
                 true
             }
             R.id.mnu_profile_doc -> {
                 if (fragId != DOCTOR_PROFILE_FRAGMENT_ID) {
+                    profileFrag = DoctorProfileFragment()
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.doctor_activity_fragment_container, DoctorProfileFragment())
+                        .replace(R.id.doctor_activity_fragment_container, profileFrag!!)
                         .commit()
                     fragId = DOCTOR_PROFILE_FRAGMENT_ID
                     chatsFrag = null
@@ -187,6 +192,12 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                             fellowships = document.getString(Constants.FIELD_DOCTOR_FELLOWSHIPS) ?: ""
                             experience = document.getString(Constants.FIELD_DOCTOR_EXPERIENCE) ?: ""
                             workingHospitalName = document.getString(Constants.FIELD_WORKING_HOSPITAL_NAME) ?: ""
+
+                            isDataLoaded = true
+
+                            val hasData: Boolean = profileFrag?.getProfileData() ?: false
+                            if (hasData)
+                                profileFrag?.loadToViews()
                         } else {
                             Toast.makeText(this, R.string.err_unable_to_fetch, Toast.LENGTH_SHORT).show()
                         }
@@ -374,6 +385,8 @@ class DoctorActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 runOnUiThread {
                     isInternetConnected = true
                     isAvailable[0] = true
+                    if (!isDataLoaded)
+                        fetchDoctorProfile()
                 }
             }
 

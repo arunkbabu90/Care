@@ -146,7 +146,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
      * Populates the data to the Respective Views
      * Call this method only after [.fetchData] has finished fetching data from database
      */
-    private fun populateDataToViews() {
+    fun populateDataToViews() {
         loadDpToView(Uri.parse(mDpPath))
 
         tv_profile_name.text = mFullName
@@ -172,7 +172,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
      * Helper method to get the profile data from the DoctorActivity
      * @return True if all fields has data
      */
-    private fun getProfileData(): Boolean {
+    fun getProfileData(): Boolean {
         if (activity != null) {
             val pa = activity as PatientActivity
             mFullName = pa.fullName

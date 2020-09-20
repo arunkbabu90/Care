@@ -59,8 +59,8 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
         if (user != null) {
             val pagingConfig = PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
-                .setPrefetchDistance(2)
-                .setPageSize(10)
+                .setPrefetchDistance(10)
+                .setPageSize(20)
                 .build()
 
             mSearchQuery = if (specialityId == Speciality.OTHER) {
@@ -77,11 +77,9 @@ class DocSearchResultsFragment(private val specialityId: Int) : Fragment() {
             val options = FirestorePagingOptions.Builder<Doctor>()
                 .setLifecycleOwner(this)
                 .setQuery(mSearchQuery, pagingConfig) { snapshot ->
-                    val d: Doctor? = snapshot.toObject(Doctor::class.java)
-                    if (d != null) {
-                        d.documentId = snapshot.id
-                    }
-                    d ?: Doctor()
+                    val d: Doctor = snapshot.toObject(Doctor::class.java) ?: Doctor()
+                    d.documentId = snapshot.id
+                    d
                 }
                 .build()
 

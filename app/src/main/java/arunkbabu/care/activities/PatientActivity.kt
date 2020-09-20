@@ -43,6 +43,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
     private lateinit var connectivityManager: ConnectivityManager
     private var chatsFrag: ChatsFragment? = null
     private var reportProblemFrag: ReportProblemFragment? = null
+    private var profileFrag: PatientProfileFragment? = null
     private var accountAlreadyVerified: Boolean? = null
     private var fragId = Constants.NULL_INT
     private var isLaunched = false
@@ -97,7 +98,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
 
         if (userId.isNotBlank()) {
             chatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(userId)
-            chatRoot.orderByChild(Constants.FIELD_CHAT_TIMESTAMP).limitToLast(20)
+            chatRoot.orderByChild(Constants.FIELD_CHAT_TIMESTAMP).limitToLast(50)
                 .addChildEventListener(this)
         } else {
             Toast.makeText(this, getString(R.string.err_create_chat_room), Toast.LENGTH_LONG).show()
@@ -131,6 +132,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     fragId = DOC_SEARCH_FRAGMENT_ID
                     reportProblemFrag = null
                     chatsFrag = null
+                    profileFrag = null
+                    profileFrag = null
                 }
                 true
             }
@@ -142,6 +145,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = REPORT_PROBLEM_FRAGMENT_ID
                     chatsFrag = null
+                    profileFrag = null
                 }
                 true
             }
@@ -153,6 +157,7 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                     fragId = DOCTORS_REPORT_FRAGMENT_ID
                     reportProblemFrag = null
                     chatsFrag = null
+                    profileFrag = null
                 }
                 true
             }
@@ -164,13 +169,15 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                         .commit()
                     fragId = PATIENT_MESSAGES_FRAGMENT_ID
                     reportProblemFrag = null
+                    profileFrag = null
                 }
                 true
             }
             R.id.mnu_profile -> {
                 if (fragId != PATIENT_PROFILE_FRAGMENT_ID) {
+                    profileFrag = PatientProfileFragment()
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.patient_activity_fragment_container, PatientProfileFragment())
+                        .replace(R.id.patient_activity_fragment_container, profileFrag!!)
                         .commit()
                     fragId = PATIENT_PROFILE_FRAGMENT_ID
                     reportProblemFrag = null
@@ -249,6 +256,10 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                                 reportProblemFrag?.activateViews()
                             reportProblemFrag = null
                             isDataLoaded = true
+
+                            val hasData: Boolean = profileFrag?.getProfileData() ?: false
+                            if (hasData)
+                                profileFrag?.populateDataToViews()
 
                             fetchDoctorDetails()
                         } else {
@@ -393,6 +404,8 @@ class PatientActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener,
                 runOnUiThread {
                     isInternetConnected = true
                     isAvailable[0] = true
+                    if (!isDataLoaded)
+                        fetchPatientData()
                 }
             }
 

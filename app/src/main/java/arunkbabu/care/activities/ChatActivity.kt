@@ -5,23 +5,26 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.Message
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.adapters.MessageAdapter
-import com.google.firebase.database.*
+import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_chat.*
 
-class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListener {
+
+class ChatActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var msgRoot: DatabaseReference
     private lateinit var receiverChatRoot: DatabaseReference
-    private lateinit var lastMsgRoot: DatabaseReference
+    private lateinit var senderChatRoot: DatabaseReference
     private var adapter: MessageAdapter? = null
 
-    private val messages = ArrayList<Message>()
     private var senderId = ""
     private var receiverId = ""
     private var receiverName = ""
@@ -65,35 +68,61 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
         }
         Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
-        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        lm.stackFromEnd = true
-        adapter = MessageAdapter(messages, userId = senderId)
-        rv_chats.layoutManager = lm
-        rv_chats.adapter = adapter
-        Utils.runPullDownAnimation(this, rv_chats)
+        receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS)
+            .child(receiverId)
+            .child(senderId)
 
-        receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(receiverId).child(senderId)
+        senderChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS)
+            .child(senderId)
+            .child(receiverId)
 
-        lastMsgRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS).child(senderId)
-            .child(receiverId).child(Constants.FIELD_LAST_MESSAGE)
-
-        if (Utils.userType == Constants.USER_TYPE_PATIENT) {
-            msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(senderId)
-                .child(receiverId)
-            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(40)
-                .addChildEventListener(this)
-        } else {
-            // USER is doctor
-            msgRoot = Firebase.database.reference.child(Constants.ROOT_MESSAGES).child(receiverId)
+        msgRoot = if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+            // User is patient
+            Firebase.database.reference.child(Constants.ROOT_MESSAGES)
                 .child(senderId)
-            msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).limitToLast(40)
-                .addChildEventListener(this)
+                .child(receiverId)
+        } else {
+            // User is doctor
+            Firebase.database.reference.child(Constants.ROOT_MESSAGES)
+                .child(receiverId)
+                .child(senderId)
         }
 
-        rv_chats.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, prevBottom ->
+        val options = FirebaseRecyclerOptions.Builder<Message>()
+            .setLifecycleOwner(this)
+            .setQuery(msgRoot) { snapshot ->
+                val m: Message = snapshot.getValue(Message::class.java) ?: Message()
+                m.key = snapshot.key ?: ""
+                m
+            }
+            .build()
+
+        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        lm.stackFromEnd = true
+        adapter = MessageAdapter(options, rv_messages, senderId)
+        adapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                super.onItemRangeChanged(positionStart, itemCount)
+                lm.scrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (isFirstLaunch) {
+                    Utils.runPullDownAnimation(this@ChatActivity, rv_messages)
+                    isFirstLaunch = false
+                }
+                lm.scrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
+            }
+        })
+        rv_messages.layoutManager = lm
+        rv_messages.adapter = adapter
+
+        rv_messages.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, prevBottom ->
             // Scroll to the end of list when keyboard pop
             if (bottom < prevBottom)
-                rv_chats.smoothScrollToPosition(messages.size)
+                rv_messages.smoothScrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
         }
 
         toolbarChat_backBtn.setOnClickListener(this)
@@ -118,16 +147,22 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
                         Constants.FIELD_MSG_TIMESTAMP to ServerValue.TIMESTAMP
                     )
                     newMsgRoot.updateChildren(msgMap)
-                    lastMsgRoot.setValue(message)
                     // Also push your id to doctor's chat index in "Chats". So that the receiver can
                     // connect with you
-                    val senderMap = hashMapOf(
+                    val sChatMap = hashMapOf(
                         Constants.FIELD_FULL_NAME to senderName,
                         Constants.FIELD_PROFILE_PICTURE to senderDpPath,
                         Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP,
                         Constants.FIELD_LAST_MESSAGE to message
                     )
-                    receiverChatRoot.updateChildren(senderMap)
+                    val rChatMap = hashMapOf(
+                        Constants.FIELD_FULL_NAME to receiverName,
+                        Constants.FIELD_PROFILE_PICTURE to receiverDpPath,
+                        Constants.FIELD_CHAT_TIMESTAMP to ServerValue.TIMESTAMP,
+                        Constants.FIELD_LAST_MESSAGE to message
+                    )
+                    receiverChatRoot.updateChildren(sChatMap)
+                    senderChatRoot.updateChildren(rChatMap)
 
                     et_typeMessage.setText("")
                 }
@@ -143,32 +178,4 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
             }
         }
     }
-
-    /**
-     * Loads the message from database to recycler view
-     */
-    private fun loadMessages(snapshot: DataSnapshot) {
-        val message = snapshot.getValue(Message::class.java) ?: Message()
-        message.key = snapshot.key ?: ""
-        messages.add(message)
-
-        if (isFirstLaunch) {
-            Utils.runPullDownAnimation(this, rv_chats)
-            isFirstLaunch = false
-        }
-        adapter?.notifyDataSetChanged()
-        rv_chats?.smoothScrollToPosition(messages.size)
-    }
-
-    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-        loadMessages(snapshot)
-    }
-
-    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) { }
-
-    override fun onChildRemoved(snapshot: DataSnapshot) { }
-
-    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {  }
-
-    override fun onCancelled(error: DatabaseError) { }
 }
