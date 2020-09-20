@@ -61,7 +61,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.4.0'
     implementation 'com.google.firebase:firebase-firestore:21.6.0'
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
-    implementation 'com.firebaseui:firebase-ui-database:6.3.0'
     implementation 'androidx.paging:paging-runtime:2.1.2'
     implementation 'com.google.firebase:firebase-storage-ktx:19.2.0'
     implementation 'com.google.firebase:firebase-database-ktx:19.4.0'

@@ -5,26 +5,23 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.Message
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.adapters.MessageAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ServerValue
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_chat.*
 
-
-class ChatActivity : AppCompatActivity(), View.OnClickListener {
+class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListener {
     private lateinit var msgRoot: DatabaseReference
     private lateinit var receiverChatRoot: DatabaseReference
     private lateinit var senderChatRoot: DatabaseReference
     private var adapter: MessageAdapter? = null
 
+    private val messages = ArrayList<Message>()
     private var senderId = ""
     private var receiverId = ""
     private var receiverName = ""
@@ -68,6 +65,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
         Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
+        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        lm.stackFromEnd = true
+        adapter = MessageAdapter(messages, userId = senderId)
+        rv_messages.layoutManager = lm
+        rv_messages.adapter = adapter
+
         receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS)
             .child(receiverId)
             .child(senderId)
@@ -87,42 +90,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
                 .child(receiverId)
                 .child(senderId)
         }
-
-        val options = FirebaseRecyclerOptions.Builder<Message>()
-            .setLifecycleOwner(this)
-            .setQuery(msgRoot) { snapshot ->
-                val m: Message = snapshot.getValue(Message::class.java) ?: Message()
-                m.key = snapshot.key ?: ""
-                m
-            }
-            .build()
-
-        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        lm.stackFromEnd = true
-        adapter = MessageAdapter(options, rv_messages, senderId)
-        adapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-
-            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-                super.onItemRangeChanged(positionStart, itemCount)
-                lm.scrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
-            }
-
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (isFirstLaunch) {
-                    Utils.runPullDownAnimation(this@ChatActivity, rv_messages)
-                    isFirstLaunch = false
-                }
-                lm.scrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
-            }
-        })
-        rv_messages.layoutManager = lm
-        rv_messages.adapter = adapter
+        msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).addChildEventListener(this)
 
         rv_messages.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, prevBottom ->
             // Scroll to the end of list when keyboard pop
             if (bottom < prevBottom)
-                rv_messages.smoothScrollToPosition(adapter?.itemCount?.minus(1) ?: 0)
+                rv_messages.smoothScrollToPosition(messages.size)
         }
 
         toolbarChat_backBtn.setOnClickListener(this)
@@ -178,4 +151,32 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+
+    /**
+     * Loads the message from database to recycler view
+     */
+    private fun loadMessages(snapshot: DataSnapshot) {
+        val message = snapshot.getValue(Message::class.java) ?: Message()
+        message.key = snapshot.key ?: ""
+        messages.add(message)
+
+        if (isFirstLaunch) {
+            Utils.runPullDownAnimation(this, rv_messages)
+            isFirstLaunch = false
+        }
+        adapter?.notifyDataSetChanged()
+        rv_messages?.smoothScrollToPosition(messages.size)
+    }
+
+    override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+        loadMessages(snapshot)
+    }
+
+    override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) { }
+
+    override fun onChildRemoved(snapshot: DataSnapshot) { }
+
+    override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {  }
+
+    override fun onCancelled(error: DatabaseError) { }
 }

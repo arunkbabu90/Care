@@ -8,47 +8,52 @@ import arunkbabu.care.Message
 import arunkbabu.care.R
 import arunkbabu.care.Utils
 import arunkbabu.care.inflate
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.android.synthetic.main.item_message_date.view.*
 import kotlinx.android.synthetic.main.item_message_lt.view.*
 import kotlinx.android.synthetic.main.item_message_rt.view.*
 import java.util.*
 
-class MessageAdapter(options: FirebaseRecyclerOptions<Message>,
-                     private val rv: RecyclerView,
-                     private val userId: String)
-    : FirebaseRecyclerAdapter<Message, RecyclerView.ViewHolder>(options) {
+class MessageAdapter(
+    private val messages: ArrayList<Message>,
+    private val userId: String
+)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            Message.TYPE_YOU -> MessageViewHolderRt(parent.context, parent.inflate(R.layout.item_message_rt))
+            Message.TYPE_YOU -> MessageViewHolderRt(
+                parent.context,
+                parent.inflate(R.layout.item_message_rt)
+            )
             else -> MessageViewHolderLt(parent.context, parent.inflate(R.layout.item_message_lt))
         }
     }
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int, msg: Message) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val msg: Message = messages[position]
         var futureTimestamp: Long = -1
         if (position != 0) {
             // Look only up until 0th position; otherwise position - 1 will throw an OutOfBounds Exception
-            futureTimestamp = snapshots[position - 1].msgTimestamp
+            futureTimestamp = messages[position - 1].msgTimestamp
         }
 
         if (msg.senderId == userId) {
-            (viewHolder as MessageViewHolderRt).bind(msg, futureTimestamp)
+            (holder as MessageViewHolderRt).bind(msg, futureTimestamp)
         } else {
-            (viewHolder as MessageViewHolderLt).bind(msg, futureTimestamp)
+            (holder as MessageViewHolderLt).bind(msg, futureTimestamp)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        val uid: String = snapshots[position].senderId
+        val uid: String = messages[position].senderId
         if (uid == userId)
             return Message.TYPE_YOU
 
         return super.getItemViewType(position)
     }
+
+    override fun getItemCount(): Int = messages.size
 
     /**
      * Visually Groups the messages by each Day in the chat
@@ -58,7 +63,8 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message>,
      * @param dl The included view group item which is holding the #dtv
      * @param sysTs The current timestamp of the system or OS
      */
-    private fun groupMsgByDate(msgTs: Long, futureTs: Long, dtv: MaterialTextView, dl: View) {
+    private fun groupMsgByDate(msgTs: Long, futureTs: Long,
+                               dtv: MaterialTextView, dl: View) {
         if (futureTs == 0L) {
             dl.visibility = View.VISIBLE
             dtv.text = Utils.getLogicalDateString(msgTs)
@@ -92,10 +98,8 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message>,
             else
                 itemView.itemMsgRt_time.text = time
 
-            groupMsgByDate(
-                message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout
-            )
+            groupMsgByDate(message.msgTimestamp, futureTimestamp,
+                itemView.tv_itemMsgDate, itemView.itemMsgRt_dateLayout)
         }
     }
 
@@ -109,11 +113,9 @@ class MessageAdapter(options: FirebaseRecyclerOptions<Message>,
                 itemView.itemMsgLt_text.text =  context.getString(R.string.msg_sent, time)
             else
                 itemView.itemMsgLt_time.text = time
-            
-            groupMsgByDate(
-                message.msgTimestamp, futureTimestamp,
-                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout
-            )
+
+            groupMsgByDate(message.msgTimestamp, futureTimestamp,
+                itemView.tv_itemMsgDate, itemView.itemMsgLt_dateLayout)
         }
     }
 }
