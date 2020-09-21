@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import arunkbabu.care.Constants
 import arunkbabu.care.R
@@ -30,12 +31,17 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
     private lateinit var mRequestId: String
     private lateinit var mDoctorName: String
     private var mReportTimestamp: Timestamp? = null
+
     val imagePaths: ArrayList<String> = ArrayList()
-    var reportType: Int = Constants.NULL_INT
-    var patientSex: Int = Constants.NULL_INT
-    var reportDescription: String = ""
-    var patientName: String = ""
-    var patientAge: String = ""
+    var reportType: Int = -1
+    var patientSex: Int = -1
+    var reportDescription = ""
+    var patientName = ""
+    var patientAge = ""
+    var patientHeight = ""
+    var patientWeight = ""
+    var docHospital = ""
+    var docSpecialityQualifications = ""
 
     private var problemReportPath: String = ""
 
@@ -49,6 +55,8 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
         mReportId = intent.getStringExtra(Constants.PATIENT_REPORT_ID_KEY) ?: ""
         mRequestId = intent.getStringExtra(Constants.PATIENT_REQUEST_ID_KEY) ?: ""
         mDoctorName = intent.getStringExtra(Constants.DOCTOR_NAME_ID_KEY) ?: ""
+        docHospital = intent.getStringExtra(Constants.DOCTOR_HOSPITAL_NAME_KEY) ?: ""
+        docSpecialityQualifications = intent.getStringExtra(Constants.DOCTOR_SPECIALITY_QUALIFICATION_KEY) ?: ""
 
         problemReportPath = (Constants.COLLECTION_USERS + "/" + mPatientId + "/" + Constants.COLLECTION_PROBLEM_REPORT)
 
@@ -78,7 +86,11 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
                             if (age != null) {
                                 val c: Calendar = Calendar.getInstance()
                                 c.timeInMillis = age
-                                patientAge = Utils.calculateAge(c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR)).toString()
+                                patientAge = Utils.calculateAge(
+                                    c.get(Calendar.DAY_OF_MONTH), c.get(
+                                        Calendar.MONTH
+                                    ), c.get(Calendar.YEAR)
+                                ).toString()
                             } else {
                                 patientAge = getString(R.string.not_provided)
                             }
@@ -87,14 +99,27 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
                             if (sex != null)
                                 patientSex = sex.toInt()
 
+                            patientHeight = d.getString(Constants.FIELD_HEIGHT) ?: getString(R.string.not_provided)
+                            patientWeight = d.getString(Constants.FIELD_WEIGHT) ?: getString(R.string.not_provided)
+
                             // Get the patient report details
                             fetchReportDetails(problemReportPath)
                         } else {
-                            Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                            tv_doc_error_text.visibility = View.GONE
+                            Toast.makeText(
+                                this,
+                                getString(R.string.err_unable_to_fetch),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
                     } else {
-                        Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                        tv_doc_error_text.visibility = View.GONE
+                        Toast.makeText(
+                            this,
+                            getString(R.string.err_unable_to_fetch),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         finish()
                     }
                 }
@@ -114,7 +139,9 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
                             val d = task.result
                             if (d != null) {
                                 // Report Fetch Success
-                                reportDescription = d.getString(Constants.FIELD_PROBLEM_DESCRIPTION) ?: getString(R.string.not_provided)
+                                reportDescription = d.getString(Constants.FIELD_PROBLEM_DESCRIPTION) ?: getString(
+                                        R.string.not_provided
+                                    )
                                 mReportTimestamp = d.getTimestamp(Constants.FIELD_REPORT_TIMESTAMP)
 
                                 // Retrieve all the paths of images uploaded
@@ -124,11 +151,19 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
 
                                 loadViews()
                             } else {
-                                Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    getString(R.string.err_unable_to_fetch),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 finish()
                             }
                         } else {
-                            Toast.makeText(this, getString(R.string.err_unable_to_fetch), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this,
+                                getString(R.string.err_unable_to_fetch),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         }
                     }
@@ -154,21 +189,32 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
     }
 
     private fun createReport() {
+        if (DocAddMedicineFragment.sMedicineList.isEmpty()) {
+            Toast.makeText(this, R.string.err_empty_medicines, Toast.LENGTH_LONG).show()
+            return
+        } else if (DocInstructionFragment.sDocReportDescription.isNullOrBlank()) {
+            Toast.makeText(this, R.string.err_empty_medication_instructions, Toast.LENGTH_LONG).show()
+            return
+        }
+
         Toast.makeText(this, getString(R.string.creating_report), Toast.LENGTH_SHORT).show()
         btn_doc_next.isEnabled = false
         pb_doc_next.visibility = View.VISIBLE
 
         val docReportPath = (Constants.COLLECTION_REPORT_DETAILS + "/" + mPatientId + "/" + Constants.COLLECTION_DOCTOR_REPORT)
-        val medList = DocAddMedicineFragment.mMedicineList
+        val medList = DocAddMedicineFragment.sMedicineList
         val medicines: MutableMap<String, Any> = HashMap()
         for (i in 0 until medList.size)
             medicines["med$i"] = medList[i]
 
         val prescription: MutableMap<String, Any> = hashMapOf(
             Constants.FIELD_FULL_NAME to mDoctorName,
+            Constants.FIELD_WORKING_HOSPITAL_NAME to docHospital,
+            Constants.FIELD_SPECIALITY_QUALIFICATIONS to docSpecialityQualifications,
             Constants.FIELD_REPORT_TYPE to reportType,
             Constants.FIELD_DOCTOR_MEDICATION_INSTRUCTIONS to DocInstructionFragment.sDocReportDescription,
-            Constants.FIELD_DOCTOR_MEDICINES to medicines
+            Constants.FIELD_DOCTOR_MEDICINES to medicines,
+            Constants.FIELD_PROBLEM_DESCRIPTION to reportDescription
         )
         // Put the time when the patient has created the report to the doctor
         // This helps the patient to identify the report when doctor sends the prescription for the patient
@@ -234,7 +280,11 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
             mDb.collection(docRequestListPath).document(mRequestId).delete()
                 .addOnCompleteListener {
                     // Request Deletion Success
-                    Toast.makeText(this, getString(R.string.report_sent, patientName), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.report_sent, patientName),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     btn_doc_next.isEnabled = true
                     pb_doc_next.visibility = View.GONE
                     finish()
@@ -282,11 +332,32 @@ class ViewPatientReportActivity : AppCompatActivity(), ViewPager.OnPageChangeLis
                 when (position) {
                     3 -> {
                         btn_doc_next.text = getString(R.string.send)
-                        btn_doc_next.backgroundTintList = AppCompatResources.getColorStateList(this, R.color.send_btn_color_state_list)
+                        btn_doc_next.backgroundTintList = AppCompatResources.getColorStateList(
+                            this,
+                            R.color.send_btn_color_state_list
+                        )
+                        btn_doc_next.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.colorAcceptButton
+                            )
+                        )
+                        btn_doc_next.setStrokeColorResource(R.color.colorAcceptButton)
                     }
                     else -> {
                         btn_doc_next.text = getString(R.string.next)
-                        btn_doc_next.backgroundTintList = AppCompatResources.getColorStateList(this, R.color.next_btn_color_state_list)
+                        btn_doc_next.backgroundTintList = AppCompatResources.getColorStateList(
+                            this,
+                            R.color.next_btn_color_state_list
+                        )
+
+                        btn_doc_next.setTextColor(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.colorLightIndigoNormal
+                            )
+                        )
+                        btn_doc_next.setStrokeColorResource(R.color.colorLightIndigoNormal)
                     }
                 }
             }

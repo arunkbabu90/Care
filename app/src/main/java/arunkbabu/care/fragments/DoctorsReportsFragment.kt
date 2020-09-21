@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arunkbabu.care.Constants
 import arunkbabu.care.DoctorReport
 import arunkbabu.care.R
+import arunkbabu.care.Utils
 import arunkbabu.care.activities.ViewDoctorReportActivity
 import arunkbabu.care.adapters.ReportListAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_doctors_reports.*
 class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
     companion object {
         const val KEY_EXTRA_REPORT_ID = "report_id_key_extra"
+        const val KEY_EXTRA_REPORT_TIMESTAMP = "report_timestamp_extra_key"
     }
     private lateinit var adapter: ReportListAdapter
     private lateinit var docReportQuery: Query
@@ -65,8 +67,11 @@ class DoctorsReportsFragment : Fragment(), ReportListAdapter.ItemClickListener {
 
     override fun onItemClick(v: View?, report: DoctorReport, position: Int) {
         // On Doctor Report item click
+        val date: String = Utils.convertDateToString(report.requestTimestamp.toDate(), "dd MMMM yyyy")
+
         val viewReportIntent = Intent(context, ViewDoctorReportActivity::class.java)
         viewReportIntent.putExtra(KEY_EXTRA_REPORT_ID, report.reportId)
+        viewReportIntent.putExtra(KEY_EXTRA_REPORT_TIMESTAMP, date)
         startActivity(viewReportIntent)
     }
 

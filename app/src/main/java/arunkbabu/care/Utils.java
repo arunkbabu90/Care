@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Environment;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -66,7 +65,7 @@ public class Utils {
      * @throws IOException If the file was not created
      */
     public static File createImageFile(Context context, String fileFormat) throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String fileName = "IMG_" + timeStamp + "_";
         File directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(fileName, fileFormat, directory);
@@ -279,11 +278,23 @@ public class Utils {
 
     /**
      * Converts the time as UTC milliseconds from the epoch to a human readable date String
+     * @param date The date
+     * @param pattern The pattern describing the date and time format
+     * @return String: The Date as a human readable String
+     */
+    public static String convertDateToString(Date date, String pattern) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
+    /**
+     * Converts the time as UTC milliseconds from the epoch to a human readable date String
+     * @param epoch The timestamp
      * @return String: The Date as a human readable String
      */
     public static String convertEpochToDateString(long epoch) {
         Date date = new Date(epoch);
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.UK);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getDefault());
 
         return sdf.format(date);
@@ -299,9 +310,9 @@ public class Utils {
         String logicalDate;
         Date date = new Date(timestamp);
         Date currentDate = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.UK);
-        SimpleDateFormat df = new SimpleDateFormat("dd", Locale.UK);
-        SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.UK);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("dd", Locale.getDefault());
+        SimpleDateFormat myf = new SimpleDateFormat("MM yyyy", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getDefault());
 
         String dateStr = sdf.format(date);
@@ -338,10 +349,10 @@ public class Utils {
         SimpleDateFormat sdf;
         if (c1.get(Calendar.WEEK_OF_YEAR) == c2.get(Calendar.WEEK_OF_YEAR)) {
             // If same week then show only the day name (Ex: Mon, Tue)
-            sdf = new SimpleDateFormat("EEE", Locale.UK);
+            sdf = new SimpleDateFormat("EEE", Locale.getDefault());
         } else {
             // Else show Date & Month (Ex: 10 Sep)
-            sdf = new SimpleDateFormat("dd MMM", Locale.UK);
+            sdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
         }
         sdf.setTimeZone(TimeZone.getDefault());
 
@@ -470,43 +481,13 @@ public class Utils {
 
             @Override
             public void onLoadCleared(@Nullable Drawable placeholder) {
-                circularImageView.setImageDrawable(null);
+                circularImageView.setImageDrawable(placeholder);
             }
         };
 
-        Glide.with(context).load(imageURL).into(mTarget);
-    }
-
-    /**
-     * Loads the image to image view from the given Uri
-     * @param imageUri Uri of the image to load
-     * @param context The context
-     * @param circularImageView The custom CircularImageView where the profile picture needs to be loaded
-     */
-    public static void loadDpToView(Context context, Uri imageUri, CircularImageView circularImageView) {
-        mTarget = new CustomTarget<Drawable>() {
-            @Override
-            public void onLoadStarted(@Nullable Drawable placeholder) {
-                circularImageView.showProgressBar();
-            }
-
-            @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                circularImageView.hideProgressBar();
-                circularImageView.setImageDrawable(resource);
-            }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                circularImageView.hideProgressBar();
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-                circularImageView.setImageDrawable(null);
-            }
-        };
-
-        Glide.with(context).load(imageUri).into(mTarget);
+        Glide.with(context).load(imageURL)
+                .placeholder(R.drawable.default_dp)
+                .error(R.drawable.default_dp)
+                .into(mTarget);
     }
 }

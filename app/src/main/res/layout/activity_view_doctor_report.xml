@@ -1,30 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorDarkBackgroundGrey1"
     tools:context=".activities.ViewDoctorReportActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:padding="32dp"
         android:scrollbars="vertical" >
 
-        <TextView
-            android:id="@+id/tv_view_doctor_report"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="This is a sample doctor report"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/viewDocReport_appIcon"
+                android:layout_width="@dimen/dp_image_view_size_small"
+                android:layout_height="@dimen/dp_image_view_size_small"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/logo_small"
+                app:layout_constraintBottom_toBottomOf="@id/tv_viewDocReport_title"
+                app:layout_constraintEnd_toStartOf="@id/tv_viewDocReport_title"
+                app:layout_constraintTop_toTopOf="@id/tv_viewDocReport_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/muli_extra_bold"
+                android:gravity="center"
+                android:paddingStart="0dp"
+                android:paddingTop="@dimen/medium_padding"
+                android:paddingEnd="@dimen/medium_padding"
+                android:paddingBottom="@dimen/medium_padding"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@color/colorGreen"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_error"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:padding="@dimen/default_padding"
+                android:background="@color/colorDarkBackgroundGrey1"
+                android:gravity="center"
+                android:translationZ="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_title" />
+
+            <View
+                android:id="@+id/viewDocReport_line1"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginStart="@dimen/huge_margin"
+                android:layout_marginEnd="@dimen/huge_margin"
+                android:background="@color/colorDarkBackgroundGrey2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_title" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_docName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:fontFamily="@font/muli_bold"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/colorTextLightGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewDocReport_line1"
+                tools:text="Dr. Joe Doe" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_speciality"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_regular"
+                android:layout_marginTop="@dimen/tiny_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/colorTextGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_docName"
+                tools:text="Cardiologist (MBBS, MD)" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_hospital"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_regular"
+                android:layout_marginTop="@dimen/tiny_margin"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/colorTextGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_speciality"
+                tools:text="Medical College, Kottayam" />
+
+            <View
+                android:id="@+id/viewDocReport_line2"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginStart="@dimen/huge_margin"
+                android:layout_marginEnd="@dimen/huge_margin"
+                android:background="@color/colorDarkBackgroundGrey2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_hospital" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_medicines"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_regular"
+                android:layout_marginTop="@dimen/large_margin"
+                android:paddingEnd="@dimen/default_padding"
+                android:paddingStart="@dimen/large_padding"
+                android:gravity="start"
+                android:lineSpacingExtra="6dp"
+                android:textSize="14sp"
+                android:textColor="@color/colorTextLightGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewDocReport_line2"
+                tools:text="• Paracetamol 500Mg; after meal\n• Paracetamol 500Mg; after meal\n• Paracetamol 500Mg; after meal" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_instructions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_regular"
+                android:layout_marginTop="@dimen/large_margin"
+                android:paddingEnd="@dimen/default_padding"
+                android:paddingStart="@dimen/large_padding"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/colorTextLightGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_medicines"
+                tools:text="Consume paracetamol after this process. If you are fealing andy insomania or any other symptoms you can do this" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_ur_desc_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_black"
+                android:gravity="start"
+                android:paddingStart="@dimen/large_padding"
+                android:paddingEnd="@dimen/default_padding"
+                android:text="@string/your_report"
+                android:textColor="@color/colorTextLightGrey"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_instructions" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_ur_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_regular"
+                android:layout_marginTop="@dimen/tiny_margin"
+                android:paddingEnd="@dimen/default_padding"
+                android:paddingStart="@dimen/large_padding"
+                android:gravity="start"
+                android:textSize="14sp"
+                android:textColor="@color/colorTextLightGrey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_ur_desc_title"
+                tools:text="I'm experiencing sever accute symptoms based on COVID-19. I have cough and everything" />
+
+            <View
+                android:id="@+id/viewDocReport_line3"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="@dimen/huge_margin"
+                android:layout_marginTop="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/huge_margin"
+                android:background="@color/colorDarkBackgroundGrey2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_viewDocReport_ur_desc" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_viewDocReport_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_italic"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginStart="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin"
+                android:paddingEnd="0dp"
+                android:paddingStart="@dimen/large_padding"
+                android:gravity="end"
+                android:textSize="12sp"
+                android:textColor="@color/colorTextGrey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/viewDocReport_line3"
+                tools:text="19 September 2020" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <ProgressBar
         android:id="@+id/pb_view_doctor_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:translationZ="10dp"
         android:layout_gravity="center"/>
 
 </FrameLayout>

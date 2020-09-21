@@ -392,10 +392,14 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
         } else {
             // Document is at last page. So create a report and send it to the doctor
             // SEND button
-            if (sReportingDoctorId == null || sReportingDoctorId.isEmpty()) {
+            if (PatientReportDescriptionFragment.sReportDescription == null || PatientReportDescriptionFragment.sReportDescription.equals("")) {
+                Toast.makeText(this, R.string.err_empty_report, Toast.LENGTH_LONG).show();
+                return;
+            } else if (sReportingDoctorId == null || sReportingDoctorId.isEmpty()) {
                 Toast.makeText(this, R.string.err_no_doc_selected, Toast.LENGTH_SHORT).show();
                 return;
             }
+
             if (mIsNetworkConnected) {
                 // Internet Available
                 if (mIsAccountAlreadyVerified) {

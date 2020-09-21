@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import arunkbabu.care.DoctorReport;
 import arunkbabu.care.R;
@@ -77,17 +75,11 @@ public class ReportListAdapter extends FirestoreRecyclerAdapter<DoctorReport, Re
         }
 
         public void bind(DoctorReport report) {
-            String reportType = Utils.toReportTypeString(report.getReportType());
-            Date timeStamp = report.getReportTimestamp().toDate();
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.UK);
-
-            String properDate = dateFormat.format(timeStamp);
-            String properTime = timeFormat.format(timeStamp);
+            Date date = report.getReportTimestamp().toDate();
+            String properDate = Utils.convertDateToString(date, "dd-MMM-yyyy hh:mm a");
 
             mDoctorNameTextView.setText(report.getFull_name());
-            mReportTypeTextView.setText(String.format("Report on %s you sent on %s %S", reportType, properDate, properTime));
+            mReportTypeTextView.setText(String.format("Report you sent on %s", properDate));
 
             mDocReportLayout.setOnClickListener(v -> mItemClickListener.onItemClick(v, report, getAdapterPosition()));
         }

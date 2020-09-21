@@ -6,19 +6,20 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
+    android:layout_margin="@dimen/small_padding"
+    android:background="@drawable/round_corner_dark_drawable_1">
 
     <TextView
         android:id="@+id/tv_doctor_report_doc_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingTop="@dimen/default_padding"
-        android:paddingBottom="8dp"
-        android:paddingStart="@dimen/default_padding"
-        android:paddingEnd="@dimen/default_padding"
+        android:paddingTop="@dimen/medium_padding"
+        android:paddingBottom="@dimen/tiny_padding"
+        android:paddingStart="@dimen/medium_padding"
+        android:paddingEnd="@dimen/medium_padding"
         android:textStyle="bold"
-        android:textColor="@color/colorTextLightGrey"
+        android:textColor="@color/colorLightIndigoActivated"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Joe Doe"/>
 
@@ -27,10 +28,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/default_padding"
-        android:paddingStart="@dimen/default_padding"
-        android:paddingEnd="@dimen/default_padding"
-        android:textStyle="italic"
+        android:paddingBottom="@dimen/medium_padding"
+        android:paddingStart="@dimen/medium_padding"
+        android:paddingEnd="@dimen/medium_padding"
         android:textColor="@color/colorTextGrey"
         tools:text="Report on Pain you sent on 2018-06-12 12:48 PM"/>
 

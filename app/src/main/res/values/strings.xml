@@ -15,6 +15,7 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="chats">Chats</string>
     <string name="back_button">Back button</string>
+    <string name="err_empty_report">Can\'t send an empty report. Please describe your report</string>
 
     <!-- Patient Activity -->
     <string name="signed_out">Signed out!</string>
@@ -22,7 +23,7 @@
     <string name="sign_out">Sign out</string>
     <string name="home">Home</string>
     <string name="search">Search</string>
-    <string name="doctors_report">Doctor Reports</string>
+    <string name="doctors_report">Prescriptions</string>
     <string name="next">Next</string>
     <string name="creating_report">Creating a Report. Please Wait</string>
     <string name="request_sent">Report sent to Dr. %1$s</string>
@@ -45,6 +46,9 @@
     <string name="select">Select</string>
     <string name="consult">Consult</string>
     <string name="consult_doctor">Consult Doctor</string>
+    <string name="err_empty_medicines">Please specify the medicines also</string>
+    <string name="err_empty_medication_instructions">Instructions for medication can\'t be empty. Please describe how they should consume the medicines</string>
+    <string name="your_report">Your Report</string>
 
     <!-- Login Activity -->
     <string name="email">Email</string>
@@ -183,5 +187,4 @@
     <string name="err_create_chat_room">Creating chat room failed. Please quit the app check the internet and reopen to try again</string>
     <string name="no_chats_yet">No Chats Yet!\nSelect a doctor from Search to start chatting</string>
     <string name="msg_sent">%1$s</string>
-    <string name="search_doctor">Search for a doctor</string>
 </resources>

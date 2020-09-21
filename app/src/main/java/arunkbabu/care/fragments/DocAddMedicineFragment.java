@@ -35,7 +35,7 @@ public class DocAddMedicineFragment extends Fragment implements View.OnClickList
 
     private final String KEY_TEMP_DOC_MEDICINE_LIST = "key_temp_doc_medicine_list";
 
-    public static ArrayList<String> mMedicineList;
+    public static ArrayList<String> sMedicineList;
     private MedicineAdapter mAdapter;
     private Activity a;
     private int cPosition;
@@ -58,10 +58,10 @@ public class DocAddMedicineFragment extends Fragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
 
         a = getActivity();
-        mMedicineList = new ArrayList<>();
+        sMedicineList = new ArrayList<>();
 
         if (a != null) {
-            mAdapter = new MedicineAdapter(mMedicineList);
+            mAdapter = new MedicineAdapter(sMedicineList);
             mMedicineRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
             mMedicineRecyclerView.setAdapter(mAdapter);
             mAddMedicineButton.setOnClickListener(this);
@@ -77,15 +77,15 @@ public class DocAddMedicineFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                     cPosition = viewHolder.getAdapterPosition();
-                    cUndoMedicineNameCache = mMedicineList.get(cPosition);
+                    cUndoMedicineNameCache = sMedicineList.get(cPosition);
 
-                    mMedicineList.remove(cPosition);
+                    sMedicineList.remove(cPosition);
                     mAdapter.notifyDataSetChanged();
 
                     Snackbar.make(view.findViewById(R.id.add_medicine_layout),
                             cUndoMedicineNameCache + " Removed from list", Snackbar.LENGTH_LONG)
                             .setAction(getResources().getString(R.string.undo), v -> {
-                                mMedicineList.add(cPosition, cUndoMedicineNameCache);
+                                sMedicineList.add(cPosition, cUndoMedicineNameCache);
                                 mMedicineRecyclerView.smoothScrollToPosition(cPosition);
                                 cPosition = -1;
                                 cUndoMedicineNameCache = null;
@@ -108,17 +108,17 @@ public class DocAddMedicineFragment extends Fragment implements View.OnClickList
     private void addMedicine() {
         String medicine = mMedicineNameEditText.getText().toString().trim();
         if (!medicine.equals("")) {
-            mMedicineList.add(medicine);
+            sMedicineList.add(medicine);
             mMedicineNameEditText.setText("");
             mAdapter.notifyDataSetChanged();
-            mMedicineRecyclerView.smoothScrollToPosition(mMedicineList.size());
+            mMedicineRecyclerView.smoothScrollToPosition(sMedicineList.size());
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putStringArrayList(KEY_TEMP_DOC_MEDICINE_LIST, mMedicineList);
+        outState.putStringArrayList(KEY_TEMP_DOC_MEDICINE_LIST, sMedicineList);
     }
 
     @Override
@@ -126,10 +126,10 @@ public class DocAddMedicineFragment extends Fragment implements View.OnClickList
         super.onViewStateRestored(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mMedicineList = savedInstanceState.getStringArrayList(KEY_TEMP_DOC_MEDICINE_LIST);
+            sMedicineList = savedInstanceState.getStringArrayList(KEY_TEMP_DOC_MEDICINE_LIST);
 
             if (a != null) {
-                mAdapter = new MedicineAdapter(mMedicineList);
+                mAdapter = new MedicineAdapter(sMedicineList);
                 mMedicineRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                 mMedicineRecyclerView.setAdapter(mAdapter);
             }

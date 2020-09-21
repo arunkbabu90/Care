@@ -61,7 +61,6 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
             mAdapter.setClickListener(this)
             rv_request_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rv_request_view.adapter = mAdapter
-//            Utils.runLayoutAnimation(context, rv_request_view)
         }
     }
 
@@ -78,7 +77,11 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
      */
     private fun onAcceptButtonClick(patient: Patient, position: Int) {
         // Get the basic patient request details
-        val docName: String = (activity as DoctorActivity).doctorFullName
+        val da: DoctorActivity = (activity as DoctorActivity)
+
+        val docName: String = da.doctorFullName
+        val hospital: String = da.workingHospitalName
+        val specialityQualifications = "${da.speciality} (${da.qualifications})"
         val patientId: String = patient.patientId
         val reportId: String = patient.reportId
         val requestId: String = mAdapter.snapshots.getSnapshot(position).id
@@ -90,6 +93,8 @@ class PatientRequestsFragment : Fragment(), RequestListAdapter.ItemClickListener
         docIntent.putExtra(Constants.PATIENT_REPORT_TYPE_KEY, reportType)
         docIntent.putExtra(Constants.PATIENT_REQUEST_ID_KEY, requestId)
         docIntent.putExtra(Constants.DOCTOR_NAME_ID_KEY, docName)
+        docIntent.putExtra(Constants.DOCTOR_HOSPITAL_NAME_KEY, hospital)
+        docIntent.putExtra(Constants.DOCTOR_SPECIALITY_QUALIFICATION_KEY, specialityQualifications)
         startActivity(docIntent)
     }
 

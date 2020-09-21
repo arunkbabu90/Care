@@ -23,7 +23,7 @@ public class PatientReportDescriptionFragment extends Fragment {
 
     @BindView(R.id.et_patient_report_description) EditText mDescriptionEditText;
 
-    public static String sReportDescription;
+    public static String sReportDescription = "";
 
     public PatientReportDescriptionFragment() {
         // Required empty public constructor

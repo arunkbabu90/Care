@@ -12,7 +12,7 @@
         android:text="@string/patients_report"
         android:layout_marginTop="32dp"
         android:layout_marginStart="30dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginEnd="20dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textStyle="bold"/>
@@ -20,7 +20,8 @@
     <ListView
         android:id="@+id/lv_patients_report"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/round_corner_dark_drawable_3"
         android:divider="@android:color/transparent"
         android:scrollbarAlwaysDrawVerticalTrack="true"/>
 

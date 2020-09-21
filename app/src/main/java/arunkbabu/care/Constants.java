@@ -12,6 +12,8 @@ public class Constants {
     public static final String PATIENT_REPORT_ID_KEY = "key_patient_report_id";
     public static final String PATIENT_REQUEST_ID_KEY = "key_patient_request_id";
     public static final String DOCTOR_NAME_ID_KEY = "key_doctor_name_id";
+    public static final String DOCTOR_SPECIALITY_QUALIFICATION_KEY = "key_doctor_speciality_qualification_extra";
+    public static final String DOCTOR_HOSPITAL_NAME_KEY = "key_doctor_hospital_name_extra";
 
     public static final int REPORT_TYPE_OTHER = 1004;
 
@@ -64,6 +66,7 @@ public class Constants {
     public static final String FIELD_DOCTOR_FELLOWSHIPS = "fellowships";
     public static final String FIELD_WORKING_HOSPITAL_NAME = "hospital";
     public static final String FIELD_SEARCH_NAME = "searchName";
+    public static final String FIELD_SPECIALITY_QUALIFICATIONS = "sq";
 
     // Cloud Storage Related
     public static final String DIRECTORY_PROFILE_PICTURE = "/ProfilePictures/";

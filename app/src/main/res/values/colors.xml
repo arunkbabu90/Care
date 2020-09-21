@@ -45,5 +45,6 @@
     <color name="colorCatYellow">#E5B628</color>
     <color name="colorTextRed">#ff9795</color>
     <color name="colorTextGreen">#81C784</color>
-    <color name="colorMessageBg">#FFE082</color>
+    <color name="colorTextYellow">#FFE082</color>
+    <color name="colorTextBlue">#5081BC</color>
 </resources>

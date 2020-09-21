@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 
 import arunkbabu.care.R;
+import arunkbabu.care.Utils;
 import arunkbabu.care.activities.ViewPatientReportActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,10 +46,21 @@ public class DocPatientsReportFragment extends Fragment {
 
         ViewPatientReportActivity vp  = (ViewPatientReportActivity) getActivity();
         if (vp != null) {
+            String sex = Utils.toSexString(vp.getPatientSex());
+            if (sex.equals(""))
+                sex = getString(R.string.not_provided);
+
+            String weight = vp.getPatientWeight();
+            String height = vp.getPatientHeight();
+
             ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.add("Name: " + vp.getPatientName());
-            arrayList.add("Age: " + vp.getPatientAge());
-            arrayList.add("Description:\n\n" + vp.getReportDescription());
+            arrayList.add("Name\n" + vp.getPatientName());
+            arrayList.add("Age\n" + vp.getPatientAge());
+            arrayList.add("Sex\n" + sex);
+            arrayList.add("Height\n" + height);
+            arrayList.add("Weight\n" + weight);
+            arrayList.add("BMI\n" + Utils.calculateBMI(weight, height));
+            arrayList.add("Description\n" + vp.getReportDescription());
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.item_doc_patients_report, arrayList);
             mPatientReportListView.setAdapter(adapter);

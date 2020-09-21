@@ -8,4 +8,5 @@ import com.google.firebase.Timestamp
 data class DoctorReport(val reportType: Int = Constants.NULL_INT,
                         val reportId: String = "",
                         val full_name: String = "",
-                        val reportTimestamp: Timestamp = Timestamp(0,0))
+                        val reportTimestamp: Timestamp = Timestamp(0,0),
+                        val requestTimestamp: Timestamp = Timestamp(0,0))

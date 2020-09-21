@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.fragment_report_problem.*
  * A simple [Fragment] subclass.
  */
 class ReportProblemFragment : Fragment(), View.OnClickListener {
-
     companion object {
         const val REPORTING_DOCTOR_ID_EXTRAS_KEY = "key_report_problem_extras_reporting_doctor_id"
         const val PATIENT_NAME_EXTRAS_KEY = "key_report_problem_extras_patient_name"
