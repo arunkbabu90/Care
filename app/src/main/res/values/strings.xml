@@ -183,4 +183,5 @@
     <string name="err_create_chat_room">Creating chat room failed. Please quit the app check the internet and reopen to try again</string>
     <string name="no_chats_yet">No Chats Yet!\nSelect a doctor from Search to start chatting</string>
     <string name="msg_sent">%1$s</string>
+    <string name="search_doctor">Search for a doctor</string>
 </resources>

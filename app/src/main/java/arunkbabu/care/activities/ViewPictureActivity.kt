@@ -34,7 +34,10 @@ class ViewPictureActivity : AppCompatActivity(),  GestureDetector.OnGestureListe
         window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
         val imagePath = intent.getStringExtra(PROFILE_PICTURE_PATH_EXTRA_KEY)
-        Glide.with(this).load(imagePath).into(iv_viewPicture)
+        Glide.with(this).load(imagePath)
+            .placeholder(R.drawable.default_dp)
+            .error(R.drawable.default_dp)
+            .into(iv_viewPicture)
 
         mGestureDetector = GestureDetectorCompat(this, this)
         mGestureDetector.setOnDoubleTapListener(this)

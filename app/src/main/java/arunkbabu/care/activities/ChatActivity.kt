@@ -19,6 +19,7 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
     private lateinit var msgRoot: DatabaseReference
     private lateinit var receiverChatRoot: DatabaseReference
     private lateinit var senderChatRoot: DatabaseReference
+    private lateinit var msgQuery: Query
     private var adapter: MessageAdapter? = null
 
     private val messages = ArrayList<Message>()
@@ -65,12 +66,6 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
         }
         Utils.loadDpToView(this, receiverDpPath, toolbarChat_dp)
 
-        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        lm.stackFromEnd = true
-        adapter = MessageAdapter(messages, userId = senderId)
-        rv_messages.layoutManager = lm
-        rv_messages.adapter = adapter
-
         receiverChatRoot = Firebase.database.reference.root.child(Constants.ROOT_CHATS)
             .child(receiverId)
             .child(senderId)
@@ -90,7 +85,13 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
                 .child(receiverId)
                 .child(senderId)
         }
-        msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP).addChildEventListener(this)
+        loadMessages()
+
+        val lm = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        lm.stackFromEnd = true
+        adapter = MessageAdapter(messages, userId = senderId)
+        rv_messages.layoutManager = lm
+        rv_messages.adapter = adapter
 
         rv_messages.addOnLayoutChangeListener { _, _, _, _, bottom, _, _, _, prevBottom ->
             // Scroll to the end of list when keyboard pop
@@ -153,9 +154,17 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
     }
 
     /**
+     * Loads the messages
+     */
+    private fun loadMessages() {
+        msgQuery = msgRoot.orderByChild(Constants.FIELD_MSG_TIMESTAMP)
+        msgQuery.addChildEventListener(this)
+    }
+
+    /**
      * Loads the message from database to recycler view
      */
-    private fun loadMessages(snapshot: DataSnapshot) {
+    private fun updateDataItems(snapshot: DataSnapshot) {
         val message = snapshot.getValue(Message::class.java) ?: Message()
         message.key = snapshot.key ?: ""
         messages.add(message)
@@ -164,19 +173,17 @@ class ChatActivity : AppCompatActivity(), ChildEventListener, View.OnClickListen
             Utils.runPullDownAnimation(this, rv_messages)
             isFirstLaunch = false
         }
-        adapter?.notifyDataSetChanged()
+
         rv_messages?.smoothScrollToPosition(messages.size)
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-        loadMessages(snapshot)
+        updateDataItems(snapshot)
     }
 
     override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) { }
-
     override fun onChildRemoved(snapshot: DataSnapshot) { }
-
     override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {  }
-
     override fun onCancelled(error: DatabaseError) { }
 }
