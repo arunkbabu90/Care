@@ -150,7 +150,10 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
      */
     private void pushDetailsToDatabase(FirebaseUser user) {
         // If any of the fields are empty don't attempt sign up
-        if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("") || mContactNumber.equals("")) {
+//        if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("") || mContactNumber.equals("")) {
+//            return;
+//        }
+        if (mFullName.equals("") || mEmail.equals("") || mPassword.equals("")) {
             return;
         }
         if (mUserType == Constants.USER_TYPE_DOCTOR) {
@@ -164,9 +167,12 @@ public class SignUpActivity extends AppCompatActivity implements ErrorDialog.But
 
         Map<String, Object> ud = new HashMap<>();
         ud.put(Constants.FIELD_FULL_NAME, mFullName);
-        ud.put(Constants.FIELD_CONTACT_NUMBER, mContactNumber);
         ud.put(Constants.FIELD_USER_TYPE, mUserType);
         ud.put(Constants.FIELD_ACCOUNT_VERIFIED, false); // Initialize Verification status to false always
+
+        if (mContactNumber != null && !mContactNumber.isEmpty())
+            ud.put(Constants.FIELD_CONTACT_NUMBER, mContactNumber);
+
         // If the user is a doctor then upload his/her registered id too
         if (mUserType == Constants.USER_TYPE_DOCTOR) {
             ud.put(Constants.FIELD_DOC_REG_ID, mDocRegId);

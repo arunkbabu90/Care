@@ -41,4 +41,5 @@
     <dimen name="small_corner_radius">10dp</dimen>
     <dimen name="medium_corner_radius">20dp</dimen>
     <dimen name="category_card_radius">30dp</dimen>
+    <dimen name="about_icon_size">90dp</dimen>
 </resources>

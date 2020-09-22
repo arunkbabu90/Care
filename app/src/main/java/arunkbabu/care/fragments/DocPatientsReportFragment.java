@@ -57,8 +57,8 @@ public class DocPatientsReportFragment extends Fragment {
             arrayList.add("Name\n" + vp.getPatientName());
             arrayList.add("Age\n" + vp.getPatientAge());
             arrayList.add("Sex\n" + sex);
-            arrayList.add("Height\n" + height);
-            arrayList.add("Weight\n" + weight);
+            arrayList.add("Height\n" + height + " cm");
+            arrayList.add("Weight\n" + weight + " Kg");
             arrayList.add("BMI\n" + Utils.calculateBMI(weight, height));
             arrayList.add("Description\n" + vp.getReportDescription());
 

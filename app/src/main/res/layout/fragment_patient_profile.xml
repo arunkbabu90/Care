@@ -12,6 +12,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/btn_patient_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_padding"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackground"
+            android:tint="@color/colorOrange"
+            android:src="@drawable/ic_about"
+            android:contentDescription="@string/about" />
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,7 +37,7 @@
                 android:background="@color/colorDarkBackgroundGrey1"
                 android:layout_marginStart="@dimen/large_margin"
                 android:layout_marginBottom="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/large_margin"
+                android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 app:src="@drawable/default_dp" />
 

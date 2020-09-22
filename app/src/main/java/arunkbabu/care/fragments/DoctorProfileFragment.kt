@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
+import arunkbabu.care.activities.AboutActivity
 import arunkbabu.care.activities.DoctorActivity
 import arunkbabu.care.activities.ViewPictureActivity
 import arunkbabu.care.adapters.DoctorProfileAdapter
@@ -100,6 +101,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
         btn_doc_sign_out.setOnClickListener(this)
         fab_doc_profile_edit.setOnClickListener(this)
         fab_doc_profile_dp_edit.setOnClickListener(this)
+        btn_doctor_about.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -121,6 +123,7 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
                 // Launch DoctorEditProfileFragment
                 (activity as DoctorActivity).launchEditProfileFragment()
             }
+            R.id.btn_doctor_about -> startActivity(Intent(context, AboutActivity::class.java))
         }
     }
 
@@ -186,8 +189,14 @@ class DoctorProfileFragment : Fragment(), View.OnClickListener {
             if (mExperience.isBlank())
                 mExperience = "None"
 
+            if (mContactNo.isBlank())
+                mContactNo = "Not Provided"
+
+//            return mName.isNotBlank() && mEmail.isNotBlank() && mRegisteredId.isNotBlank()
+//                    && mQualifications.isNotBlank() && mSpeciality.isNotBlank() && mContactNo.isNotBlank()
+
             return mName.isNotBlank() && mEmail.isNotBlank() && mRegisteredId.isNotBlank()
-                    && mQualifications.isNotBlank() && mSpeciality.isNotBlank() && mContactNo.isNotBlank()
+                    && mQualifications.isNotBlank() && mSpeciality.isNotBlank()
         }
         return false
     }

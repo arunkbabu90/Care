@@ -211,8 +211,13 @@ public class SignUpPatientFragment extends Fragment implements View.OnFocusChang
      * @return True  if all the fields are filled and the emails and passwords are valid; False  otherwise
      */
     public boolean checkAllFields() {
-        if (!getFullName().equals("") && checkEmail() && checkPassword(MODE_BOTH)
-                && !getMobileNumber().equals("") && !mIsEmailRegistered) {
+//        if (!getFullName().equals("") && checkEmail() && checkPassword(MODE_BOTH)
+//                && !getMobileNumber().equals("") && !mIsEmailRegistered) {
+//            // If all the fields are filled and emails and passwords are valid; Return true
+//            return true;
+//        }
+
+        if (!getFullName().equals("") && checkEmail() && checkPassword(MODE_BOTH) && !mIsEmailRegistered) {
             // If all the fields are filled and emails and passwords are valid; Return true
             return true;
         }
@@ -222,9 +227,9 @@ public class SignUpPatientFragment extends Fragment implements View.OnFocusChang
             mFirstNameField.setError(getString(R.string.err_empty_field));
         }
 
-        if (getMobileNumber().equals("")) {
-            mMobileField.setError(getString(R.string.err_empty_field));
-        }
+//        if (getMobileNumber().equals("")) {
+//            mMobileField.setError(getString(R.string.err_empty_field));
+//        }
 
         checkEmail();
         checkPassword(MODE_BOTH);

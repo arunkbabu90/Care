@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDarkBackgroundGrey1"
+    android:fillViewport="true"
+    tools:context=".activities.AboutActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_about_app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_about_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            tools:text="@string/version"
+            android:gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="@id/tv_about_app_name"
+            app:layout_constraintStart_toStartOf="@id/tv_about_app_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_about_app_name" />
+
+        <ImageView
+            android:id="@+id/iv_about_icon"
+            android:layout_width="@dimen/about_icon_size"
+            android:layout_height="@dimen/about_icon_size"
+            android:src="@drawable/logo_small"
+            app:layout_constraintBottom_toTopOf="@id/about_guideline"
+            app:layout_constraintEnd_toEndOf="@id/tv_about_version"
+            app:layout_constraintStart_toStartOf="@id/tv_about_version"
+            app:layout_constraintTop_toBottomOf="@id/tv_about_version"
+            tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/about_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <TextView
+            android:id="@+id/tv_about_dev_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_dev_info"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/about_guideline"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/btn_about_contact"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:text="@string/contact"
+            android:textColor="@color/colorBlue"
+            app:layout_constraintBottom_toTopOf="@id/btn_about_privacy_policy"
+            app:layout_constraintEnd_toStartOf="@id/btn_about_licenses"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_about_dev_name"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
+            android:id="@+id/btn_about_licenses"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:text="@string/licenses"
+            android:textColor="@color/colorBlue"
+            app:layout_constraintBottom_toBottomOf="@id/btn_about_contact"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_about_contact"
+            app:layout_constraintTop_toTopOf="@id/btn_about_contact" />
+
+        <Button
+            android:id="@+id/btn_about_privacy_policy"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:padding="20dp"
+            android:text="@string/privacy_policy"
+            android:textColor="@color/colorBlue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/btn_about_licenses"
+            app:layout_constraintStart_toStartOf="@id/btn_about_contact" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

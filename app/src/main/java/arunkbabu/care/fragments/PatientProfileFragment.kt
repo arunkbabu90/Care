@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import arunkbabu.care.Constants
 import arunkbabu.care.R
 import arunkbabu.care.Utils
+import arunkbabu.care.activities.AboutActivity
 import arunkbabu.care.activities.PatientActivity
 import arunkbabu.care.activities.ViewPictureActivity
 import arunkbabu.care.dialogs.DatePickerDialog
@@ -104,6 +105,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
         pcv_profile_weight.setOnClickListener(this)
         btn_profile_sign_out.setOnClickListener(this)
         fab_profile_dp_edit.setOnClickListener(this)
+        btn_patient_about.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -139,6 +141,7 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
                 mAuth.signOut()
                 activity?.finish()
             }
+            R.id.btn_patient_about -> startActivity(Intent(context, AboutActivity::class.java))
         }
     }
 
@@ -149,11 +152,21 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
     fun populateDataToViews() {
         loadDpToView(Uri.parse(mDpPath))
 
+        if (mContactNumber.isBlank()) mContactNumber = "Not Provided"
+        if (mDob.isBlank()) mDob = "Not Provided"
+        if (mHeight.isBlank()) mHeight = "Not Provided"
+        if (mWeight.isBlank()) mWeight = "Not Provided"
+        if (mBmi.isBlank()) mBmi = "Not Provided"
+
         tv_profile_name.text = mFullName
         pcv_profile_email.bottomText = mEmail
         pcv_profile_contact_no.bottomText = mContactNumber
         pcv_profile_dob.bottomText = mDob
-        if (mAge != Constants.NULL_INT) pcv_profile_age.bottomText = mAge.toString()
+        
+        if (mAge != Constants.NULL_INT)
+            pcv_profile_age.bottomText = mAge.toString()
+        else
+            pcv_profile_age.bottomText = "Not Provided"
 
         // Check this Radio Button only if the user has opted to provide data (ie, the database has this data)
         if (mSex == Constants.SEX_MALE) {
@@ -188,7 +201,8 @@ class PatientProfileFragment : Fragment(), View.OnClickListener, TitleRadioCardV
             mBmi = pa.bmi
             mDpPath = pa.patientDpPath
 
-            return mFullName.isNotBlank() && mEmail.isNotBlank() && mContactNumber.isNotBlank()
+//            return mFullName.isNotBlank() && mEmail.isNotBlank() && mContactNumber.isNotBlank()
+            return mFullName.isNotBlank() && mEmail.isNotBlank()
         }
         return false
     }

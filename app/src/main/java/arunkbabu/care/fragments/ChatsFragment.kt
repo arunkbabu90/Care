@@ -110,9 +110,14 @@ class ChatsFragment : Fragment() {
 
 
         if (chats.size < 1) {
+            // No Chats
+            if (Utils.userType == Constants.USER_TYPE_DOCTOR)
+                tv_chatsFrag_error?.text = getString(R.string.no_chats_yet_doc)
+
             tv_chatsFrag_error?.visibility = View.VISIBLE
             rv_messages?.visibility = View.GONE
         } else {
+            // Chats found
             tv_chatsFrag_error?.visibility = View.GONE
             rv_messages?.visibility = View.VISIBLE
         }

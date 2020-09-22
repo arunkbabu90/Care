@@ -10,40 +10,47 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.SearchDoctorActivity"
-            android:launchMode="singleTop"/>
+        <activity android:name=".activities.LicensesActivity"
+            android:parentActivityName=".activities.AboutActivity"/>
 
-        <activity android:name=".activities.ChatActivity"
-            android:windowSoftInputMode="adjustResize"/>
-
+        <activity android:name=".activities.AboutActivity" />
+        <activity
+            android:name=".activities.SearchDoctorActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activities.ViewPictureActivity" />
         <activity android:name=".activities.ViewProfileActivity" />
         <activity android:name=".activities.ViewPatientReportActivity" />
-
-        <activity android:name=".activities.DoctorActivity"
+        <activity
+            android:name=".activities.DoctorActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-
-        <activity android:name=".activities.SignUpActivity"
+        <activity
+            android:name=".activities.SignUpActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.ViewDoctorReportActivity" />
-        <activity android:name=".activities.OtherUntowardActivity"
-            android:launchMode="singleTop"/>
-
-        <activity android:name=".activities.PatientActivity"
+        <activity
+            android:name=".activities.OtherUntowardActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activities.PatientActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-
-        <activity android:name=".activities.LoginActivity">
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.AccountVerificationActivity" />
 
         <provider
@@ -56,4 +63,5 @@
                 android:resource="@xml/photo_path" />
         </provider>
     </application>
+
 </manifest>

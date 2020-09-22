@@ -236,8 +236,8 @@ class ViewProfileActivity : AppCompatActivity(), View.OnClickListener {
             profData = arrayListOf(
                 "Sex" to sex,
                 "Age" to age,
-                "Height" to height,
-                "Weight" to weight
+                "Height" to "$height cm",
+                "Weight" to "$weight Kg"
             )
         }
         val adapter = DoctorProfileAdapter(profData)

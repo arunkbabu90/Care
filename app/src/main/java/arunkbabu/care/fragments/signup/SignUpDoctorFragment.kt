@@ -201,8 +201,13 @@ class SignUpDoctorFragment : Fragment(), View.OnFocusChangeListener {
         val checkEmail = checkEmail()
         val checkPassword = checkPassword(SignUpPatientFragment.MODE_BOTH)
 
-        if (!getFullName().isBlank() && checkEmail && checkPassword && !getMobileNumber().isBlank()
-            && !mIsEmailRegistered && !getRegisterId().isBlank()) {
+//        if (getFullName().isNotBlank() && checkEmail && checkPassword && getMobileNumber().isNotBlank()
+//            && !mIsEmailRegistered && getRegisterId().isNotBlank()) {
+//            // If all the fields are filled and emails and passwords are valid; Return true
+//            return true
+//        }
+
+        if (getFullName().isNotBlank() && checkEmail && checkPassword && !mIsEmailRegistered && getRegisterId().isNotBlank()) {
             // If all the fields are filled and emails and passwords are valid; Return true
             return true
         }
@@ -211,8 +216,8 @@ class SignUpDoctorFragment : Fragment(), View.OnFocusChangeListener {
         if (getFullName().isBlank())
             et_doc_sign_up_full_name.error = getString(R.string.err_empty_field)
 
-        if (getMobileNumber().isBlank())
-            et_doc_sign_up_mobile.error = getString(R.string.err_empty_field)
+//        if (getMobileNumber().isBlank())
+//            et_doc_sign_up_mobile.error = getString(R.string.err_empty_field)
 
         if (getRegisterId().isBlank())
             et_doc_sign_up_reg_id.error = getString(R.string.err_empty_field)
