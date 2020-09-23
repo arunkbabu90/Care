@@ -35,8 +35,10 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import arunkbabu.care.Constants;
@@ -214,11 +216,14 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
             ArrayList<Uri> imgPaths = UploadFileFragment.sPathList;
             ArrayList<String> fileNames = UploadFileFragment.sFileNameList;
 
+            SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss", Locale.getDefault());
+            String folderName = sdf.format(Timestamp.now().toDate());
+
             mFileCount = imgPaths.size();
             mProgressValue.setText(String.valueOf(mFileCount));
             for (int i = 0; i < imgPaths.size(); i++) {
                 // Upload all file one by one
-                String uploadPath = mUser.getUid() + "/" + Constants.DIRECTORY_SENT_IMAGES + fileNames.get(i);
+                String uploadPath = mUser.getUid() + "/" + Constants.DIRECTORY_SENT_IMAGES + "/" + folderName + "/" + fileNames.get(i);
 
                 Uri uri = imgPaths.get(i);
                 Bitmap bitmap;

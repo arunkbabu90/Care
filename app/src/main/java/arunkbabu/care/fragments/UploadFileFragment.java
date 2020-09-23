@@ -360,12 +360,14 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
 
                 mFileUri = data.getData();
                 if (mFileUri != null) {
-                    sFileNameList.add(getFileName(mFileUri));
-                    sPathList.add(mFileUri);
-                    mSelectedPosition = sPathList.size() - 1;
-                    mAdapter.notifyDataSetChanged();
-
-                    loadImageToView(mFileUri);
+                    if (!sPathList.contains(mFileUri)) {
+                        sFileNameList.add(getFileName(mFileUri));
+                        // Avoid repeating files
+                        sPathList.add(mFileUri);
+                        mSelectedPosition = sPathList.size() - 1;
+                        mAdapter.notifyDataSetChanged();
+                        loadImageToView(mFileUri);
+                    }
                 }
             }
         }
