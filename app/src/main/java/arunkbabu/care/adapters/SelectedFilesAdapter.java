@@ -1,12 +1,16 @@
 package arunkbabu.care.adapters;
 
+import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -15,11 +19,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SelectedFilesAdapter extends RecyclerView.Adapter<SelectedFilesAdapter.SelectedFilesViewHolder> {
-    private ArrayList<String> mFileNameList;
     private ItemClickListener mItemClickListener;
+    private ArrayList<Uri> mPathList;
+    private Context mContext;
 
-    public SelectedFilesAdapter(ArrayList<String> fileNameList) {
-        mFileNameList = fileNameList;
+    public SelectedFilesAdapter(Context context, ArrayList<Uri> pathList) {
+        mPathList = pathList;
+        mContext = context;
     }
 
     @NonNull
@@ -31,20 +37,17 @@ public class SelectedFilesAdapter extends RecyclerView.Adapter<SelectedFilesAdap
 
     @Override
     public void onBindViewHolder(@NonNull SelectedFilesViewHolder holder, int position) {
-        String fileName = mFileNameList.get(position);
-        int extStartIndex = fileName.lastIndexOf(".") + 1;
-        holder.mTopTextView.setText(fileName.substring(0, extStartIndex - 1)); // Extract & set the file name
-        holder.mBottomTextView.setText(fileName.substring(extStartIndex));  // Extract & set the file extension
+        Uri path = mPathList.get(position);
+        Glide.with(mContext).load(path).into((holder.mPhotoView));
     }
 
     @Override
     public int getItemCount() {
-        return mFileNameList.size();
+        return mPathList.size();
     }
 
     class SelectedFilesViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_top_text) TextView mTopTextView;
-        @BindView(R.id.tv_bottom_text) TextView mBottomTextView;
+        @BindView(R.id.selectedFile_thumbnail) ImageView mPhotoView;
 
         SelectedFilesViewHolder(@NonNull View itemView) {
             super(itemView);

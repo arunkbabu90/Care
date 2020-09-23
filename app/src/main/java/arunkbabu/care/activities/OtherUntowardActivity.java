@@ -1,12 +1,15 @@
 package arunkbabu.care.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,11 +32,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import arunkbabu.care.Constants;
+import arunkbabu.care.ExtensionsKt;
 import arunkbabu.care.R;
 import arunkbabu.care.Utils;
 import arunkbabu.care.adapters.OtherUntowardPagerAdapter;
@@ -195,7 +202,7 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
     /**
      * Upload the image files selected
      */
-    private void uploadImageFiles() {
+    private void uploadImageFiles() throws IOException {
         mNextButton.setEnabled(false);
         mProgressBar.setIndeterminateMode(true);
         mProgressBar.setVisibility(View.VISIBLE);
@@ -213,18 +220,35 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                 // Upload all file one by one
                 String uploadPath = mUser.getUid() + "/" + Constants.DIRECTORY_SENT_IMAGES + fileNames.get(i);
 
+                Uri uri = imgPaths.get(i);
+                Bitmap bitmap;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(getContentResolver(), uri));
+                } else {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                }
+                Bitmap rBitmap = ExtensionsKt.resize(bitmap, Constants.IMG_UPLOAD_SIZE, Constants.IMG_UPLOAD_SIZE);
+
+                // Compress and convert the image bitmap to InputStream
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                rBitmap.compress(Bitmap.CompressFormat.JPEG, Constants.JPG_QUALITY, bos);
+                ByteArrayInputStream bs = new ByteArrayInputStream(bos.toByteArray());
+
                 StorageReference storageReference = mStorage.getReference(uploadPath);
-                UploadTask uploadTask = storageReference.putFile(imgPaths.get(i));
+                UploadTask uploadTask = storageReference.putStream(bs);
                 uploadTask.continueWithTask(task -> {
                     if (!task.isSuccessful()) {
                         // Upload failed
-                        Toast.makeText(this,
-                                getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
                         return null;
                     }
                     return storageReference.getDownloadUrl();
                 }).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        mProgressBar.setIndeterminateMode(true);
+                        mFileCount--;
+                        mProgressValue.setText(String.valueOf(mFileCount));
+
                         mDownloadURIs.add(task.getResult());
                         if (mDownloadURIs.size() == UploadFileFragment.sPathList.size()) {
                             // All files successfully uploaded; so start creating report
@@ -237,16 +261,10 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                 });
                 uploadTask.addOnProgressListener(snapshot -> {
                     float progress = (float) (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                    if ((int) progress > 5) {
+                    if ((int) progress > 4) {
                         mProgressBar.setIndeterminateMode(false);
                     }
                     mProgressBar.setProgressWithAnimation(progress);
-                    mProgressValue.setText(String.valueOf(mFileCount));
-
-                    if ((int) progress >= 100) {
-                        mProgressBar.setIndeterminateMode(true);
-                        mFileCount--;
-                    }
                 });
             }
         }
@@ -407,7 +425,12 @@ public class OtherUntowardActivity extends AppCompatActivity implements ViewPage
                     if (UploadFileFragment.sPathList != null && !UploadFileFragment.sPathList.isEmpty()) {
                         // Only upload the images if they are present or selected for upload
                         // In other-words, if there are no images don't upload it
-                        uploadImageFiles();
+                        try {
+                            uploadImageFiles();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, getString(R.string.err_get_download_image_url), Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         // No files to upload; so start creating report immediately
                         createReport();

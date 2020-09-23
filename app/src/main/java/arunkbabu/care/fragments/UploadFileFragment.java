@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Guideline;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -55,7 +55,6 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
     @BindView(R.id.pb_upload_file) ProgressBar mProgressCircle;
     @BindView(R.id.tv_err_upload) TextView mErrorTextView;
     @BindView(R.id.tv_upload_title) TextView mTitleTextView;
-    @BindView(R.id.guideline_upload_photo) Guideline mBottomGuideline;
 
     private final int REQUEST_IMAGE_CAPTURE = 3000;
     private final int REQUEST_OPEN_FILE = 3001;
@@ -101,8 +100,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         // Initialize the array for holding the selected files path
         sPathList = new ArrayList<>();
 
-        if ((a != null) && !(a.getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY))) {
+        if ((a != null) && !(a.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY))) {
             // The device doesn't have a camera so disable "Take Photo" button
             mTakePhotoButton.setEnabled(false);
             mTakePhotoButton.setVisibility(View.GONE);
@@ -122,7 +120,6 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
                 mChooseFileButton.setEnabled(false);
                 mChooseFileButton.setVisibility(View.GONE);
                 mTakePhotoButton.setVisibility(View.GONE);
-                mBottomGuideline.setGuidelinePercent(100);
                 mTitleTextView.setText(getString(R.string.uploaded_files));
 
                 // Get all the uploaded image paths and convert it to uri. Also get its file name
@@ -148,8 +145,8 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         // Load the selected files to the recycler view
         if (a != null) {
             mSelectedFilesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                    LinearLayoutManager.VERTICAL, false));
-            mAdapter = new SelectedFilesAdapter(sFileNameList);
+                    LinearLayoutManager.HORIZONTAL, false));
+            mAdapter = new SelectedFilesAdapter(getContext(), sPathList);
             mAdapter.setOnItemClickListener(position -> {
                 // List item is clicked so load the clicked image file into the image view
                 mSelectedPosition = position;
@@ -160,7 +157,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             if (Utils.userType == Constants.USER_TYPE_PATIENT) {
                 // Disable the swipe to delete functionality if the user is a doctor
                 new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                        ItemTouchHelper.UP) {
                     @Override
                     public boolean onMove(@NonNull RecyclerView recyclerView,
                                           @NonNull RecyclerView.ViewHolder viewHolder,
@@ -231,7 +228,8 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
         if (mSelectedPhotoImageView.getVisibility() == View.INVISIBLE || mSelectedPhotoImageView.getVisibility() == View.GONE) {
             mSelectedPhotoImageView.setVisibility(View.VISIBLE);
         }
-        Glide.with(this).load(sPathList.get(position)).into(new CustomTarget<Drawable>() {
+
+        mTarget = new CustomTarget<Drawable>() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 mProgressCircle.setVisibility(View.VISIBLE);
@@ -241,6 +239,12 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mSelectedPhotoImageView.setImageDrawable(resource);
                 mProgressCircle.setVisibility(View.GONE);
+
+                if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+                    // Show the swipe up to delete message
+                    mTitleTextView.setText(R.string.swipe_to_delete);
+                    mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                }
             }
 
             @Override
@@ -252,7 +256,9 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             public void onLoadCleared(@Nullable Drawable placeholder) {
                 mSelectedPhotoImageView.setImageDrawable(null);
             }
-        });
+        };
+
+        Glide.with(this).load(sPathList.get(position)).into(mTarget);
     }
 
     /**
@@ -274,6 +280,12 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                 mSelectedPhotoImageView.setImageDrawable(resource);
                 mProgressCircle.setVisibility(View.GONE);
+
+                if (Utils.userType == Constants.USER_TYPE_PATIENT) {
+                    // Show the swipe up to delete message
+                    mTitleTextView.setText(R.string.swipe_to_delete);
+                    mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                }
             }
 
             @Override
@@ -307,8 +319,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                mFileUri = FileProvider.getUriForFile(a.getApplicationContext(),
-                        a.getString(R.string.file_provider_authority), photoFile);
+                mFileUri = FileProvider.getUriForFile(a.getApplicationContext(), a.getString(R.string.file_provider_authority), photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mFileUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -409,7 +420,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             sPathList = savedInstanceState.getParcelableArrayList(KEY_UPLOAD_FILE_PATHS);
             mSelectedPosition = savedInstanceState.getInt(KEY_LAST_SELECTED_IMAGE_POSITION);
 
-            mAdapter = new SelectedFilesAdapter(sFileNameList);
+            mAdapter = new SelectedFilesAdapter(getContext(), sPathList);
             mSelectedFilesRecyclerView.setAdapter(mAdapter);
             if (sPathList != null && sPathList.size() > 0) {
                 Glide.with(this).load(sPathList.get(mSelectedPosition)).into(mSelectedPhotoImageView);

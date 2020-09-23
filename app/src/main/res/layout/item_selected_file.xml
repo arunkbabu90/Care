@@ -1,29 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/default_margin"
+    android:layout_marginTop="@dimen/default_margin"
     android:background="?attr/selectableItemBackground">
 
-        <TextView android:id="@+id/tv_top_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/default_margin"
-            tools:text="IMG_094750530_085048"
-            android:textAppearance="?attr/textAppearanceListItem" />
-
-        <TextView android:id="@+id/tv_bottom_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_top_text"
-            android:layout_alignStart="@id/tv_top_text"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="@dimen/default_margin"
-            android:layout_marginBottom="8dp"
-            android:textStyle="italic"
-            android:textAllCaps="true"
-            tools:text="jpg"/>
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/selectedFile_thumbnail"
+            android:layout_width="@dimen/dp_image_view_size_medium"
+            android:layout_height="@dimen/dp_image_view_size_medium"
+            android:src="@drawable/default_dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/selected_image" />
+</FrameLayout>

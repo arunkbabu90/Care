@@ -79,6 +79,7 @@ public class Constants {
     public static final String IMG_FORMAT_JPG = ".jpg";
     public static final int JPG_QUALITY = 80;
     public static final int DP_UPLOAD_SIZE = 960;
+    public static final int IMG_UPLOAD_SIZE = 2000;
 
     public static final int USER_TYPE_PATIENT = 50;
     public static final int USER_TYPE_DOCTOR = 51;
