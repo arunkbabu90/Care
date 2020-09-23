@@ -38,7 +38,7 @@ public class SelectedFilesAdapter extends RecyclerView.Adapter<SelectedFilesAdap
     @Override
     public void onBindViewHolder(@NonNull SelectedFilesViewHolder holder, int position) {
         Uri path = mPathList.get(position);
-        Glide.with(mContext).load(path).into((holder.mPhotoView));
+        Glide.with(mContext).load(path).error(R.drawable.ic_broken_image).into(holder.mPhotoView);
     }
 
     @Override

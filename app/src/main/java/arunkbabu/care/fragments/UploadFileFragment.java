@@ -249,6 +249,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 mProgressCircle.setVisibility(View.GONE);
             }
 
@@ -258,7 +259,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             }
         };
 
-        Glide.with(this).load(sPathList.get(position)).into(mTarget);
+        Glide.with(this).load(sPathList.get(position)).error(R.drawable.ic_broken_image).into(mTarget);
     }
 
     /**
@@ -290,6 +291,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
 
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 mProgressCircle.setVisibility(View.GONE);
             }
 
@@ -299,7 +301,7 @@ public class UploadFileFragment extends Fragment implements View.OnClickListener
             }
         };
 
-        Glide.with(this).load(imageUri).into(mTarget);
+        Glide.with(this).load(imageUri).error(R.drawable.ic_broken_image).into(mTarget);
     }
 
     /**
